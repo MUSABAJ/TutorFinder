@@ -1,0 +1,121 @@
+{%load static%}
+
+<style>
+    #container {
+        height: 100vh;
+        margin: 0;
+        align-items: center;
+        background-color: beige;
+        overflow: hidden;
+    }
+
+    #package {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    #details_container {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    #details {
+        background-color: #fefefe;
+        margin: 15% auto;
+        width: 35%;
+        height: 50%;
+        padding: 20px;
+        border: 1px sloid #888;
+    }
+
+    #image_box {
+        width: 90%;
+        margin: auto;
+        height: 35%;
+        background-color: aquamarine;
+    }
+</style>
+
+
+<script src='{% static "HTMX.MINI.JS/htmx.min.js"%}'></script>
+<div id="container">
+    <h1>{{tutor}}</h1>
+    <br><br>
+
+    <div id='package'>
+        {%for pkg in packages%}
+        <div>
+            <span hidden style="display: none;" id=pkg_id>{{pkg.id}}</span>
+            {{pkg.name}} <br>
+            {{pkg.description}} <br>
+            {{pkg.id.}} <br>
+            {{pkg.price}}
+            <br>
+            <button onclick="show_detail(this)">Details</button>
+        </div>
+        {%endfor%}
+    </div>
+</div>
+<!-- <br><br><br> -->
+
+<!-- <div>
+    
+    <select name="selected_subject" id="selected-subject">
+        {%for subject  in subjects %}
+             <option value="{{subject}}">{{subject}}</option>
+        {%endfor%}
+    </select>
+    
+    
+    <div>
+        <p>
+            discription hose here
+        </p>
+        <button id="target"> confirmation button </button>
+    </div>
+</div> -->
+<div id="details_container">
+
+    <div id="details">
+        <div id="image_box">
+        </div>
+        
+                <h3>Choose the subject you want to enroll </h3>
+
+                <form id="starting" method="post">
+                    {%csrf_token%}
+                    <select name="selected_subject" id="selected-subject">
+                        {%for subject in subjects %}
+                        <option name='subjecs' value="{{subject}}">{{subject}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="hidden" name="package_id" value="">
+                    <button id="get-started">Buy</button>
+                </form>
+            <div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function show_detail(target) {
+        pkg = target.parentNode.childNodes[1]
+        pkg_id = pkg.innerHTML
+        document.getElementById('details_container').style.display = "block"
+        let persent = '%'
+    }
+
+    document.getElementById("starting").addEventListener("submit", (e) => {
+        e.preventDefault()
+        const persent = '%'
+        document.getElementById("starting").setAttribute("action", `/sessions/request/${pkg_id}/`)
+        document.getElementById("starting").submit()
+    })
+</script>

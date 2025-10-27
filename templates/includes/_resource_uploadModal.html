@@ -1,0 +1,65 @@
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Upload Resource</h3>
+                    <span class="close" onclick="closeUploadModal()">&times;</span>
+                </div>
+                <form class="upload-form">
+                    <div class="upload-area">
+                        <div class="upload-icon">📁</div>
+                        <h4>Drag and drop files here</h4>
+                        <p>or click to browse</p>
+                        <input type="file" class="file-input" multiple
+                            accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.avi,.mov,.jpg,.jpeg,.png,.gif">
+                    </div>
+                    <div class="form-group">
+                        <label>Resource Title</label>
+                        <input type="text" class="form-input" placeholder="Enter resource title"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-input" rows="3"
+                            placeholder="Brief description of the resource"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <select class="form-input" required>
+                                <option value="">Select Subject</option>
+                                <option value="mathematics">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Visibility</label>
+                            <select class="form-input" required>
+                                <option value="public">Public - All Students</option>
+                                <option value="private">Private - Specific Students</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="studentSelection" style="display: none;">
+                        <label>Select Students</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="sarah"> Sarah Johnson
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="mike"> Mike Chen
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="emma"> Emma Davis
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="closeUploadModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Upload Resource</button>
+                    </div>
+                </form>
+            </div>
+        </div>

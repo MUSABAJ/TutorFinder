@@ -1,0 +1,33 @@
+{% load static %}
+<script src="{% static 'HTMX.MINI.JS/htmx.min.js' %}"></script>
+
+<h1>Requested Sessions</h1>
+
+{% for request in requests %}
+  <div class="session-request" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
+    <p><strong>ID:</strong> {{ request.id }}</p>
+    <p><strong>Student:</strong> {{ request.student }}</p>
+
+    <div>
+      <button 
+        hx-post="{% url 'handle_request' request.id %}" 
+        hx-vals='{"action": "accept"}' 
+        hx-target="closest .session-request"
+        hx-swap="outerHTML"
+        class="accept-btn"
+      >
+        ✅ Accept
+      </button>
+
+      <button 
+        hx-post="{% url 'handle_request' request.id %}" 
+        hx-vals='{"action": "decline"}' 
+        hx-target="closest .session-request"
+        hx-swap="outerHTML"
+        class="decline-btn"
+      >
+        ❌ Decline
+      </button>
+    </div>
+  </div>
+{% endfor %}

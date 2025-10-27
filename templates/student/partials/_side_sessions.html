@@ -1,0 +1,31 @@
+ 
+
+<div class="side-view-bottom "
+id="side-sessions"  
+hx-trigger="load, every 120s"
+hx-swap="outerHTML">
+  <!-- Upcoming Sessions -->
+  <div class="dashboard-section">
+      <h3>Upcoming Sessions</h3>
+      <a href="sessions.html" class="btn btn-outline btn-vsm">View All</a>
+  </div>
+  <div class="sessions-list" hx-get="/api/upcoming-sessions" hx-trigger="load"
+      hx-indicator="#sessions-loading">
+      <!-- <div id="sessions-loading" class="loading-spinner htmx-indicator">Loading sessions...</div> -->
+
+      {%for session in upcoming_sessions %}
+       <div class="session-card">
+          <div class="session-info">
+              <div class="session-subject">{{session.topic}}</div>
+              <div class="session-tutor">with {{session.base_session.tutor.username}}</div>
+              <div class="session-time">Today at {{session.schedule_date|time:"H:i"  }}</div>
+              <div class="session-time"> {{session.session_type}}</div>
+          </div>
+          <div class="session-actions">
+            <a href=" "><button class="btn btn-primary btn-sm">Join Session</button>            </a>
+            <a href="{%url'session_reschedule'}"><button class="btn btn-outline btn-sm">Reschedule</button></a>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+</div>

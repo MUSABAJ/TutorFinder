@@ -1,0 +1,415 @@
+<div class="main-view-top">
+
+    <!-- Quick Stats -->
+
+    <div>
+        <div class="tutor-header">
+            <h1>Tutors</h1>
+            <div class="search-group">
+                <input type="text" placeholder="Search resources..." hx-get="/api/resources/search"
+                    hx-target="#tutor-grid" hx-trigger="keyup changed delay:500ms">
+            </div>
+        </div>
+
+        <div class="tutor-filters">
+            <div class="filter-group">
+                <label for="subject-filter">Subject</label>
+                <select id="subject-filter" hx-get="/api/resources/filter" hx-target="#tutor-grid">
+                    <option value="all">All Subjects</option>
+                    <option value="mathematics">Mathematics</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="biology">Biology</option>
+                    <option value="english">English</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="type-filter">Type</label>
+                <select id="type-filter">
+                    <option value="all">All Types</option>
+                    <option value="notes">Notes</option>
+                    <option value="practice">Practice Tests</option>
+                    <option value="videos">Videos</option>
+                    <option value="books">E-Books</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="level-filter">Level</label>
+                <select id="level-filter">
+                    <option value="all">All Levels</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+
+            
+        </div>
+
+        <div class="tutor-categories">
+            <div class="category-tabs">
+                <button class="tutor-tab active" onclick="showTutorTab('tutor-grid')" data-category="all">Explore Tutors</button>
+                <button class="tutor-tab"  onclick="showTutorTab('my-tutor-grid')" data-category="my-tutor">My Tutors</button>
+                <!-- <button class="category-tab"  onclick="showTutorTab('my-tutor-grid')" data-category="favorites">Favorites</button> -->
+
+                 
+            </div>
+        </div>
+    </div>
+
+    <div class="tutor-grid active" id="tutor-grid">
+
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+        <div class="tutor-card">
+            <div class="tutor-thumbnail">
+                <img src="img/makima.jpg?height=200&width=300" alt="Dr.Sarah Ahmed">
+            </div>
+            <div class="tutor-content">
+                <div class="tutor-meta">
+                    <h3>Dr. Sarah Ahmed <span class="level"><i class="fa fa-star"></i> 7.9 (127
+                            reviews) </span>
+                    </h3>
+                    <div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Dicta fugiat amet distinctio! Porro quam ipsam unde aliquid ...</p>
+                    </div>
+                    <div>
+                        <span class="level"><i class="fa fa-location"></i> Addis Ababa </span>
+                        <span><i class="fa fa-dollar"></i> 25/hr </span>
+
+                        <span class="subject">Mathematics</span>
+                        <span class="subject">Physics</span>
+                        <span class="subject">English</span>
+
+                    </div>
+                </div>
+                <div class="tutor-stats">
+
+
+                    <button class="btn btn-primary">Contact</button>
+                    <button class="btn btn-outline">More</button>
+
+                    <!-- IF already have a parent schedule scheduled -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tutor-grid " id="my-tutor-grid">
+
+        <div class="my-tutors-list">
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+            <div class="my-tutor-card  ">
+                <div class="profile-header">
+                    <img src="img/makima.jpg?height=60&width=60" alt="Dr. Sarah Ahmed">
+                    <div class="tutor-info">
+                        <h3>Dr. Sarah Ahmed</h3>
+                        <p>Mathematics Expert</p>
+                    </div>
+                </div>
+                <div class="card-buttons">
+
+                    <button class="btn-sm btn-primary">Buy Package</button>
+                    <button class="btn-sm btn-outline">Book Session</button>
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+</div>

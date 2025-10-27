@@ -1,0 +1,141 @@
+{% extends "dashboard.html" %}
+
+{% block main %}
+
+<div class="main-view-top">
+    <div class="dashboard-section">
+        <h3>Payments Overview</h3>
+        <div class="actions">
+            <button class="btn btn-outline btn-vsm" hx-get="/api/payments/export" hx-trigger="click">Export CSV</button>
+            <button class="btn btn-primary btn-vsm" onclick="document.getElementById('addMethodModal').style.display='block'">Add Method</button>
+        </div>
+    </div>
+
+    <div class="payments-wrapper">
+        <div class="card-grid">
+            <div class="summary-card">
+                <i class="fas fa-wallet"></i>
+                <div>
+                    <h4>$1,240.00</h4>
+                    <p class="muted">Available Balance</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-receipt"></i>
+                <div>
+                    <h4>$9,560.00</h4>
+                    <p class="muted">Total Earnings</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-money-check"></i>
+                <div>
+                    <h4>$820.00</h4>
+                    <p class="muted">Pending Payouts</p>
+                </div>
+            </div>
+            <div class="summary-card">
+                <i class="fas fa-arrow-up-right-dots"></i>
+                <div>
+                    <h4>+12%</h4>
+                    <p class="muted">30d Growth</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="dashboard-section">
+                <h3>Payment Methods</h3>
+                <div class="actions">
+                    <button class="btn btn-outline btn-vsm" onclick="document.getElementById('addMethodModal').style.display='block'">Add New</button>
+                </div>
+            </div>
+            <div class="section-body">
+                <div class="methods" hx-get="/api/payment-methods" hx-trigger="load">
+                    <div class="method-card">
+                        <div class="method-meta">
+                            <i class="fab fa-cc-visa"></i>
+                            <div>
+                                <div>Visa •••• 4242</div>
+                                <div class="muted">Expires 08/28 · Default</div>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-outline btn-vsm">Make Default</button>
+                            <button class="btn btn-danger btn-vsm">Remove</button>
+                        </div>
+                    </div>
+                    <div class="method-card">
+                        <div class="method-meta">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <div>
+                                <div>Mastercard •••• 9911</div>
+                                <div class="muted">Expires 03/27</div>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-outline btn-vsm">Make Default</button>
+                            <button class="btn btn-danger btn-vsm">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="dashboard-section">
+                <h3>Transaction History</h3>
+                <div class="filter-bar">
+                    <input type="text" placeholder="Search..." hx-get="/api/transactions" hx-trigger="keyup changed delay:300ms" hx-target="#transactions-table">
+                    <select hx-get="/api/transactions" hx-trigger="change" hx-target="#transactions-table">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="section-body" id="transactions-table" hx-get="/api/transactions" hx-trigger="load">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Student</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Feb 20, 2025</td>
+                            <td>Algebra Session (60m)</td>
+                            <td>Sarah Johnson</td>
+                            <td>$40.00</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                            <td><button class="btn btn-outline btn-vsm">Invoice</button></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 18, 2025</td>
+                            <td>Physics Prep (45m)</td>
+                            <td>Michael Chen</td>
+                            <td>$35.00</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td><button class="btn btn-outline btn-vsm">Details</button></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 12, 2025</td>
+                            <td>Essay Review (30m)</td>
+                            <td>Emily Davis</td>
+                            <td>$25.00</td>
+                            <td><span class="status-badge status-failed">Failed</span></td>
+                            <td><button class="btn btn-outline btn-vsm">Retry</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

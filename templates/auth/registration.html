@@ -1,0 +1,326 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - EduConnect</title>
+    
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/auth.css' %}">
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+
+    <div class="auth-container">
+        <div class="auth-meta-data">
+            <div class="auth-header">
+
+                <div class="auth-brand">
+
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>PI</span>
+                </div>
+                <h1>Join Our Learning Community</h1>
+                <p>Create your account and start your educational journey</p>
+
+                <!-- Progress indicator -->
+                <div class="registration-progress">
+                    <div class="progress-step active">
+                        <div class="step-number">1</div>
+                        <span>Personal Info</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step">
+                        <div class="step-number">2</div>
+                        <span>Professional Info</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <span>Complete</span>
+
+                    </div>
+                </div>
+            </div>
+
+             <div class="role-toggle  ">
+                <button type="button" class="role-btn active" data-role="student" onclick="switchRole('student')">
+                    <div class="role-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="role-info">
+                        <h3>I'm a Student</h3>
+                        <p>Find expert tutors and learn</p>
+                    </div>
+                </button>
+                <button type="button" class="role-btn" data-role="tutor" onclick="switchRole('tutor')">
+                    <div class="role-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="role-info">
+                        <h3>I'm a Tutor</h3>
+                        <p>Share knowledge and earn</p>
+                    </div>
+                </button>
+            </div>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
+                <p><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Home</a></p>
+            </div>
+
+        </div>
+        <div class="auth-card register-card">
+
+
+             <form class="auth-form" method='post'>
+                <input type="hidden" id="role" name="role" value="student">
+                <!-- personal info -->
+                <div class="form-info step-active">
+                    <div class="role-section-header">
+                        <div class="form-headers">
+
+                            <h2>Personal info</h2>
+                            <small>please provide your name, email and, phone number.</small>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">
+                                <i class="fas fa-user"></i>
+                                First Name
+                            </label>
+                            {{form.first_name}}
+                             <div class="form-error" id="firstName-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">
+                                <i class="fas fa-user"></i>
+                                Last Name
+                            </label>
+                            {{form.last_name}}
+                            <div class="form-error" id="lastName-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        {{form.email}}
+                        <div class="form-error" id="email-error"></div>
+                    </div>
+ 
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="password-input-container">
+                            {{form.password1}}
+                            
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="password-strength"></div>
+                        <div class="form-error" id="password-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            <i class="fas fa-lock"></i>
+                            Confirm Password
+                        </label>
+                        <div class="password-input-container">
+                            {{form.password1}}
+                            
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-error" id="confirmPassword-error"></div>
+                    </div>
+                </div>
+
+                
+                <!--  student-specific fields -->
+                <div class="form-info ">
+
+                    <div id="student-fields" class="role-fields">
+                        <div class="role-section-header">
+
+                            <!-- <h3><i class="fas fa-user-graduate"></i>Student Information</h3> -->
+                            <div class="form-headers">
+                                <h2>Acadamic info</h2>
+                                <small>please provide your acadamic status and inters.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="grade">Grade Level</label>
+                                {{form.grade_level}}
+
+                            </div>
+                            <div class="form-group">
+                                <label for="learningGoal">Learning Goal</label>
+                                {{form.learning_goal}}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subjects">Subjects of Interest</label>
+                            <div class="subject-tags">
+                                <button type="button" class="subject-tag"
+                                    data-subject="mathematics">Mathematics</button>
+                                <button type="button" class="subject-tag" data-subject="science">Science</button>
+                                <button type="button" class="subject-tag" data-subject="english">English</button>
+                                <button type="button" class="subject-tag" data-subject="history">History</button>
+                                <button type="button" class="subject-tag" data-subject="languages">Languages</button>
+                                <button type="button" class="subject-tag" data-subject="computer">Computer
+                                    Science</button>
+                            </div>
+                            <input type="hidden" id="subjects" name="subjects">
+                            <input type="text" id="customSubjects" name="customSubjects"
+                                placeholder="Or type custom subjects...">
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--  tutor-specific fields -->
+                <div class="form-info ">
+
+                    <div id="tutor-fields" class="role-fields">
+                        <div class="role-section-header">
+                             <div class="form-headers">
+                                <h2>Professional info</h2>
+                                <small>please provide your Professional background info</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="qualifications">Education & Qualifications</label>
+                            {{tutor_form.qualification}}
+
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="experience">Teaching Experience</label>
+                                {{tutor_form.experience}}
+
+                            </div>
+                            <div class="form-group">
+                                <label for="teachingMode">Teaching Preference</label>
+                                {{tutor_form.teaching_prefrence}}
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="specialties">Subject Specialties</label>
+                            <div class="subject-tags">
+                                <button type="button" class="subject-tag"
+                                    data-subject="mathematics">Mathematics</button>
+                                <button type="button" class="subject-tag" data-subject="physics">Physics</button>
+                                <button type="button" class="subject-tag" data-subject="chemistry">Chemistry</button>
+                                <button type="button" class="subject-tag" data-subject="biology">Biology</button>
+                                <button type="button" class="subject-tag" data-subject="english">English</button>
+                                <button type="button" class="subject-tag" data-subject="sat-prep">SAT Prep</button>
+                            </div>
+                            <input type="hidden" id="specialties" name="specialties">
+                            <input type="text" id="customSpecialties" name="customSpecialties"
+                                placeholder="Or type custom specialties...">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="hourlyRate">Hourly Rate (USD)</label>
+                                <div class="rate-input-container">
+                                    <span class="currency-symbol">$</span>
+                                    {{tutor_form.horuly_rate}}
+                                    <span class="rate-suffix">/hour</span>
+                                </div>
+                                <div class="rate-suggestion">Suggested: $20-50 for most subjects</div>
+                            </div>
+                            <div></div>
+                        </br>
+                    </br>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- summary and submit -->
+                <div class="form-info ">
+                    <div class="role-section-header">
+                        <div class="form-headers">
+
+                            <h2>Summary</h2>
+                            <small>please review your information</small>
+                        </div>
+                    </div>
+                    <div id="register-result" class="form-result">
+                        <h3>Personal Information</h3>
+                        <p>Name : Akane Tsunumuri</p>
+                        <p> Email : Akane@sibli.com</p>
+                        <p>phone: 0123654789</p>
+                        <br>
+                        <h3>Professional Information</h3>
+                        <p>Qualifications: BS</p>
+                        <p>subject of intrest: AI, investigation</p>
+                        <p>specialization: AI, investigation</p>
+                        <p>Experience: AI, investigation</p>
+                        <p>Language: AI, investigation</p>
+                        <br>
+                        <h3>verification Document</h3>
+                        <p>ID: proof: submitted</p>
+                        <p>certifications: submitted</p>
+
+
+                    </div>
+                    <!-- Enhanced terms and conditions -->
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="terms" required>
+                            <span class="checkmark"></span>
+                            I agree to the <a href="#terms" target="_blank">Terms of Service</a> and <a href="#privacy"
+                                target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full btn-large">
+                        <span id="register-spinner" class="spinner htmx-indicator"></span>
+                        <i class="fas fa-user-plus"></i>
+                        Create My Account
+                    </button>
+                </div>
+
+
+
+            </form>
+ 
+ 
+            <div class="form-nav">
+                 <i class="fas fa-shield-alt"></i> 
+                 <span>Your data is protected with 256-bit SSL encryption</span> 
+                <button class="form-nav-btn incative" id="prev">Previous</button>
+                <button class="form-nav-btn" id="next">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <link href='{% static "HTMX.MINI.JS/htmx.min.js"%}'>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+
+</html> 

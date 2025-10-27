@@ -1,0 +1,11 @@
+<h1>private chat</h1>
+
+{% for message in chat.messages.all %}
+  {{message.content}} <br>
+{%endfor%}
+
+<form action="" method="post">
+{%csrf_token%}
+<input type="text" name="msg" placeholder="write here...">
+<input type="submit" value="">
+</form>

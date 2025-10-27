@@ -1,0 +1,60 @@
+{%extends "dashboard.html"%}
+
+{% block main %}
+<div class="main-view-top">
+
+    <div class="students-wrap">
+        <div class="section">
+            <div class="dashboard-section">
+                <h3>All Students</h3>
+                <div class="filters">
+                    <input type="text" placeholder="Search by name or subject" hx-get="/api/students" hx-trigger="keyup changed delay:300ms" hx-target="#studentsGrid">
+                    <select hx-get="/api/students" hx-trigger="change" hx-target="#studentsGrid">
+                        <option value="">All</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="section-body" id="studentsGrid" hx-get="/api/students" hx-trigger="load">
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-hero">
+                            <img class="avatar" src="img/makima.jpg?height=68&width=68" alt="Student">
+                        </div>
+                        <div class="card-body">
+                            <strong>Sarah Johnson</strong>
+                            <div class="meta">Grade 11 · Joined Jan 2025</div>
+                            <div class="chips">
+                                <span class="chip">Mathematics</span>
+                                <span class="chip">Physics</span>
+                            </div>
+                            <div class="actions">
+                                <a href="student-profile.html" class="btn btn-outline btn-vsm">View</a>
+                                <a href="chat.html" class="btn btn-primary btn-vsm">Message</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-hero">
+                            <img class="avatar" src="img/makima.jpg?height=68&width=68" alt="Student">
+                        </div>
+                        <div class="card-body">
+                            <strong>Michael Chen</strong>
+                            <div class="meta">Freshman · Joined Dec 2024</div>
+                            <div class="chips">
+                                <span class="chip">English</span>
+                                <span class="chip">Essay</span>
+                            </div>
+                            <div class="actions">
+                                <a href="student-profile.html" class="btn btn-outline btn-vsm">View</a>
+                                <a href="chat.html" class="btn btn-primary btn-vsm">Message</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

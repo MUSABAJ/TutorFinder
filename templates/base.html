@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "includes/_head.html" %}
+</head>
+
+<body>
+  <!-- Navbar -->
+  {% include "includes/_navbar.html" %}
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+    {% include "includes/_sidebar.html" %}
+    </aside>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+
+  {%include "includes/_confirmation_modal.html"%}
+  {%include "includes/_pkg_creation_modal.html"%}
+  {%include "includes/_resource_uploadModal.html"%}
+
+
+  {% include "includes/_scripts.html" %}
+</body>
+</html>

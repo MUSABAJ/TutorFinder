@@ -1,0 +1,21 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {{ user_form.as_p }}
+
+    {% if tutor_form %}
+        {{ tutor_form.as_p }}
+    {% endif %}
+    {% if student_form %}
+    {{ student_form.as_p }}
+{% endif %}
+    <button type="submit">Save</button>
+
+    <!-- Debug output: remove in production -->
+    {% if user_form.errors %}
+      <div style="color:red;">{{ user_form.errors }}</div>
+    {% endif %}
+    {% if tutor_form and tutor_form.errors %}
+      <div style="color:red;">{{ tutor_form.errors }}</div>
+    {% endif %}
+</form>

@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %} 
+{% block content %} 
+<div class="layout">
+     {% block sidebar %}
+     {% include'includes/sidebar.html' %}
+     {% endblock %} 
+     <main class="main-content"> 
+        {% block main_content %}
+        <!-- Main content goes here --> 
+         {% endblock %} 
+        </main>
+</div> {% endblock %}

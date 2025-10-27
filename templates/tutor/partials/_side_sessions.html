@@ -1,0 +1,51 @@
+ 
+
+<div class="side-view-bottom "
+id="side-sessions"  
+hx-trigger="load, every 120s"
+hx-swap="outerHTML">
+  <!-- Upcoming Sessions -->
+  <div class="dashboard-section">
+      <h3>Upcoming Sessions</h3>
+      <a href="sessions.html" class="btn btn-outline btn-vsm">View All</a>
+  </div>
+  <div class="sessions-list" hx-get="/api/upcoming-sessions" hx-trigger="load"
+      hx-indicator="#sessions-loading">
+      <!-- <div id="sessions-loading" class="loading-spinner htmx-indicator">Loading sessions...</div> -->
+
+      <!-- Sample session cards -->
+      <div class="session-card">
+          <div class="session-info">
+              <div class="session-subject">Mathematics</div>
+              <div class="session-tutor">with Dr. Michael Chen</div>
+              <div class="session-time">Today, 3:00 PM - 4:00 PM</div>
+          </div>
+          <div class="session-actions">
+              <button class="btn btn-primary btn-sm">Join Session</button>
+              <button class="btn btn-outline btn-sm">Reschedule</button>
+          </div>
+      </div>
+      <div class="session-card">
+          <div class="session-info">
+              <div class="session-subject">Physics</div>
+              <div class="session-tutor">with Prof. Emily Davis</div>
+              <div class="session-time">Tomorrow, 10:00 AM - 11:00 AM</div>
+          </div>
+          <div class="session-actions">
+              <button class="btn btn-primary btn-sm">Join Session</button>
+              <button class="btn btn-outline btn-sm">Reschedule</button>
+          </div>
+      </div>
+      <div class="session-card">
+          <div class="session-info">
+              <div class="session-subject">Physics</div>
+              <div class="session-tutor">with Prof. Emily Davis</div>
+              <div class="session-time">Tomorrow, 10:00 AM - 11:00 AM</div>
+          </div>
+          <div class="session-actions">
+              <button class="btn btn-primary btn-sm">Join Session</button>
+              <button class="btn btn-outline btn-sm">Reschedule</button>
+          </div>
+      </div>
+  </div>
+</div>

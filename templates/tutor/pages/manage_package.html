@@ -1,0 +1,68 @@
+{% extends "dashboard.html" %}
+{% block main %}
+<div class="main-view-top">
+    <button class="pkg-create btn  " onclick="openPackageModal()">Create Package</button>
+    <!-- Quick Stats -->
+    <div class="packages-grid">
+        {% for pkg in packages %}
+                <div class="package-card">
+            <div class="package-header">
+                <h3>{{pkg.name}}</h3>
+                {% if pkg.is_active %}
+                <span> Active</span>
+                {% else %}
+                <span> Not Active</span>
+                {% endif %}
+             </div>
+            <div class="package-details">
+                <div class="detail-item">
+                    <span class="detail-label">Total Sessions:</span>
+                    <span class="detail-value">{{pkg.total_session}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Price:</span>
+                    <span class="detail-value">{{pkg.price}} <small>ETB</small></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Duration per Session:</span>
+                    <span class="detail-value">{{pkg.session_duration}} minutes</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Sessions per Week:</span>
+                    <span class="detail-value">{{pkg.session_perweek}}/week </span>
+                </div>
+                 
+                <div class="detail-item">
+                    <span class="detail-label">Session Type:</span>
+                    <span class="detail-value">{{pkg.session_type}}</span>
+                </div>
+            </div>
+            <div class="package-stats">
+                <div class="stat">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Students Enrolled</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">4.8</span>
+                    <span class="stat-label">Rating</span>
+                </div>
+            </div>
+            <div class="package-actions">
+                <button
+                class="btn-primary btn">
+                    {% if pkg.is_active %}
+                <span> Disable</span>
+                {% else %}
+                <span> Enable</span>
+                {% endif %}
+            </button>
+                <button class="btn-danger btn-sm">Delete</button>
+            </div>
+        </div> 
+        
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock main %}

@@ -1,0 +1,11 @@
+{% load static %}
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/tutor_register.js' %}"></script>
+<script>
+    document.addEventListener('htmx:configRequest',function(evt){
+        const csrftoken =document.querySelector('[name=csrfmiddlewaretoken]').value;
+        evt.detail.headers['X-CSRFToken']=csrftoken
+    })
+</script>

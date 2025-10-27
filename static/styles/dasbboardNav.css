@@ -1,0 +1,58 @@
+
+/* Navigation */
+.dashboard-nav {
+background-color: aquamarine;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  max-width: 1450px;
+  margin: 0 10px;
+}
+.nav-container-left{
+    display: flex;
+    margin: 0 auto;
+}
+.nav-brand h2 {
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  
+}
+.nav-container-action-bttn{
+  display: flex;
+  gap: .8rem;
+}
+.nav-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--secondary-dark);
+}
+
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+  width: 25px;
+  height: 3px;
+  background: var(--text-primary);
+  margin: 3px 0;
+  transition: 0.3s;
+}

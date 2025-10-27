@@ -1,0 +1,88 @@
+{% load static %}
+
+
+{% if request.user.role == 'student' %}
+<nav class="sidebar-nav">
+    <a href="{% url 'student_dashbord' %}" class="sidebar-link active">
+        <i class="fas fa-home"></i>
+        <p> Dashboard</p>
+    </a>
+    <a href="{% url 'my_tutors' %}" class="sidebar-link">
+        <i class="fas fa-calendar"></i>
+        <p>My Tutors</p>
+    </a>
+    <a href="{% url 'my_sessions' %}" class="sidebar-link">
+        <i class="fas fa-video-camera"></i>
+        <p>sessions</p>
+
+    </a>
+    <a href="{% url 'resources' %}" class="sidebar-link">
+        <i class="fas fa-book-open"></i>
+        <p>Resources</p>
+
+    </a>
+    <a href="{% url 'chats' %}" class="sidebar-link">
+        <i class="fas fa-message"></i>
+        <p>Messages</p>
+
+    </a>
+    <a href="{% url 'payments' %}" class="sidebar-link">
+        <i class="fas fa-dollar"></i>
+        <p>Payment</p>
+
+    </a>
+    </a>
+    <a href="{% url 'notification' %}" class="sidebar-link">
+        <i class="fas fa-bell"></i>
+        <p>Notifications</p>
+
+    </a>
+    <a href="{% url 'book_session' %}" class="sidebar-link">
+        <i class="fas fa-calendar"></i>
+        <p> Book Session</p>
+    </a>
+</nav>
+{%else%}
+<nav class="sidebar-nav">
+    <a href="{% url 'tutor_dashbord' %}" class="sidebar-link active">
+        <i class="fas fa-home"></i>
+        <p> Dashboard</p>
+    </a>
+
+    <a href="{% url 'manage_session' %}"  class="sidebar-link">
+        <i class="fas fa-video-camera"></i>
+        <p>Sessions</p>
+
+    </a>
+    <a href="{% url 'manage_resource' %}" class="sidebar-link">
+        <i class="fas fa-book-open"></i>
+        <p>Resources</p>
+
+    </a>
+    <a href="{% url 'my_students' %}" class="sidebar-link">
+        <i class="fas fa-users"></i>
+        <p>My Students</p>
+
+    </a>
+    <a href="{% url 'set_availablity' %}" class="sidebar-link">
+        <i class="fas fa-calendar"></i>
+        <p>Availability</p>
+
+    </a>
+    <a href="{% url 'manage_package' %}" class="sidebar-link">
+        <i class="fas fa-box"></i>
+        <p>Packages</p>
+
+    </a>
+    <a href="{%url 'notification' %}" class="sidebar-link">
+        <i class="fas fa-bell"></i>
+        <p>Notifications</p>
+
+    </a>
+    <a href="{%url 'earning'%}" class="sidebar-link">
+        <i class="fas fa-dollar"></i>
+        <p>Earnings</p>
+
+    </a>
+</nav>
+{% endif %}

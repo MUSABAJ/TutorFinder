@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Class</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="asset/css/fontawesome.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="asset/css/all.css">
+
+</head>
+
+<body>
+  <header class="oc-header container">
+    <a href="index.html" class="oc-brand">
+      <img src="img/icon.png?height=40&width=40" alt="PI">
+      <h2>FLARE</h2>
+    </a>
+
+    <div class="oc-actions">
+      <button class="btn btn-outline oc-btn" id="toggleParticipants" aria-expanded="true">Participants</button>
+      <button class="btn btn-outline oc-btn" id="toggleChat" aria-expanded="true">Chat</button>
+      <button class="btn hero-button oc-btn" id="toggleTheme">Theme</button>
+    </div>
+  </header>
+
+  <main class="oc-main container">
+
+    <section class="oc-stage">
+      <div class="oc-video primary">
+        <div class="oc-video-feed" aria-label="Main video">
+          <div class="oc-avatar">T</div>
+        </div>
+        <div class="oc-video-meta">
+          <span class="name">Tutor • Live</span>
+          <span class="time" id="ocTimer">00:00:00</span>
+        </div>
+      </div>
+      <div class="oc-bottom">
+              <div class="oc-you">
+        <div><img src="img/makima.jpg" alt=""> </div>
+        <span>you</span>
+      </div>
+      <div class="oc-controls">
+        <button class="btn oc-ctrl" id="micBtn"><i class="fa-solid fa-microphone"></i><span>Mic</span></button>
+        <button class="btn oc-ctrl" id="camBtn"><i class="fa-solid fa-video"></i><span>Camera</span></button>
+        <button class="btn oc-ctrl" id="shareBtn"><i class="fa-solid fa-display"></i><span>Share</span></button>
+        <button class="btn oc-ctrl danger" id="leaveBtn"><i
+            class="fa-solid fa-phone-slash"></i><span>Leave</span></button>
+      </div>
+      </div>
+    </section>
+
+    <aside class="oc-sidebar" id="ocSidebar">
+      <div class="oc-tabs">
+        <button class="oc-tab " data-tab="whiteBoard">WhiteBoard</button>
+        <button class="oc-tab active" data-tab="participants">Participants</button>
+        <button class="oc-tab" data-tab="chat">Chat</button>
+      </div>
+
+      <div class="oc-pane active" id="participants">
+        <div class="oc-list">
+          <div class="oc-user"><span class="dot online"></span><span class="label">Tutor (You)</span></div>
+          <div class="oc-user"><span class="dot online"></span><span class="label">Jane Doe</span></div>
+          <div class="oc-user"><span class="dot away"></span><span class="label">Mohamed Ali</span></div>
+          <div class="oc-user"><span class="dot offline"></span><span class="label">Akira</span></div>
+        </div>
+      </div>
+
+      <div class="oc-pane" id="chat">
+        <div class="oc-chat-list" id="chatList">
+          <div class="oc-msg">
+            <div class="who">Tutor</div>
+            <div class="text">Welcome to the session! Ask questions anytime.</div>
+            <div class="meta">Now</div>
+          </div>
+        </div>
+        <form class="oc-chat-input" id="chatForm">
+          <input type="text" id="chatText" placeholder="Type a message" autocomplete="off" />
+          <!-- <button class="btn btn-primary" type="submit">Send</button> -->
+        </form>
+      </div>
+    </aside>
+  </main>
+
+  <script src="https://kit.fontawesome.com/a2e0e6ad59.js" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
+  <script>
+    // Basic timer
+    (function () {
+      const timerEl = document.getElementById('ocTimer');
+      const start = Date.now();
+      function pad(n) { return n.toString().padStart(2, '0'); }
+      setInterval(function () {
+        const s = Math.floor((Date.now() - start) / 1000);
+        const hh = Math.floor(s / 3600), mm = Math.floor((s % 3600) / 60), ss = s % 60;
+        timerEl.textContent = pad(hh) + ":" + pad(mm) + ":" + pad(ss);
+      }, 1000);
+    })();
+
+    // Tabs + sidebar toggles
+    (function () {
+      const tabs = document.querySelectorAll('.oc-tab');
+      const panes = {
+        participants: document.getElementById('participants'),
+        chat: document.getElementById('chat')
+      };
+      tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          tabs.forEach(function (x) { x.classList.remove('active'); });
+          Object.keys(panes).forEach(function (k) { panes[k].classList.remove('active'); });
+          this.classList.add('active');
+          panes[this.dataset.tab].classList.add('active');
+        });
+      });
+
+      document.getElementById('toggleParticipants').addEventListener('click', function () {
+        document.querySelector('.oc-tab[data-tab="participants"]').click();
+        document.getElementById('ocSidebar').classList.add('open');
+        this.setAttribute('aria-expanded', 'true');
+      });
+      document.getElementById('toggleChat').addEventListener('click', function () {
+        document.querySelector('.oc-tab[data-tab="chat"]').click();
+        document.getElementById('ocSidebar').classList.add('open');
+        this.setAttribute('aria-expanded', 'true');
+      });
+
+      // Theme toggle uses existing global logic
+      document.getElementById('toggleTheme').addEventListener('click', function () {
+        document.documentElement.classList.toggle('dark');
+        var mode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        try { localStorage.setItem('theme', mode); } catch (e) { }
+      });
+
+      // Chat send
+      var form = document.getElementById('chatForm');
+      var list = document.getElementById('chatList');
+      var input = document.getElementById('chatText');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var v = (input.value || '').trim();
+        if (!v) return;
+        var item = document.createElement('div');
+        item.className = 'oc-msg me';
+        item.innerHTML = '<div class="who">You</div><div class="text"></div><div class="meta">Just now</div>';
+        item.querySelector('.text').textContent = v;
+        list.appendChild(item);
+        input.value = '';
+        list.scrollTop = list.scrollHeight;
+      });
+    })();
+  </script>
+</body>
+
+</html>

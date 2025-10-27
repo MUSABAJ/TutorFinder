@@ -1,0 +1,18 @@
+{% comment %} {% extends "base.html" %}
+{% block content %} {% endcomment %}
+<div class="success-container" style="text-align:center; margin-top:50px;">
+  <h1 style="color:#28a745;">✅ Payment Successful!</h1>
+  <p>Thank you, {{ payment.student.first_name }}!</p>
+  <p>Your payment of <strong>{{ payment.amount }} ETB</strong> for tutor <strong>{{ payment.tutor.get_full_name }}</strong> was successful.</p>
+  
+  <div style="margin-top:20px;">
+    <p>Transaction Reference: <code>{{ payment.refrence_id }}</code></p>
+    <p>Status: <strong style="color:green;">{{ payment.status|title }}</strong></p>
+  </div>
+
+  <div style="margin-top:30px;">
+    <a href="{% url 'student_dashbord' %}" class="btn btn-success">Go to Dashboard</a>
+    <a href="{% url 'base_session_list' %}" class="btn btn-outline-secondary">View Session</a>
+  </div>
+</div>
+{% comment %} {% endblock %} {% endcomment %}

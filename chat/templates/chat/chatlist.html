@@ -1,0 +1,7 @@
+<h1>chat LST</h1>
+
+{% for chat in chats%}
+    <ul>
+        <li><a href="{% url 'chat_detail' chat.id %}">{{chat}} </a>   </li>
+    </ul>
+{%endfor%}

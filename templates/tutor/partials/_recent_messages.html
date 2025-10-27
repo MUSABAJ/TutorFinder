@@ -1,0 +1,94 @@
+{% comment %} <!-- student/partials/_recent_messages.html -->
+<div id="recent-messages" class="dashboard-section" 
+      hx-trigger="load, every 60s" 
+     hx-swap="outerHTML">
+
+  <h3>Recent Messages</h3>
+  <a href="" class="btn btn-outline btn-vsm">View All</a>
+
+  {% if messages %}
+  <div class="messages-list">
+    {% for msg in messages %}
+    <div class="message-item {% if msg.is_unread %}unread{% endif %}">
+      <img src="{{ msg.sender.profile_picture.url }}" alt="Tutor" class="message-avatar">
+      <div class="message-content">
+        <div class="message-header">
+          <span class="message-sender">{{ msg.sender.get_full_name }}</span>
+          <span class="message-time">{{ msg.timestamp|timesince }} ago</span>
+        </div>
+        <p class="message-text">{{ msg.preview|truncatechars:80 }}</p>
+      </div>
+      {% if msg.is_unread %}
+      <div class="message-unread unread"></div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="text-muted">No recent messages yet.</p>
+  {% endif %}
+</div> {% endcomment %}
+<div class="side-view-top"
+id="recent-messages" 
+hx-trigger="load, every 60s" 
+hx-swap="outerHTML">
+  <!-- Recent Messages -->
+  <div class="dashboard-section">
+      <h3>Recent Messages</h3>
+      <a href="chat.html" class="btn btn-outline btn-vsm">View All</a>
+  </div>
+  <div class="messages-list">
+      <div class="message-item">
+          <img src="img/makima.jpg?height=40&width=40" alt="Tutor" class="message-avatar">
+          <div class="message-content">
+              <div class="message-header">
+                  <span class="message-sender">Dr. Michael Chen</span>
+                  <span class="message-time">2 hours ago</span>
+              </div>
+              <p class="message-text">Great job on today's session! Here are the practice problems
+                  we discussed...</p>
+          </div>
+          <div class="message-unread unread"></div>
+
+      </div>
+      <div class="message-item">
+          <img src="img/makima.jpg?height=40&width=40" alt="Tutor" class="message-avatar online">
+          <div class="message-content">
+              <div class="message-header">
+                  <span class="message-sender">Prof. Emily Davis</span>
+                  <span class="message-time">1 day ago</span>
+              </div>
+              <p class="message-text">Don't forget to review the physics concepts before our next
+                  session.</p>
+          </div>
+          <div class="message-unread unread"></div>
+
+      </div>
+      <div class="message-item">
+          <img src="img/makima.jpg?height=40&width=40" alt="Tutor" class="message-avatar">
+          <div class="message-content">
+              <div class="message-header">
+                  <span class="message-sender">Prof. Emily Davis</span>
+                  <span class="message-time">1 day ago</span>
+              </div>
+              <p class="message-text">Don't forget to review the physics concepts before our next
+                  session.</p>
+          </div>
+          <div class="message-unread"></div>
+
+      </div>
+      <div class="message-item">
+          <img src="img/makima.jpg?height=40&width=40" alt="Tutor" class="message-avatar">
+          <div class="message-content">
+              <div class="message-header">
+                  <span class="message-sender">Prof. Emily Davis</span>
+                  <span class="message-time">1 day ago</span>
+              </div>
+              <p class="message-text">Don't forget to review the physics concepts before our next
+                  session.</p>
+          </div>
+          <div class="message-unread unread"></div>
+
+      </div>
+  </div>
+</div>

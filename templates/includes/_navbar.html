@@ -1,0 +1,40 @@
+{% load static %}
+<script src="{% static 'js/script.js' %}"></script>
+
+<nav class="dashboard-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <img src="{% static 'img/icon.png' %}" alt="PI">
+        <h2>FLARE</h2>
+          <div class="dashboard-header">
+            <h3>Welcome back, Sarah!</h3>
+        </div>
+      </div>
+  
+      <div class="nav-user">
+        <div class="nav-search">
+          <i class="fas fa-search"></i>
+          <input type="search" placeholder="Search tutors...">
+        </div>
+  
+        <div class="user-info">
+          <img src="{% static 'img/makima.jpg' %}" alt="Profile" id="user-avatar" class="user-avatar">
+          <div id="profile-dropdown" class="dropdown-container">
+            <a href="{% url 'tutor_profile' %}">My Account</a>
+             <a href="{% url 'logout' %}">Log Out</a>
+            <hr>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode"><span>☀️</span><span>Light</span></button>
+          </div>
+          <span class="user-name">{{ request.user.first_name|default:"User" }}</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark")
+      const mode = document.documentElement.classList.contains("dark") ? "dark" : "light"
+      localStorage.setItem("theme", mode)
+      updateToggleUi()
+    })
+  </script>

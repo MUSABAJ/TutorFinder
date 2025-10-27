@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard - FLARE{% endblock %}
+
+{% block content %}
+<div class="main-view">
+
+     {% block main %}   
+   
+     {% endblock%}   
+
+
+</div>
+
+<div class="side-view">
+    <div class="side-view-top">
+        {% include "student/partials/_recent_messages.html" %}
+
+    </div>
+    <div class="side-view-bottom">
+        {% include "student/partials/_side_sessions.html" %}
+
+    </div>
+</div>
+{% endblock %}

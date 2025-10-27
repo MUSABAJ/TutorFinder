@@ -1,0 +1,34 @@
+    <!-- confirmation Modal -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/modal.css' %}">
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content confermation">
+            <div class="confirm-header">
+                <small>Delete File</small>
+                <span class="close" onclick="closeConfirmModal()">&times;</span>
+            </div>
+            <div class="confirm-msg">
+                are you sure you want to do smth to this thing
+            <div class="confirm-obj">
+                package name and blah blah!
+            </div>
+        </div>
+            
+            <div class="confirm-action">
+                <button class="btn btn-danger">Confirm</button>
+                <button class="btn btn-primary">cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         
+    function openConfirmModal() {
+                document.getElementById('confirmModal').style.display = 'block';
+}
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+    </script>
