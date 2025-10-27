@@ -101,4 +101,16 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 
+```
+## 📸 Project Preview
+| Tutor Dashboard | Session Page | Virtual Class |
+|---------------|----------------|----------------|
+| ![Tutor Dashbord](screenshots/Screenshot1.png) | ![Sessions](screenshots/Screenshot3.png) | ![Class](screenshots/Screenshot2.png) |
+
+
+
+## 📞 Contact
+📧 Email: yourname@example.com  
+💼 LinkedIn: [linkedin.com/in/yourname](https://www.linkedin.com/in/musab-aj-b18909394)  
+🐙 GitHub: [github.com/your-username](https://github.com/MUSABAJ)
 
