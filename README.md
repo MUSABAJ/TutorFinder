@@ -110,7 +110,7 @@ python manage.py runserver
 
 
 ## 📞 Contact
-📧 Email: yourname@example.com  
+📧 Email: musabajebar@gmail.com
 💼 LinkedIn: [linkedin.com/in/yourname](https://www.linkedin.com/in/musab-aj-b18909394)  
 🐙 GitHub: [github.com/your-username](https://github.com/MUSABAJ)
 
