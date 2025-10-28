@@ -30,6 +30,7 @@
   height: 25%;
   width: 450px;
 }
+
 .msg-title{
   padding:0.2rem 0;
 }
@@ -79,6 +80,15 @@
 
 .close:hover {
   color: var(--text-primary);
+}
+.modal-content.booking{
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  top: 4%;
+  left: 5%;
+  height: 90%;
+  min-width: 93%;
+  
 }
 
 .availability-form,

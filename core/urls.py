@@ -15,7 +15,6 @@ urlpatterns = [
     path('student/tutors',views.my_tutors,name='my_tutors'),
     path('student/sessions',views.my_sessions,name='my_sessions'),
     path('student/resources',views.my_resources,name='resources'),
-    path('student/chats',views.chats,name='chats'),
     path('student/payments',views.my_sessions,name='payments'),
     path('student/book_session',views.my_sessions,name='book_session'),
     path('student/view_tutor/<str:tutor_id>',views.view_tutor,name='view_tutor'),

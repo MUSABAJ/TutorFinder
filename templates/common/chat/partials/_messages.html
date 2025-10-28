@@ -1,0 +1,38 @@
+
+<div class="chat-messages" >
+    <div class="message-date">Today</div>
+    {% for message in chat.messages.all %}
+    {% if message.sender == request.user %}
+    <div class="message sent">
+        <div class="message-content">
+            <div class="message-bubble">
+                <p> {{message.content}}
+                </p>
+            </div>
+            <div class="message-time">10:30 AM</div>
+        </div>
+    </div>
+    {% elif message.sender != request.user %}
+
+    <div class="message received">
+        <div class="message-content">
+            <div class="message-bubble">
+                <p>{{message.content}}</p>
+            </div>
+            <div class="message-time">10:45 AM</div>
+        </div>
+    </div>
+    {% endif %}
+
+    {%endfor%}
+
+</div>  
+
+     <script>
+        document.body.addEventListener('htmx:afterSwap', (e) => {
+  if (e.target.classList.contains('chat-messages')) {
+    e.target.scrollTop = e.target.scrollHeight;
+  }
+});
+
+     </script>

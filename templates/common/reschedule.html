@@ -1,0 +1,150 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include "includes/_head.html" %}
+</head>
+<style>
+  .dashboard-main {
+    display: block;
+
+  }
+.btn{
+      background-color: rgb(21, 175, 134);
+      font-weight: 600;
+      
+      font-size: 16px;
+       border: 1px solid rgb(97, 132, 115);
+    }
+  body {
+    font-size: 14px;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  }
+
+  #wrap {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  #calendar {
+    flex: 2.8;
+    margin: 0 auto;
+  }
+
+  .form {
+    flex: .25;
+  }
+
+  .btn {
+    background-color: rgb(21, 175, 134);
+    font-weight: 600;
+
+    font-size: 16px;
+    border: 1px solid rgb(97, 132, 115);
+  }
+</style>
+
+<body>
+  <!-- Navbar -->
+  {% include "includes/_navbar.html" %}
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      {% include "includes/_sidebar.html" %}
+    </aside>
+    <!-- Main Content -->
+    <div class="dashboard-main">
+      <div id='wrap' class="main-view-top">
+        <div id='calendar'></div>
+
+        <form id="booking-form" method="post">
+          {%csrf_token%}
+          <input type="hidden" name="selected_slot" value="" id="selected-slot">
+          <button class="btn "  disabled id="book-btn"> Confirm Booking</button>
+        </form>
+      </div>
+    </div>
+
+
+
+    {% include "includes/_scripts.html" %}
+</body>
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const slotInput = document.getElementById("selected-slot");
+    const bookBtn = document.getElementById("book-btn")
+    var calendarEl = document.getElementById('calendar');
+
+    let availablity = '{{availablity_json | safe}}';
+    let booked_slot = '{{booked_json | safe}}'
+    booked_slot = (JSON.parse(booked_slot))
+    availablity = (JSON.parse(availablity))
+
+    function filterdAvailablity() {
+      booked_slot.forEach(Belement => {
+        availablity.forEach(Aelement => {
+          return Belement.start !== Aelement.start
+        });
+      });
+    }
+    const filterd = availablity.filter(avail => {
+
+      return !booked_slot.some(Belement => {
+        return (avail.start === Belement.start)
+      })
+    })
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek,timeGridDay'
+
+      },
+      initialView: 'timeGridWeek',
+      editable: true,
+      allDaySlot: false,
+      slotDuration: '00:30:00',
+      navLinks: true, // can click day/week names to navigate views
+      selectable: false,
+      dayMaxEvents: true, // allow "more" link when too many events
+
+      events: [
+        ...filterd.map(slot => ({
+          title: 'Available',
+          start: slot.start,
+          end: slot.end,
+          backgroundColor: '#28a745',
+          borderColor: '#28a745',
+        })),
+        ...booked_slot
+      ],
+
+
+      eventClick: function (info) {
+        if (info.event.title === 'Booked')
+          return alert('this slot is already booked');
+
+        const start = info.event.start.toISOString();
+        const end = info.event.end.toISOString();
+        console.log(info.event.end)
+        console.log(end)
+        const confirmMsg = `Book this slot? \n${start} - ${end}`;
+        if (confirm(confirmMsg)) {
+          slotInput.value = JSON.stringify({ start, end });
+          bookBtn.disabled = false;
+        }
+      }
+    });
+
+    calendar.render();
+  });
+
+</script>
+
+</html>

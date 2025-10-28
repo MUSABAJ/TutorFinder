@@ -20,7 +20,7 @@
              
         </div>
 
-        <div class="chat-messages" hx-get="/api/chat/messages/sarah-ahmed" hx-trigger="load, every 3s">
+        <div class="chat-messages" hx-get="/api/chat/messages/sarah-ahmed"  >
             <div class="message-date">Today</div>
 
             <div class="message received">
@@ -126,7 +126,7 @@
 <div class="side-view">
     <div class="side-view-top">
         add new chat
-        {% include "student/partials/_recent_messages.html" %}
+        {% include "common/chat/partials/_chat_rooms.html" %}
 
     </div>
  

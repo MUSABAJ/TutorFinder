@@ -1,0 +1,28 @@
+{% block main %}
+<div class="chat-content-header">
+    <div class="current-chat-info">
+        <img src="/static{{receiver.avatar.url}}" alt="Dr. Sarah Ahmed">
+        <div class="current-chat-details">
+            <h3>{{receiver.username}}</h3>
+            <p>Mathematics Tutor • Online</p>
+        </div>
+    </div>
+
+</div>
+
+    {% include "common/chat/partials/_messages.html" %}
+
+<div class="chat-input-container">
+
+    {%include "common/chat/partials/_message_form.html" %}
+
+</div>
+</div>
+{% endblock main %}
+
+{% comment %} <span hx-get="{% url 'get_msgs' chat.id %}"
+     hx-trigger="load, every 5s"
+     hx-target=".chat-messages"
+     hx-swap="outerHTML"></spaan> {% endcomment %}
+
+     {% comment %} uncomment {% endcomment %}

@@ -1,0 +1,141 @@
+{% extends "dashboard.html" %}
+ 
+{% block main %}
+
+ <div class="main-view-top">
+
+    <!-- Quick Stats -->
+    <div class="sessions-tabs">
+        <button class="tab-btn active" onclick="sessionTab('upcoming')">Upcoming Sessions</button>
+        <button class="tab-btn" onclick="sessionTab('completed')">Completed Sessions</button>
+        <button class="tab-btn" onclick="sessionTab('cancelled')">Cancelled Sessions</button>
+    </div>
+
+    <div id="upcoming" class="tab-content active">
+        <div class="sessions-list">
+            {% for session in sessions %}
+            <div class="session-card">
+                <div class="session-header">
+                    <div class="session-time">
+                        <div class="session-date">Today</div>
+                        <div class="session-hour">{{session.start_time}}</div>
+                    </div>
+                    <div class="session-status upcoming">Upcoming</div>
+                </div>
+                <div class="session-details">
+                    <div class="session-student">
+                        <div class="student-avatar"><img src="/static{{session.base_session.tutor.avatar.url}}" alt="{{session.base_session.tutor.username}}"></div>
+                        <div class="student-info">
+                            <h4>{{session.base_session.tutor.username}}</h4>
+                            <p>{{session.topic}}</p>
+                        </div>
+                    </div>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <span class="info-label">Subject:</span>
+                            <span class="info-value">{{session.base_session.subject_name}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Type:</span>
+                            <span class="info-value">{{session.session_type}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Duration:</span>
+                            <span class="info-value">{{session.base_session.session_duration}}</span>
+                        </div>
+                    </div>
+                </div> {% if request.user.role == 'tutor' %}
+                    
+                    <div class="session-actions">
+                        <button class="btn-sm btn-primary">Start Class</button>
+                        <button class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
+                         <a href="{% url 'session_reschedule' session.id %}">
+                            <button class="btn-sm btn-outline"> Reschedule </button>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="session-actions">
+                        <button class="btn-sm btn-primary">Join Class</button>
+                        <button class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
+                        <a href="{% url 'session_reschedule' session.id %}">
+                            <button class="btn-sm btn-outline "> Reschedule </button>
+                        </a>
+                    </div>
+                    {% endif %} 
+            </div>
+            {% endfor %}
+
+             
+        </div>
+    </div>
+
+    <div id="completed" class="tab-content">
+        <div class="sessions-list">
+            <div class="session-card">
+                <div class="session-header">
+                    <div class="session-time">
+                        <div class="session-date">Yesterday</div>
+                        <div class="session-hour">2:00 PM - 3:00 PM</div>
+                    </div>
+                    <div class="session-status completed">Completed</div>
+                </div>
+                <div class="session-details">
+                    <div class="session-student">
+                        <div class="student-avatar">ED</div>
+                        <div class="student-info">
+                            <h4>Emma Davis</h4>
+                            <p>Organic Chemistry Package</p>
+                        </div>
+                    </div>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <span class="info-label">Subject:</span>
+                            <span class="info-value">Organic Reactions</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Type:</span>
+                            <span class="info-value">Online</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Rating:</span>
+                            <span class="info-value">⭐⭐⭐⭐⭐</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="session-actions">
+                    <button class="btn-secondary">View Recording</button>
+                    <button class="btn-outline">View Feedback</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cancelled" class="tab-content">
+        <div class="sessions-list">
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>No Cancelled Sessions</h3>
+                <p>You don't have any cancelled sessions.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+       function sessionTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+</script>
+{% endblock main %}

@@ -108,8 +108,16 @@
 .message.sent .message-bubble {
   background: var(--primary-color);
   color: white;
+  
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
-
+.message.received .message-bubble {
+  color: rgb(0, 0, 0);
+  width: fit-content;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 .message-avatar {
   flex-shrink: 0;
 }

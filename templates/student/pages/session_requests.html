@@ -1,0 +1,57 @@
+{% extends "dashboard.html" %}
+
+{% block main %}
+
+<div id="session">
+    <div class="session-list">
+        {% for session in base_session %}
+        <div class="session-card">
+            <div class="session-header">
+                <h2>{{session.subject_name}}</h2>
+            </div>
+            <div class="session-price">
+                <h2>{{session.price}} <small>ETB.</small></h2>
+            </div>
+            <div class="session-body">
+                
+                <li><span> Session Status</span>
+                    <span>{{session.status}}</span>
+                </li>
+                <li><span> Price</span>
+                    <span>{{session.price}} : {{session.is_payed}}</span>
+                </li>
+                <li><span> Total session</span>
+                    <span>{{session.total_session}}</span>
+                </li>
+                <li><span>Unscheduld session</span>
+                    <span>{{session.remaining_sessions}}</span>
+                </li>
+                 
+                <li><span> session type
+                    </span><span>{{session.session_type}}</span></li>
+                    <li><span>Requested at </span>
+                    <span>{{session.scheduled_at}}</span>
+                </li>
+            </div>
+            {% if session.status == 'confirmed' %}
+                <a href="{% url  'book_session' session.id %}" >
+                  <button class="btn btn-primary">BOOK</button></a>
+         {% endif %}
+        </div>
+        
+
+        {% comment %} <div id="confirmModal" class="modal">
+            <div class="modal-content booking">
+                <div class="confirm-header">
+                    <small>Session Request </small>
+                    <span class="close" onclick="closeConfirmModal()">&times;</span>
+                </div>
+                  {% include "student/pages/buy_package.html" %}
+
+            </div>
+        </div> {% endcomment %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock main %}

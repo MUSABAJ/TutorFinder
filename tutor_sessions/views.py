@@ -32,10 +32,11 @@ def list_session(request):
 def list_BaseSession(request):
     
     if (request.user.role == 'tutor'):
-        base_session = BaseSession.objects.all()
+        base_session = BaseSession.objects.all() 
     else:
-        base_session = BaseSession.objects.filter(studet=request.tutor)
-    return render(request,'session/base_session.html', {"base_sessions":base_session})
+        base_session = BaseSession.objects.filter(student=request.user)
+         
+    return render(request,'student/pages/session_requests.html', {"base_session":base_session})
 
 @login_required
 def request_session(request, pkg_id):
@@ -132,18 +133,11 @@ def book_sessions(request, base_id):
             if not start or not end:
                 return JsonResponse({'error': 'Invalid slot data.'}, status=400)
 
-            # Create booked session
-            booked_session = BookedSession.objects.create(
-                base_session=base_session,
-                start_time=start,
-                end_time=end,
-                schedule_date=start
-            )
-
+           
             # Create payment
             tx_ref = f"tutor_escrow_{uuid.uuid4().hex[:16]}"
             callback_url = request.build_absolute_uri(f'/sessions/payment/verify/{tx_ref}/')
-            payment = Payment.objects.create(
+            obj, payment = Payment.objects.get_or_create(
                 student=student,
                 tutor=tutor,
                 session=base_session,
@@ -164,13 +158,30 @@ def book_sessions(request, base_id):
             )
 
             if response and response.get('status') == 'success':
+    # Create booked session
+                obj, booked_session = BookedSession.objects.get_or_create(
+                    base_session=base_session,
+                    start_time=start,
+                    end_time=end,
+                    schedule_date=start
+                )
+                obj, payment = Payment.objects.get_or_create(
+                    student=student,
+                    tutor=tutor,
+                    session=base_session,
+                    amount=base_session.price,
+                    status="pending",
+                    refrence_id=tx_ref
+                )
+
                 # Don’t mark success yet! Wait for callback verification
                 checkout_url = response['data']['checkout_url']
                 return redirect(checkout_url)
             else:
                 # Payment initialization failed
-                payment.status = "failed"
-                payment.save()
+                # payment.status = "failed"
+                # payment.save()
+                
                 return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
 
         except Exception as e:
@@ -182,7 +193,7 @@ def book_sessions(request, base_id):
         'availablity_json': json.dumps(availablity),
         'booked_json': json.dumps(booked_events)
     }
-    return render(request, 'student/pages/buy_package.html', context)
+    return render(request, 'student/pages/book.html', context)
 
 
 @login_required
@@ -236,26 +247,29 @@ def session_reschedule(request, session_id):
 
     if request.method == 'POST':
         if booked_session.status in ['scheduled', 'rescheduled']:
+            print(5555555555555555555555555555555563)
             slot = json.loads(request.POST.get('selected_slot', '{}'))
             start = slot.get('start')
             end = slot.get('end')
 
             if not start or not end:
                 return JsonResponse({'error': 'Invalid slot data'}, status=400)
+            print(00000000000000000000000000000)
 
             booked_session.start_time = start
             booked_session.end_time = end
             booked_session.schedule_date = start
             booked_session.status = 'rescheduled'
-
-            return redirect('check_in_out')
+            
+            booked_session.save()
+            return redirect('session_list')
 
     context = {
         'tutor': tutor,
         'availablity_json': json.dumps(availablity),
         'booked_json': json.dumps(booked_events),
     }
-    return render(request, 'session/reschedule.html', context)
+    return render(request, 'common/reschedule.html', context)
 
 def cancel_schedule(request, session_id):
     booked_session = get_object_or_404(BookedSession, id=session_id)

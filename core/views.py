@@ -18,7 +18,7 @@ def get_tutor_dashboard_context(user):
     """Returns all common tutor dashboard context data."""
     today = timezone.now()
     tutor = TutorProfile.objects.filter(user=user).first()
-    sessions = BookedSession.objects.filter(base_session__tutor=user)
+    sessions = BookedSession.objects.all()
     bookings = BaseSession.objects.filter(tutor=user)
     earning = Payment.objects.filter(tutor=user)
     feedback = FeedBack.objects.filter(tutor=user)
@@ -49,7 +49,7 @@ def tutor_dashbord(request):
 @login_required(login_url='/user/login/')
 def manage_session(request):
      context = get_tutor_dashboard_context(request.user)
-     return render(request,'tutor/pages/manage_session.html',context)
+     return render(request,'common/session_manager.html',context)
 
 @login_required(login_url='/user/login/')
 def manage_resource(request):
@@ -159,21 +159,17 @@ def my_tutors(request):
      context = get_tutor_dashboard_context(request.user)
      context.update(ctx)
      return render(request,'student/pages/tutors.html',context)
-
+# 
+# Redundunt function , combine it with the session manager view and commonn html template
 @login_required(login_url='/user/login/')
 def my_sessions(request):
      context = get_tutor_dashboard_context(request.user)
-     return render(request,'student/pages/my_sessions.html',context)
+     return render(request,'common/session_manager.html',context)
 
 @login_required(login_url='/user/login/')
 def my_resources(request):
      context = get_tutor_dashboard_context(request.user)
      return render(request,'student/pages/resources.html',context)
-
-@login_required(login_url='/user/login/')
-def chats(request):
-     context = get_tutor_dashboard_context(request.user)
-     return render(request,'student/pages/chats.html',context)
 
 def view_tutor(request, tutor_id):
      tutor = get_object_or_404(TutorProfile, id=tutor_id)

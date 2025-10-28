@@ -1,0 +1,11 @@
+    <form class="chat-input-form" 
+    {% if chat %}hx-post="{% url 'send_msg' chat.id %} "{% endif %}
+    hx-swap="outerHTML"
+    hx-target=".chat-messages"
+    
+    >
+        {%csrf_token%}  
+
+        <input type="search" name="msg" placeholder="Type your message..." required>
+        <button type="submit" value=" " class="send-btn fas fa-arrow-circle-up"> </button>
+    </form>
