@@ -14,7 +14,7 @@ def chats(request):
 
 def chat_rooms(request):
     chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
-    return render(request, 'chat/partials/_chat_rooms.html', {'chats': chats})
+    return render(request, 'common/chat/partials/_chat_rooms.html', {'chats': chats})
 
 
 @login_required
