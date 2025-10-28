@@ -17,8 +17,7 @@
 
     <div class="side-view">
         <div class="side-view-top">
-            {% comment %} THis will use HX to update every second {% endcomment %}
-            add new chat
+             add new chat
             {% include "common/chat/partials/_chat_rooms.html" %}
 
         </div>
@@ -26,4 +25,8 @@
     </div>
 </div>
 
+<span hx-get="{% url 'chat_rooms' %}"
+     hx-trigger="load, every 5s"
+     hx-target=".side-view-top"
+     hx-swap="outerHTML"></spaan> 
 {% endblock %}

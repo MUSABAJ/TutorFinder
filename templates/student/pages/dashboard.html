@@ -94,4 +94,9 @@
     
   </div>
 </div>
+
+<span hx-get="{% url 'chat_rooms' %}"
+     hx-trigger="load, every 5s"
+     hx-target=".side-view-top"
+     hx-swap="outerHTML"></spaan> 
 {% endblock %}
