@@ -22,3 +22,4 @@ class Resource(models.Model):
 
     class Meta:
         ordering = ['-uploaded_at']
+  

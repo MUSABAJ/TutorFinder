@@ -10,33 +10,57 @@ import os
 def list_resources(request):
     query = request.GET.get('q')
     resources = Resource.objects.all()
+    resource = Resource.objects.all().first()
+    
     if query:
         resources = resources.filter(title__icontains=query)
-    return render(request, 'resources/resource_list.html', {'resources': resources})
-
-
-@login_required
-def upload_resource(request):
-    if request.user.role != 'tutor':
-        return HttpResponseForbidden("Only tutors can upload resources.")
-    
-    tutor_profile = TutorProfile.objects.filter(user=request.user).first()
-    subjects = []
-    if tutor_profile and tutor_profile.subjects:
-        subjects = [s.strip() for s in tutor_profile.subjects.split(',')]
 
     if request.method == 'POST':
+        if request.user.role != 'tutor':
+            return HttpResponseForbidden("Only tutors can upload resources.")
+        
+        tutor_profile = TutorProfile.objects.filter(user=request.user).first()
+        subjects = []
+        if tutor_profile and tutor_profile.subjects:
+            subjects = [s.strip() for s in tutor_profile.subjects.split(',')]
         form = ResourceForm(request.POST, request.FILES)
+            
+        print(request.POST)
+        print('oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo')
         if form.is_valid():
             resource = form.save(commit=False)
             resource.tutor = request.user
             resource.save()
-            return redirect('resource_list')
+            return redirect('resources')
     else:
         form = ResourceForm()
+    context = {'form': form, 'resources': resources}
 
-    context = {'form': form, 'subjects': subjects}
-    return render(request, 'resources/upload.html', context)
+    return render(request,'resources/resources.html',context)
+
+
+# @login_required
+# def upload_resource(request):
+#     if request.user.role != 'tutor':
+#         return HttpResponseForbidden("Only tutors can upload resources.")
+    
+#     tutor_profile = TutorProfile.objects.filter(user=request.user).first()
+#     subjects = []
+#     if tutor_profile and tutor_profile.subjects:
+#         subjects = [s.strip() for s in tutor_profile.subjects.split(',')]
+
+#     if request.method == 'POST':
+#         form = ResourceForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             resource = form.save(commit=False)
+#             resource.tutor = request.user
+#             resource.save()
+#             return redirect('resource_list')
+#     else:
+#         form = ResourceForm()
+
+#     context = {'form': form, 'subjects': subjects}
+#     return render(request, 'resources/upload.html', context)
 
 
 @login_required

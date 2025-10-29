@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from users.forms import TutorProfileEditForm,StudentProfileEditForm, UserProfileEditForm, AvatarForm
 from tutor_sessions.models import BaseSession, BookedSession
 from feedback.models import FeedBack
+from resources.models import Resource
 from availablity.models import TutorPackage
 from availablity.forms import PackageForm
 from users.models import User, TutorProfile, StudentProfile
@@ -51,10 +52,6 @@ def manage_session(request):
      context = get_tutor_dashboard_context(request.user)
      return render(request,'common/session_manager.html',context)
 
-@login_required(login_url='/user/login/')
-def manage_resource(request):
-     context = get_tutor_dashboard_context(request.user)
-     return render(request,'tutor/pages/manage_resource.html',context)
 
 @login_required(login_url='/user/login/')
 def my_students(request):
@@ -166,11 +163,6 @@ def my_sessions(request):
      context = get_tutor_dashboard_context(request.user)
      return render(request,'common/session_manager.html',context)
 
-@login_required(login_url='/user/login/')
-def my_resources(request):
-     context = get_tutor_dashboard_context(request.user)
-     return render(request,'student/pages/resources.html',context)
-
 def view_tutor(request, tutor_id):
      tutor = get_object_or_404(TutorProfile, id=tutor_id)
      packages = TutorPackage.objects.filter(tutor=tutor.user)
@@ -181,3 +173,6 @@ def view_tutor(request, tutor_id):
                 ,'packages':packages
                 ,'subjects':subjects}
      return render(request, 'student/pages/tutor_view.html',context)
+
+
+ 
