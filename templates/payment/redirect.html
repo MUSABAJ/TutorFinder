@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting to Payment</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(45deg, #01ffa2ab, #128fdd);
+      color: #013111;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.186);
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      text-align: center;
+      max-width: 500px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.6s ease-out;
+      position: fixed;
+      top: 5rem;
+    }
+
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .btn-container {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    a.btn {
+      text-decoration: none;
+      background: #fff;
+      color: #3ea69d;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: none;
+      display: inline-block;
+    }
+
+    a.btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    a.btn-primary {
+      background: #3ea69d;
+      color: white;
+    }
+
+    a.btn-primary:hover {
+      background: #1b7e75;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <script>
+    // Open Chapa in a new tab
+    window.open('{{ checkout_url }}', '_blank');
+
+    // Redirect current tab to booking details
+   </script>
+</head>
+<body>
+  <div class="container">
+    <h3>Redirecting to Payment...</h3>
+    <p>Your payment page is opening in a new tab.</p>
+    <p>You can safely close this window.</p>
+
+    <div class="btn-container">
+      <a href="{{ checkout_url }}" target="_blank" class="btn btn-primary">Open Payment Page</a>
+      <a href="" class="btn">View Booking Details</a>
+    </div>
+  </div>
+</body>
+</html>

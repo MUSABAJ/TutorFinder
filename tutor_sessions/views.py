@@ -176,7 +176,8 @@ def book_sessions(request, base_id):
 
                 # Don’t mark success yet! Wait for callback verification
                 checkout_url = response['data']['checkout_url']
-                return redirect(checkout_url)
+                
+                return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
             else:
                 # Payment initialization failed
                 # payment.status = "failed"
