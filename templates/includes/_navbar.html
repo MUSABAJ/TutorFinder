@@ -14,7 +14,13 @@
       <div class="nav-user">
         <div class="nav-search">
           <i class="fas fa-search"></i>
-          <input type="search" placeholder="Search tutors...">
+          <input type="search" placeholder="Search tutors..." name="search_text"
+          value = "{{search_text}}  "
+          hx-get="{% url 'main_search' %}"
+          hx-trigger="keyup changed delay:500ms"
+          hx-target=".main-view-top"
+           >
+          
         </div>
   
         <div class="user-info">

@@ -1,0 +1,15 @@
+ {% for tutor in my_tutors %}     
+       <div class="my-tutor-card">
+        <div class="profile-header">
+          <img src="/static{{tutor.avatar.url}}" alt="Dr. Sarah Ahmed" />
+          <div class="tutor-info">
+            <h3>{{tutor.username}}</h3>
+            <p>{{tutor.first_name}}</p>
+          </div>
+        </div>
+        <div class="card-buttons">
+          <button class="btn-sm btn-primary">Buy Package</button>
+          <button class="btn-sm btn-outline">Book Session</button>
+        </div>
+      </div>
+       {% endfor%}

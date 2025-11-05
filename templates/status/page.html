@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Status</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .message-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            text-align: center;
+            padding: 40px 30px;
+        }
+        
+        .message-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 25px;
+            animation: iconBounce 0.6s ease;
+        }
+        
+        .icon-success {
+            background: rgba(39, 174, 96, 0.15);
+            color: #27ae60;
+        }
+        
+        .icon-error {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+        
+        .icon-warning {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+        
+        .icon-info {
+            background: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+        }
+        
+        .message-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .message-text {
+            font-size: 1.1rem;
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .redirect-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .redirect-info i {
+            margin-right: 8px;
+            color: #3498db;
+        }
+        
+        .btn-home {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+        }
+        
+        .btn-home:active {
+            transform: translateY(1px);
+        }
+        
+        .countdown {
+            font-weight: 700;
+            color: #3498db;
+        }
+        
+        @keyframes iconBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-container {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @media (max-width: 480px) {
+            .message-container {
+                padding: 30px 20px;
+            }
+            
+            .message-title {
+                font-size: 1.7rem;
+            }
+            
+            .message-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Django Template Logic -->
+    {% if success %}
+    <div class="message-container">
+        <div class="message-icon icon-success">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="message-title">Success!</h1>
+        <p class="message-text">
+            {% if message %}
+                {{ message }}
+            {% else %}
+                Your action has been completed successfully.
+            {% endif %}
+        </p>
+        
+        <div class="redirect-info">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to home in <span class="countdown" id="countdown">5</span> seconds
+        </div>
+        
+        <button class="btn-home" onclick="redirectHome()">
+            <i class="fas fa-home"></i> Go Home Now
+        </button>
+    </div>
+    {% elif error %}
+    <div class="message-container">
+        <div class="message-icon icon-error">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <h1 class="message-title">Oops!</h1>
+        <p class="message-text">
+            {% if message %}
+                {{ message }}
+            {% else %}
+                Something went wrong. Please try again.
+            {% endif %}
+        </p>
+        
+        <div class="redirect-info">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to home in <span class="countdown" id="countdown">5</span> seconds
+        </div>
+        
+        <button class="btn-home" onclick="redirectHome()">
+            <i class="fas fa-home"></i> Go Home Now
+        </button>
+    </div>
+    {% elif warning %}
+    <div class="message-container">
+        <div class="message-icon icon-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h1 class="message-title">Heads Up!</h1>
+        <p class="message-text">
+            {% if message %}
+                {{ message }}
+            {% else %}
+                Please review your action and try again.
+            {% endif %}
+        </p>
+        
+        <div class="redirect-info">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to home in <span class="countdown" id="countdown">5</span> seconds
+        </div>
+        
+        <button class="btn-home" onclick="redirectHome()">
+            <i class="fas fa-home"></i> Go Home Now
+        </button>
+    </div>
+    {% elif info %}
+    <div class="message-container">
+        <div class="message-icon icon-info">
+            <i class="fas fa-info-circle"></i>
+        </div>
+        <h1 class="message-title">Information</h1>
+        <p class="message-text">
+            {% if message %}
+                {{ message }}
+            {% else %}
+                Here's some important information about your recent action.
+            {% endif %}
+        </p>
+        
+        <div class="redirect-info">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to home in <span class="countdown" id="countdown">5</span> seconds
+        </div>
+        
+        <button class="btn-home" onclick="redirectHome()">
+            <i class="fas fa-home"></i> Go Home Now
+        </button>
+    </div>
+    {% else %}
+    <!-- Default success message if no specific type provided -->
+    <div class="message-container">
+        <div class="message-icon icon-success">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="message-title">Action Completed</h1>
+        <p class="message-text">
+            {% if message %}
+                {{ message }}
+            {% else %}
+                Your request has been processed successfully.
+            {% endif %}
+        </p>
+        
+        <div class="redirect-info">
+            <i class="fas fa-info-circle"></i>
+            You will be redirected to home in <span class="countdown" id="countdown">5</span> seconds
+        </div>
+        
+        <button class="btn-home" onclick="redirectHome()">
+            <i class="fas fa-home"></i> Go Home Now
+        </button>
+    </div>
+    {% endif %}
+
+    <script>
+        // Countdown and redirect functionality
+        let seconds = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        function updateCountdown() {
+            countdownElement.textContent = seconds;
+            seconds--;
+            
+            if (seconds < 0) {
+                redirectHome();
+            } else {
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+        
+        function redirectHome() {
+            // Replace with your actual home URL
+            window.location.href = " ";
+        }
+        
+        // Start the countdown when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCountdown();
+        });
+        
+        // Alternative: Auto-redirect after 5 seconds without countdown display
+        // setTimeout(redirectHome, 5000);
+    </script>
+</body>
+</html>

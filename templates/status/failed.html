@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Results</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --error: #e74c3c;
+            --success-bg: rgba(39, 174, 96, 0.08);
+            --warning-bg: rgba(243, 156, 18, 0.08);
+            --info-bg: rgba(52, 152, 219, 0.08);
+            --error-bg: rgba(231, 76, 60, 0.08);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--success);
+            color: var(--success);
+            background: white;
+        }
+        
+        .tab.error-tab.active {
+            border-bottom-color: var(--error);
+            color: var(--error);
+        }
+        
+        .messages-container {
+            padding: 30px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .message-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--success);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .message-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .icon-success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+        
+        .icon-warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        
+        .icon-info {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+        
+        .icon-error {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .message-text {
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+        
+        .message-action {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn-error {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-error:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 30px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+        
+        /* Message type variations */
+        .message-success {
+            border-left-color: var(--success);
+            background: var(--success-bg);
+        }
+        
+        .message-warning {
+            border-left-color: var(--warning);
+            background: var(--warning-bg);
+        }
+        
+        .message-info {
+            border-left-color: var(--info);
+            background: var(--info-bg);
+        }
+        
+        .message-error {
+            border-left-color: var(--error);
+            background: var(--error-bg);
+        }
+        
+        .dismiss-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: color 0.3s;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dismiss-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #e74c3c;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .message-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .message-meta {
+                justify-content: center;
+            }
+            
+            .message-action {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Action Results</h1>
+            <p>Summary of your recent activities and their status</p>
+        </div>
+        
+        
+        <!-- Failed Messages Tab -->
+        <div class=" " id="failed-tab">
+            <div class="messages-container">
+                <!-- Django template logic for error messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="message-card message-error">
+                            <div class="message-icon icon-error">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="message-content">
+                                <h3 class="message-title">Action Failed</h3>
+                                <p class="message-text">{{ message }}</p>
+                                <div class="message-meta">
+                                    <span><i class="far fa-clock"></i> Just now</span>
+                                    <span><i class="fas fa-user"></i> System</span>
+                                </div>
+                                <div class="message-action">
+                                    <button class="btn btn-error">
+                                        <i class="fas fa-redo"></i> Try Again
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="dismiss-btn">&times;</button>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Custom Failed Messages -->
+                
+                <!-- Payment Failed -->
+                {% if payment_failed %}
+                <div class="message-card message-error">
+                    <div class="message-icon icon-error">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Payment Failed</h3>
+                        <p class="message-text">We couldn't process your payment of ${{ amount }}. {{ error_message }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ payment_time }}</span>
+                            <span><i class="fas fa-exclamation-triangle"></i> Declined</span>
+                        </div>
+                        <div class="message-action">
+                            <button class="btn btn-error" onclick="retryPayment('{{ transaction_id }}')">
+                                <i class="fas fa-redo"></i> Retry Payment
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-credit-card"></i> Update Payment Method
+                            </button>
+                        </div>
+                    </div>
+                    <button class="dismiss-btn">&times;</button>
+                </div>
+                {% endif %}
+                
+                <!-- Booking Failed -->
+                {% if booking_failed %}
+                <div class="message-card message-error">
+                    <div class="message-icon icon-error">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Booking Failed</h3>
+                        <p class="message-text">We couldn't book your session with {{ tutor_name }}. {{ error_message }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ booking_time }}</span>
+                            <span><i class="fas fa-user"></i> {{ user.username }}</span>
+                        </div>
+                        <div class="message-action">
+                            <button class="btn btn-error">
+                                <i class="fas fa-redo"></i> Try Another Time
+                            </button>
+                            <a href="" class="btn btn-secondary">
+                                <i class="fas fa-search"></i> Find Another Tutor
+                            </a>
+                        </div>
+                    </div>
+                    <button class="dismiss-btn">&times;</button>
+                </div>
+                {% endif %}
+                
+                <!-- Package Purchase Failed -->
+                {% if package_purchase_failed %}
+                <div class="message-card message-error">
+                    <div class="message-icon icon-error">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Package Purchase Failed</h3>
+                        <p class="message-text">We couldn't process your purchase of the {{ package_name }} package. {{ error_message }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ purchase_time }}</span>
+                            <span><i class="fas fa-exclamation-triangle"></i> Error</span>
+                        </div>
+                        <div class="message-action">
+                            <button class="btn btn-error">
+                                <i class="fas fa-redo"></i> Retry Purchase
+                            </button>
+                            <a href="{% url 'contact_support' %}" class="btn btn-secondary">
+                                <i class="fas fa-headset"></i> Contact Support
+                            </a>
+                        </div>
+                    </div>
+                    <button class="dismiss-btn">&times;</button>
+                </div>
+                {% endif %}
+                
+                <!-- Profile Update Failed -->
+                {% if profile_update_failed %}
+                <div class="message-card message-error">
+                    <div class="message-icon icon-error">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Profile Update Failed</h3>
+                        <p class="message-text">We couldn't save your profile changes. {{ error_message }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ update_time }}</span>
+                            <span><i class="fas fa-user"></i> {{ user.username }}</span>
+                        </div>
+                        <div class="message-action">
+                            <button class="btn btn-error" onclick="window.location.reload()">
+                                <i class="fas fa-redo"></i> Try Again
+                            </button>
+                            <a href="{% url 'contact_support' %}" class="btn btn-secondary">
+                                <i class="fas fa-headset"></i> Get Help
+                            </a>
+                        </div>
+                    </div>
+                    <button class="dismiss-btn">&times;</button>
+                </div>
+                {% endif %}
+                
+                <!-- Session Cancellation Failed -->
+                {% if cancellation_failed %}
+                <div class="message-card message-error">
+                    <div class="message-icon icon-error">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Cancellation Failed</h3>
+                        <p class="message-text">We couldn't cancel your session scheduled for {{ session_date }}. {{ error_message }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ cancellation_time }}</span>
+                            <span><i class="fas fa-exclamation-triangle"></i> Too Late</span>
+                        </div>
+                        <div class="message-action">
+                            <a href="{% url 'contact_support' %}" class="btn btn-error">
+                                <i class="fas fa-headset"></i> Contact Support
+                            </a>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-eye"></i> View Session
+                            </button>
+                        </div>
+                    </div>
+                    <button class="dismiss-btn">&times;</button>
+                </div>
+                {% endif %}
+                
+                <!-- No failed messages -->
+                {% if not messages and not payment_failed and not booking_failed and not package_purchase_failed and not profile_update_failed and not cancellation_failed %}
+                <div class="empty-state">
+                    <i class="far fa-check-circle"></i>
+                    <h3>No Failed Actions</h3>
+                    <p>Great! All your recent actions completed successfully</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show corresponding tab content
+                const tabId = this.getAttribute('data-tab') + '-tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Dismiss message functionality
+        document.querySelectorAll('.dismiss-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const messageCard = this.closest('.message-card');
+                messageCard.style.opacity = '0';
+                messageCard.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    messageCard.style.display = 'none';
+                }, 500);
+            });
+        });
+        
+        // Auto-dismiss messages after 10 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageCards = document.querySelectorAll('.message-card');
+            
+            messageCards.forEach(card => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(100px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 500);
+                }, 10000);
+            });
+        });
+        
+        // Example function for retrying payment
+        function retryPayment(transactionId) {
+            alert(`Retrying payment for transaction: ${transactionId}`);
+            // In real implementation, this would call your backend
+        }
+        
+        // Example function for retrying booking
+        function retryBooking() {
+            alert('Please select a different time slot');
+            // In real implementation, this would redirect to booking page
+        }
+    </script>
+</body>
+</html>

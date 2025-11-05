@@ -11,6 +11,8 @@ urlpatterns = [
     path('chats/',include('chat.urls')),
     path('feedback/session/', include('feedback.urls')),
     path('resources/', include('resources.urls')),
-
+    path('virtual_class/', include('virtual_class.urls')),
+    path('feedback/', include('feedback.urls')),
+    path('notification/', include('notifications.urls')),
 
 ]

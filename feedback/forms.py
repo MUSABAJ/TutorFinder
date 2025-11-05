@@ -4,9 +4,8 @@ from .models import FeedBack
 class FeedbackForm(forms.ModelForm):
     class Meta:
         model = FeedBack
-        fields = ['rating', 'feedback']
+        fields = ['feedback']
         widgets = {
-            'rating': forms.RadioSelect(choices=[(i, '⭐' * i) for i in range(1, 6)]),
             'feedback': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your feedback...'}),
         }
 

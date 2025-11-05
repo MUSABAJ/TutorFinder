@@ -10,6 +10,17 @@ function showTutorTab(tabName) {
         event.target.classList.add('active')
 
 }
+function showTutorList(tabName) {
+         const tabContetns = document.querySelectorAll('.tutor-tab')
+        tabContetns.forEach(content => content.classList.remove('active'))
+
+        const tabBtns = document.querySelectorAll('.tutor-grid');
+        tabBtns.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabName).classList.add('active')
+        event.target.classList.add('active')
+
+}
 
 function showProfileTab(tabName, evt) {
  

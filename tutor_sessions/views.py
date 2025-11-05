@@ -18,15 +18,21 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.conf import settings
+import datetime
+from django.utils import timezone
 from payments.chapa import ChapaPayment 
 
 @login_required
 def list_session(request):
+    today = timezone.now()
+    tomorrow = today + datetime.timedelta(days=1)
     if (request.user.role == 'tutor'):
         sessions = BookedSession.objects.filter(base_session__tutor=request.user)
     else:
-        sessions = BookedSession.objects.filter(base_session__tutor=request.session)
-    return render(request,'session/session_list.html', {"sessions":sessions})
+        sessions = BookedSession.objects.filter(base_session__student=request.user)
+    upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
+
+    return render(request,'sessions/session_manager.html', {"sessions":sessions,'upcoming_sessions':upcoming_sessions})
 
 @login_required
 def list_BaseSession(request):
@@ -270,7 +276,7 @@ def session_reschedule(request, session_id):
         'availablity_json': json.dumps(availablity),
         'booked_json': json.dumps(booked_events),
     }
-    return render(request, 'common/reschedule.html', context)
+    return render(request, 'sessions/reschedule.html', context)
 
 def cancel_schedule(request, session_id):
     booked_session = get_object_or_404(BookedSession, id=session_id)

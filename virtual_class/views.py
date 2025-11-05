@@ -12,7 +12,7 @@ def create_virtual_class(request, session_id):
     session = get_object_or_404(BookedSession, id=session_id)
 
     # Ensure only the tutor can create the room...
-    if request.user != session.parent.tutor:
+    if request.user != session.base_session.tutor:
         messages.error(request, "You are not authorized to create this virtual class.")
         return redirect("session_list")
 
@@ -23,8 +23,8 @@ def create_virtual_class(request, session_id):
     )
 
     # If created, attach the room link to session
-    if created or not session.video_link:
-        session.video_link = room.room_name
+    if created or not session.room_name:
+        session.room_name = room.room_name
         session.save()
 
     # Optionally notify student (email, Telegram, etc.)
@@ -32,7 +32,7 @@ def create_virtual_class(request, session_id):
     # notify_user(session.parent.student, f"Virtual class for your session {session.id} is ready!")
 
     messages.success(request, f"Virtual classroom ready! Room: {room.room_name}")
-    return redirect('virtual_class', session_id=session.id)
+    return redirect('join_virtual_class', session_id=session.id)
 
 
 @login_required
@@ -41,18 +41,18 @@ def join_virtual_class(request, session_id):
     session = get_object_or_404(BookedSession, id=session_id)
 
 
-    if request.user not in [session.parent.tutor, session.parent.student]:
+    if request.user not in [session.base_session.tutor, session.base_session.student]:
         messages.error(request, "You are not enrolled in this class.")
         return redirect("session_list")
 
-    if not session.video_link:
+    if not session.room_name:
         messages.error(request, "This class does not have an active virtual room yet.")
         return redirect("session_list")
 
 
     jitsi_config = {
         'domain': getattr(settings, 'JITSI_DOMAIN', 'meet.jit.si'),
-        'room_name': session.video_link,
+        'room_name': session.room_name,
         'userInfo': {'displayName': request.user.username},
         'configOverwrite': {
             'startWithAudioMuted': True,

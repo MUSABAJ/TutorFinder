@@ -6,7 +6,7 @@ from .models import Notification
 @login_required
 def notification_list(request):
     notifications = request.user.notifications.all()
-    return render(request, 'notifications/list.html', {'notifications': notifications})
+    return render(request, 'notification/notifications.html', {'notifications': notifications})
 
 @login_required
 def mark_notification_read(request, notif_id):

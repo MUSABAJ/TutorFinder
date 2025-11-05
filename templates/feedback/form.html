@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .session-info {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .tutor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .tutor-details h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .tutor-details p {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .feedback-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .rating-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .stars {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .star {
+            font-size: 2.5rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+            margin: 0 5px;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #f1c40f;
+        }
+        
+        .rating-text {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            min-height: 24px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.6);
+        }
+        
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #7f8c8d;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .btn-cancel:hover {
+            background: #e9ecef;
+        }
+        
+        .thank-you {
+            display: none;
+            text-align: center;
+            padding: 50px 30px;
+        }
+        
+        .thank-you i {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 20px;
+        }
+        
+        .thank-you h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .thank-you p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 600px) {
+            .session-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .tutor-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .star {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>How was your session?</h1>
+            <p>Your feedback helps tutors improve and helps other students find the right match</p>
+        </div>
+        
+        <div class="session-info">
+            <div class="tutor-avatar"><img src="/static{{session.tutor.avatar.url}}" alt=""></div>
+            <div class="tutor-details">
+                <h2>Session with {{session.tutor}}</h2>
+                <p>Mathematics · Algebra II</p>
+                <p>Today, 3:00 PM - 4:00 PM</p>
+            </div>
+        </div>
+        
+        <form class="feedback-form" id="feedbackForm" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="rating">How would you rate this session?</label>
+                <div class="rating-container">
+                    <div class="stars">
+                        <span class="star" data-value="1"><i class="far fa-star"></i></span>
+                        <span class="star" data-value="2"><i class="far fa-star"></i></span>
+                        <span class="star" data-value="3"><i class="far fa-star"></i></span>
+                        <span class="star" data-value="4"><i class="far fa-star"></i></span>
+                        <span class="star" data-value="5"><i class="far fa-star"></i></span>
+                    </div>
+                </div>
+                <input type="hidden" id="rating" name="rating" value="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="comments">Share your experience (optional)</label>
+                {{form.feedback}}
+             </div>
+            
+           
+            
+            <div class="actions">
+                <button type="button" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Skip Feedback
+                </button>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-paper-plane"></i> Submit Feedback
+                </button>
+            </div>
+        </form>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            const ratingText = document.querySelector('.rating-text');
+            const feedbackForm = document.getElementById('feedbackForm');
+            const thankYou = document.getElementById('thankYou');
+            
+            const ratingTexts = {
+                0: "Tap to rate",
+                1: "Poor - Not helpful at all",
+                2: "Fair - Could be better",
+                3: "Good - Met expectations",
+                4: "Very Good - Exceeded expectations",
+                5: "Excellent - Outstanding session"
+            };
+            
+            // Star rating functionality
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    ratingInput.value = value;
+                    
+                    // Update star display
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.innerHTML = '<i class="fas fa-star"></i>';
+                            s.classList.add('active');
+                        } else {
+                            s.innerHTML = '<i class="far fa-star"></i>';
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    // Update rating text
+                    ratingText.textContent = ratingTexts[value];
+                });
+                
+                // Hover effect
+                star.addEventListener('mouseover', function() {
+                    const value = parseInt(this.getAttribute('data-value'));
+                    
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.innerHTML = '<i class="fas fa-star"></i>';
+                        } else {
+                            s.innerHTML = '<i class="far fa-star"></i>';
+                        }
+                    });
+                });
+                
+                // Reset stars on mouseout if no rating selected
+                star.addEventListener('mouseout', function() {
+                    const currentRating = parseInt(ratingInput.value);
+                    
+                    if (currentRating === 0) {
+                        stars.forEach(s => {
+                            s.innerHTML = '<i class="far fa-star"></i>';
+                            s.classList.remove('active');
+                        });
+                        ratingText.textContent = ratingTexts[0];
+                    } else {
+                        stars.forEach((s, index) => {
+                            if (index < currentRating) {
+                                s.innerHTML = '<i class="fas fa-star"></i>';
+                            } else {
+                                s.innerHTML = '<i class="far fa-star"></i>';
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Form submission
+            feedbackForm.addEventListener('submit', function(e) {
+                e.preventDefault()
+                
+                 this.submit()
+                
+                // Validate rating
+                if (parseInt(ratingInput.value) === 0) {
+                    alert('Please provide a rating before submitting');
+                    return;
+                }
+                
+                feedbackForm.style.display = 'none';
+                thankYou.style.display = 'block';
+            });
+            
+            // Skip feedback button
+            document.querySelector('.btn-cancel').addEventListener('click', function() {
+                if (confirm('Are you sure you want to skip providing feedback?')) {
+                    window.location.href = '/';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

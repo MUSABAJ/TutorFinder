@@ -1,0 +1,39 @@
+ {% for tutor in tutors %}
+    <div class="tutor-card">
+      <div class="tutor-thumbnail">
+        <img
+          src="/static{{tutor.user.avatar.url}} "
+          alt="{{tutor.user.username}}d"
+        />
+      </div>
+      <div class="tutor-content">
+        <div class="tutor-meta">
+          <h3>
+            {{ tutor.user.username}}
+            <span class="level"
+              ><i class="fa fa-star"></i> {{tutor.rating}} (127 reviews)
+            </span>
+          </h3>
+          <div>{{tutor.user.bio|truncatewords:"30" }}...</div>
+          <div>
+            <span class="level"
+              ><i class="fa fa-location"></i>{{tutor.user.city}}
+            </span>
+            <span><i class="fa fa-dollar"></i> {{tutor.horuly_rate}} /hr </span>
+
+            <span class="subject">Mathematics</span>
+            <span class="subject">Physics</span>
+            <span class="subject">English</span>
+          </div>
+        </div>
+        <div class="tutor-stats">
+          <button class="btn btn-primary">Contact</button>
+          <a href="{% url 'view_tutor' tutor.id%} ">
+            <button class="btn btn-outline">More</button>
+          </a>
+
+          <!-- IF already have a parent schedule scheduled -->
+        </div>
+      </div>
+    </div>
+    {% endfor %}

@@ -9,12 +9,12 @@ from .models import Chat, Message, User
 @login_required
 def chats(request):
     chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
-    return render(request,'common/chat/chats.html',{'chats': chats})
+    return render(request,'chat/chats.html',{'chats': chats})
 
 
 def chat_rooms(request):
     chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
-    return render(request, 'common/chat/partials/_chat_rooms.html', {'chats': chats})
+    return render(request, 'chat/partials/_chat_rooms.html', {'chats': chats})
 
 
 @login_required
@@ -31,9 +31,9 @@ def room(request, chat_id):
 
     messages = chat.messages.all()
     if request.headers.get('HX-Request'):
-        return render(request, 'common/chat/partials/_chat_detail.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
+        return render(request, 'chat/partials/_chat_detail.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
 
-    return render(request,'common/chat/chats.html', {'chats': chats,'chat':chat, 'messages': messages, 'receiver': receiver})
+    return render(request,'chat/chats.html', {'chats': chats,'chat':chat, 'messages': messages, 'receiver': receiver})
 
 def send_message(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
@@ -48,7 +48,7 @@ def send_message(request, chat_id):
                 content=content
             )
     messages = Message.objects.filter(chat=chat) 
-    return render(request, 'common/chat/partials/_messages.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
+    return render(request, 'chat/partials/_messages.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
 
 
 
@@ -56,7 +56,7 @@ def get_messages(request,chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
     receiver = chat.participants.exclude(id=request.user.id).first()
     messages = chat.messages.all().order_by('timestamp')
-    return render(request, 'common/chat/partials/_messages.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
+    return render(request, 'chat/partials/_messages.html', {'chat': chat, 'messages': messages, 'receiver': receiver})
 
 
 def get_or_create_chat(request, id):
@@ -66,18 +66,18 @@ def get_or_create_chat(request, id):
     if not chat:
         chat = Chat.objects.create()
         chat.participants.add(request.user, user)
-    from django.template.loader import render_to_string
-    from django.http import HttpResponse
+        return redirect('room', chat_id=id)
 
-    # If HTMX request → load the chat directly into chat area
-    if request.headers.get('HX-Request'):
-        messages = chat.messages.all().order_by('timestamp')
-        html = render_to_string('chat/partials/message_list.html', {'chat': chat, 'messages': messages, 'receiver': user}, request=request)
-        return HttpResponse(html)
+    return redirect('room', chat_id=chat.id)
 
-    return redirect('chat_detail', chat_id=chat.id)
+# from django.template.loader import render_to_string
+#         from django.http import HttpResponse
 
-
+#         # If HTMX request → load the chat directly into chat area
+#         if request.headers.get('HX-Request'):
+#             messages = chat.messages.all().order_by('timestamp')
+#             html = render_to_string('chat/partials/message_list.html', {'chat': chat, 'messages': messages, 'receiver': user}, request=request)
+#             return HttpResponse(html)
 
 
 # @login_required

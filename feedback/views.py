@@ -19,13 +19,16 @@ def give_feedback(request, session_id):
 
 
     if FeedBack.objects.filter(session=session, student=request.user).exists():
-        messages.warning(request, "You already submitted feedback for this session.")
-        return redirect('dashboard')
+        return render(request,'status/page.html',{
+            'error': True,
+            'message': f'You already submitted feedback for this session. '
+        })
 
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
             feedback = form.save(commit=False)
+            feedback.rating = request.POST.get("rating","")
             feedback.session = session
             feedback.student = session.student
             feedback.tutor = session.tutor
@@ -34,15 +37,13 @@ def give_feedback(request, session_id):
 
             avg_rating = FeedBack.get_tutor_average(session.tutor)
             TutorProfile.objects.filter(user=session.tutor).update(rating=avg_rating)
-
-            messages.success(request, "Feedback submitted successfully!")
-            return redirect('dashboard')
-        else:
-            messages.error(request, "Error submitting feedback, please check your input.")
+            return  render(request,'status/page.html',{
+            'success': True,
+            'message': f'thank you for your feedback!'})
     else:
         form = FeedbackForm()
 
-    return render(request, 'feedback/feedback_form.html', {'form': form, 'session': session})
+    return render(request, 'feedback/form.html', {'form': form, 'session': session})
 
 
 @login_required

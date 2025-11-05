@@ -47,7 +47,7 @@
                 </div> {% if request.user.role == 'tutor' %}
                     
                     <div class="session-actions">
-                        <button class="btn-sm btn-primary">Start Class</button>
+                        <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
                         <button class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
                          <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline"> Reschedule </button>
@@ -55,7 +55,7 @@
                     </div>
                     {% else %}
                     <div class="session-actions">
-                        <button class="btn-sm btn-primary">Join Class</button>
+                        <a href="{% url 'join_virtual_class' session.id %}"><button  class="btn-sm btn-primary">Join Class</button> </a>
                         <button class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
                         <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline "> Reschedule </button>

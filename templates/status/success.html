@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Messages</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --error: #e74c3c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .messages-container {
+            padding: 30px;
+        }
+        
+        .message-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--success);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .message-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .message-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .icon-success {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+        }
+        
+        .icon-warning {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+        }
+        
+        .icon-info {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--info);
+        }
+        
+        .icon-error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--error);
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .message-text {
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .message-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .message-action {
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px 30px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+        
+        /* Different message types */
+        .message-warning {
+            border-left-color: var(--warning);
+        }
+        
+        .message-info {
+            border-left-color: var(--info);
+        }
+        
+        .message-error {
+            border-left-color: var(--error);
+        }
+        
+        @media (max-width: 600px) {
+            .message-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .message-meta {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Success Messages</h1>
+            <p>Your recent actions and their status</p>
+        </div>
+        
+        <div class="messages-container">
+            <!-- Django template logic for displaying messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <!-- Success Message -->
+                    {% if message.tags == 'success' %}
+                    <div class="message-card">
+                        <div class="message-icon icon-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="message-content">
+                            <h3 class="message-title">Success!</h3>
+                            <p class="message-text">{{ message }}</p>
+                            <div class="message-meta">
+                                <span><i class="far fa-clock"></i> Just now</span>
+                                <span><i class="fas fa-user"></i> You</span>
+                            </div>
+                            <div class="message-action">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check"></i> Continue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Info Message -->
+                    {% if message.tags == 'info' %}
+                    <div class="message-card message-info">
+                        <div class="message-icon icon-info">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="message-content">
+                            <h3 class="message-title">Information</h3>
+                            <p class="message-text">{{ message }}</p>
+                            <div class="message-meta">
+                                <span><i class="far fa-clock"></i> A moment ago</span>
+                                <span><i class="fas fa-user"></i> System</span>
+                            </div>
+                            <div class="message-action">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Warning Message -->
+                    {% if message.tags == 'warning' %}
+                    <div class="message-card message-warning">
+                        <div class="message-icon icon-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="message-content">
+                            <h3 class="message-title">Heads Up</h3>
+                            <p class="message-text">{{ message }}</p>
+                            <div class="message-meta">
+                                <span><i class="far fa-clock"></i> Recently</span>
+                                <span><i class="fas fa-user"></i> System</span>
+                            </div>
+                            <div class="message-action">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-cog"></i> Adjust Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Error Message -->
+                    {% if message.tags == 'error' %}
+                    <div class="message-card message-error">
+                        <div class="message-icon icon-error">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="message-content">
+                            <h3 class="message-title">Something Went Wrong</h3>
+                            <p class="message-text">{{ message }}</p>
+                            <div class="message-meta">
+                                <span><i class="far fa-clock"></i> Recently</span>
+                                <span><i class="fas fa-user"></i> System</span>
+                            </div>
+                            <div class="message-action">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-redo"></i> Try Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <!-- Custom Success Messages for Different Events -->
+                
+                <!-- Booking Success -->
+                {% if booking_success %}
+                <div class="message-card">
+                    <div class="message-icon icon-success">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Session Booked Successfully!</h3>
+                        <p class="message-text">Your tutoring session with {{ tutor_name }} has been confirmed for {{ session_date }} at {{ session_time }}.</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ booking_time }}</span>
+                            <span><i class="fas fa-user"></i> {{ user.username }}</span>
+                        </div>
+                        <div class="message-action">
+                            <a href="{% url 'session_details' session_id %}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Session Details
+                            </a>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-calendar-plus"></i> Add to Calendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Payment Success -->
+                {% if payment_success %}
+                <div class="message-card">
+                    <div class="message-icon icon-success">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Payment Processed Successfully!</h3>
+                        <p class="message-text">Your payment of ${{ amount }} has been processed. Transaction ID: {{ transaction_id }}</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ payment_time }}</span>
+                            <span><i class="fas fa-receipt"></i> Receipt #{{ receipt_number }}</span>
+                        </div>
+                        <div class="message-action">
+                            <a href="{% url 'payment_receipt' transaction_id %}" class="btn btn-primary">
+                                <i class="fas fa-receipt"></i> View Receipt
+                            </a>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Profile Update Success -->
+                {% if profile_updated %}
+                <div class="message-card">
+                    <div class="message-icon icon-success">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Profile Updated Successfully!</h3>
+                        <p class="message-text">Your profile information has been saved and updated across the platform.</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ update_time }}</span>
+                            <span><i class="fas fa-user"></i> {{ user.username }}</span>
+                        </div>
+                        <div class="message-action">
+                            <a href="{% url 'profile' %}" class="btn btn-primary">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Package Purchase Success -->
+                {% if package_purchased %}
+                <div class="message-card">
+                    <div class="message-icon icon-success">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Package Purchased Successfully!</h3>
+                        <p class="message-text">You've successfully purchased the {{ package_name }} package. {{ package_hours }} hours have been added to your account.</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ purchase_time }}</span>
+                            <span><i class="fas fa-credit-card"></i> ${{ package_price }}</span>
+                        </div>
+                        <div class="message-action">
+                            <a href="{% url 'my_packages' %}" class="btn btn-primary">
+                                <i class="fas fa-boxes"></i> Manage Packages
+                            </a>
+                            <a href="{% url 'book_session' %}" class="btn btn-secondary">
+                                <i class="fas fa-calendar-plus"></i> Book a Session
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Feedback Submitted -->
+                {% if feedback_submitted %}
+                <div class="message-card">
+                    <div class="message-icon icon-success">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <div class="message-content">
+                        <h3 class="message-title">Feedback Submitted Successfully!</h3>
+                        <p class="message-text">Thank you for your feedback! Your {{ rating }}-star rating and comments have been recorded.</p>
+                        <div class="message-meta">
+                            <span><i class="far fa-clock"></i> {{ feedback_time }}</span>
+                            <span><i class="fas fa-star"></i> {{ rating }}/5 Stars</span>
+                        </div>
+                        <div class="message-action">
+                            <a href=" " class="btn btn-primary">
+                                <i class="fas fa-history"></i> View Session History
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- No messages to display -->
+                {% if not messages and not booking_success and not payment_success and not profile_updated and not package_purchased and not feedback_submitted %}
+                <div class="empty-state">
+                    <i class="far fa-check-circle"></i>
+                    <h3>No Recent Activities</h3>
+                    <p>Your recent successful actions will appear here</p>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Auto-dismiss messages after 8 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageCards = document.querySelectorAll('.message-card');
+            
+            messageCards.forEach(card => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(100px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 500);
+                }, 8000);
+            });
+        });
+        
+        // Manual dismiss functionality
+        document.querySelectorAll('.message-card').forEach(card => {
+            const dismissBtn = document.createElement('button');
+            dismissBtn.innerHTML = '<i class="fas fa-times"></i>';
+            dismissBtn.style.cssText = `
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                color: #7f8c8d;
+                cursor: pointer;
+                transition: color 0.3s;
+            `;
+            dismissBtn.onmouseover = () => dismissBtn.style.color = '#e74c3c';
+            dismissBtn.onclick = () => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(100px)';
+                setTimeout(() => card.style.display = 'none', 500);
+            };
+            card.style.position = 'relative';
+            card.appendChild(dismissBtn);
+        });
+    </script>
+</body>
+</html>

@@ -79,7 +79,7 @@ class StudentProfile(models.Model):
         ('exam', 'Exam Preparation'),
         ('other', 'Other')
       ]
-    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    user = models.OneToOneField(User, related_name='profile', on_delete = models.CASCADE)
     learning_goal = models.CharField(max_length=60, choices=GOAL_CHOICES ,default='other')
     grade_level = models.CharField(max_length=60,choices=GRADE_CHOICES, default='primary')
     favorite = models.CharField(blank=True, null=True)
