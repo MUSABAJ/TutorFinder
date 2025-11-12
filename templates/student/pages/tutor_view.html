@@ -1,359 +1,646 @@
-{% load static %}
-{%csrf_token%}
+{% load static %} {%csrf_token%}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    {% include "includes/_head.html" %}
+  {% include "includes/_head.html" %}
 </head>
 <style>
-    .dashboard-main {
-        display: block;
+  .dashboard-main {
+    overflow:hidden;
+    display: block;
+  } 
+  .pkg-container{
+    overflow-y: scroll;
+    padding-bottom: 3rem;
+  }
+  .subject_drop{
+    width: 90px;
+    height: 38px;
+    padding: 0.4rem;
+    border-radius: 7px;
+    margin-left: 2rem;
+    font-size: 14px;
+    border: none;
+    background-color: var(--primary-color);
+  } 
+  .package-cards {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+  }
 
+  .package-cards:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .package-badge {
+    position: absolute;
+    top: 20px;
+    right: -30px;
+    background: #e74c3c;
+    color: white;
+    padding: 6px 35px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .package-header {
+    padding: 25px 25px 15px;
+    background: linear-gradient(135deg, #3498db, #2c3e50);
+    color: white;
+    text-align: center;
+  }
+
+  .package-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .package-description {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .package-body {
+    padding: 10px 20px;
+  }
+
+  .package-price {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .price-amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #2c3e50;
+  }
+
+  .price-period {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-left: 5px;
+  }
+
+  .package-features {
+    list-style: none;
+    margin-bottom: 25px;
+  }
+
+  .package-features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+  }
+
+  .package-features li:last-child {
+    border-bottom: none;
+  }
+
+  .package-features i {
+    color: #2ecc71;
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+
+  .package-footer {
+    padding: 0 25px 25px;
+    text-align: center;
+  }
+
+  .btn-details {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-details:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+  }
+
+  .btn-details:active {
+    transform: translateY(1px);
+  }
+
+  .package-id {
+    display: none;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+     padding: 30px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
     }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    color: #7f8c8d;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .close-modal:hover {
+    color: #e74c3c;
+  }
+
+  .modal-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .modal-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+
+  .modal-description {
+    color: #7f8c8d;
+    line-height: 1.6;
+  }
+
+  .modal-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .modal-features {
+    list-style: none;
+    margin: 25px 0;
+  }
+
+  .modal-features li {
+  color: var(--text-primary);
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+  }
+
+  .modal-features li:last-child {
+    border-bottom: none;
+  }
+
+  .modal-features i {
+    color: #3498db;
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .btn-purchase {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-purchase:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .packages-grid {
+      grid-template-columns: 1fr;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .modal-actions {
+      flex-direction: column;
+    }
+  }
 </style>
 
 <body>
-    <!-- Navbar -->
-    {% include "includes/_navbar.html" %}
+  <!-- Navbar -->
+  {% include "includes/_navbar.html" %}
 
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
-            {% include "includes/_sidebar.html" %}
-        </aside>
-        <!-- Main Content -->
-        <main class="dashboard-main">
-            <div class="main-view">
-                <div class="main-view-top">
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      {% include "includes/_sidebar.html" %}
+    </aside>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="main-view">
+        <div class="main-view-top">
+          <!-- Quick Stats -->
+          <div class="tutor-categories profile-view-cat">
+            <div class="category-tabs">
+              <button class="profile-tab active" onclick="showTutorTab('about')" data-category="all">
+                About Me
+              </button>
+              <button class="profile-tab" onclick="showTutorTab('packages')" data-category="my-tutor">
+                packages
+              </button>
+               
+              <button class="profile-tab " onclick="showTutorTab('feedback')" data-category="favorites">
+                Feedbacks
+              </button>
+            </div>
+          </div>
 
-                    <!-- Quick Stats -->
-                    <div class="tutor-categories profile-view-cat">
-                        <div class="category-tabs">
-                            <button class="profile-tab " onclick="showTutorTab('about')" data-category="all">About
-                                Me</button>
-                            <button class="profile-tab" onclick="showTutorTab('packages')"
-                                data-category="my-tutor">packages</button>
-                            <button class="profile-tab" onclick="showTutorTab('availablity')"
-                                data-category="favorites">Booking</button>
-                            <button class="profile-tab active" onclick="showTutorTab('feedback')"
-                                data-category="favorites">
-                                Feedbacks</button>
-                        </div>
-                    </div>
+          <div id="about" class="profile-view-tab active">
+            <div class="profile">
+              <div class="profile-top" style="background-image:url(/static{{tutor.user.avatar.url}})">
+                <div class="profile-img">
+                  <img src="/static{{tutor.user.avatar.url}}" alt="makima san" />
+                </div>
+              </div>
+              <div class="profile-info">
+                <div class="profile-name">
+                  <h2 style="font-size : 42px; font-weight:600">
+                    {{tutor.user.first_name}} {{tutor.user.last_name}} <span>
+                      PhD in Mathimatics</span>
+                  </h2>
+                  <p>{{tutor.user.bio|truncatewords:"4"}}</p>
 
-
-                    <div id="about" class="profile-view-tab active">
-                        <div class="profile">
-                            <div class="profile-top">
-                                <div class="profile-img">
-                                    <img src="/static{{tutor.user.avatar.url}}" alt="makima san">
-                                </div>
-                            </div>
-                            <div class="profile-info">
-                                <div class="profile-name">
-                                    <h2> {{tutor.user.first_name}} {{tutor.user.last_name}}:<span> PhD in
-                                            Mathimatics</span></h2>
-                                    <p>Advisor and teacher in Addis-Ababa University.</p>
-
-                                    <!-- <p class="profile-info-icons">
+                  <!-- <p class="profile-info-icons">
                     <span><i class="fas fa-location"></i>Addis-Ababa</span>
                     <span> <i class="fas fa-calendar"></i>Available</span>
                  </p> -->
+                </div>
+                <div>
+                  <button class="btn btn-primary">Chat</button>
+                </div>
+              </div>
+            </div>
+            <div class="profile-detail">
+              <div class="profile-about">
+                <h3>About Me</h3>
+                <strong>Bio</strong>
+                <i>Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                  Eum ex assumenda, fuga labore dolor consequatur dolores
+                  atque aspernatur eveniet et, iusto itaque quo.</i>
+                <span><i class="fas fa-user"></i> <strong>User</strong> -
+                  Tutor</span>
+                <span><i class="fas fa-star"></i> <strong>Rating</strong> -
+                  4.5/5</span>
+                <span><i class="fas fa-female"></i> <strong>Gender</strong> -
+                  female</span>
 
-                                </div>
-                                <div>
-                                    <button class="btn btn-primary">Chat</button>
-                                </div>
-                            </div>
+                <span><i class="fas fa-location"></i><strong> Experience level</strong> - 5+ years
+                  teaching/tutoring</span>
+                <span><i class="fas fa-language"></i>
+                  <strong>Languages</strong> - English, Amharic, Somali</span>
+                <span><i class="fas fa-calendar"></i> <strong></strong> - 21 feb
+                  2025</span>
+              </div>
+              <div class="profile-edu">
+                <h3>Educational Background</h3>
 
-                        </div>
-                        <div class="profile-detail">
-                            <div class="profile-about">
-                                <h3>About Me</h3>
-                                <strong>Bio</strong>
-                                <i>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eum ex assumenda, fuga
-                                    labore dolor consequatur dolores atque aspernatur eveniet et, iusto itaque quo.</i>
-                                <span><i class="fas fa-user"></i> <strong>User</strong> - Tutor</span>
-                                <span><i class="fas fa-star"></i> <strong>Rating</strong> - 4.5/5</span>
-                                <span><i class="fas fa-female"></i> <strong>Gender</strong> - female</span>
+                <div class="institutes">
+                  <i class="fas fa-graduation-cap"></i>
+                  <div>
+                    <h4>Adama Science and Technology University</h4>
+                    <span>Masters in Psychology</span>
+                    <span>Master's degree in Psychology</span>
+                  </div>
+                </div>
+                <div class="institutes">
+                  <i class="fas fa-graduation-cap"></i>
+                  <div>
+                    <h4>Adama Science and Technology University</h4>
+                    <span>Masters in Psychology</span>
+                    <span>Bachelor's degree in Computer Science</span>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-courses">
+                <h3>Course and subjects</h3>
+                <ul>
+                  <li>Mathimatics</li>
+                  <li>Advanced Mathimatics</li>
+                  <li>English</li>
+                  <li>SAT</li>
+                </ul>
+              </div>
+              <div class="profile-contact">
+                <h3>Contact Info</h3>
+                <div>
+                  <span>Location</span>
+                  <p><i class="fa-location"> </i> Addis-Ababa, Ethiopia</p>
+                  <span>Phone number</span>
+                  <p>+25-198-58-566</p>
+                  <span>Social media</span>
+                  <p><i class="fas fa-twitter"> </i> @lishaleman</p>
+                  <p><i class="fas fa-instagram"> </i> @lishaleman</p>
+                </div>
+              </div>
+              <div class="profile-cta">
+                <button class="btn btn-primary">Contact Me</button>
+                <button class="btn btn-outline">Packages</button>
+              </div>
+            </div>
+          </div>
 
-                                <span><i class="fas fa-location"></i><strong> Experience level</strong> - 5+ years
-                                    teaching/tutoring</span>
-                                <span><i class="fas fa-language"></i> <strong>Languages</strong> - English, Amharic,
-                                    Somali</span>
-                                <span><i class="fas fa-calendar"></i> <strong></strong> - 21 feb 2025</span>
+          <div id="packages" class="profile-view-tab">
+            <div class="pkg-container">
+              <div class="pkg-list">
+              {% for pkg in packages %}
+              <div class="package-cards">
+                <div class="package-badge" style="background: #2c3e50;">Best Value</div>
+                <div class="package-header" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
+                  <h2 class="package-name">{{pkg.name}} Package</h2>
+                  <p class="package-description">{{pkg.description|truncatewords:"5"}}</p>
+                </div>
+                <div class="package-body">
+                  <div class="package-price">
+                    <span class="price-amount">{{pkg.price}} ETB</span>
+                    <span class="price-period">/sessions</span>
+                  </div>
+                  <ul class="package-features">
+                    <li><i class="fas fa-check"></i> {{pkg.total_session}} Total sessions of tutoring</li>
+                    <li><i class="fas fa-check"></i> All standard subjects</li>
+                    <li><i class="fas fa-check"></i> Email & chat support</li>
+                    <li><i class="fas fa-check"></i>{{pkg.session_perweek}} Session per week</li>
+                    <li><i class="fas fa-check"></i> {{pkg.session_duration}} Minute duration per session</li>
+                    <li><i class="fas fa-check"></i> {{pkg.session_type}} Tutoring method</li>
 
-                            </div>
-                            <div class="profile-edu">
-                                <h3>Educational Background</h3>
+                  </ul>
+                </div>
+                <div class="package-footer">
+                  <span class="package-id" style="display: none;">2</span>
+                  <button class="btn-details" onclick="(openConfirmModal())">
+                    <i class="fas fa-info-circle"></i> View Details
+                  </button>
+                </div>
+              </div>
+              <div id="confirmModal" class="modal">
+                <div class="modal-content detail">
+                  <span class="close-modal" onclick="closeConfirmModal()">&times;</span>
+                  <div class="pkg-modal-header">
+                    <h2 class="modal-title" id="modalPackageName">{{pkg.name}}</h2>
+                    <p class="modal-description" id="modalPackageDescription">{{pkg.description}}</p>
+                  </div>
+                  <div class="modal-price" id="modalPackagePrice">{{pkg.price}} <small>ETB</small> </div>
+                  <ul class="modal-features" id="modalPackageFeatures">
+                    <li><i class="fas fa-check"></i> {{pkg.total_session}} Total Sessions</li>
+                    <li><i class="fas fa-check"></i> {{pkg.session_duration}} Minute duration for each Sessions</li>
+                    <li><i class="fas fa-check"></i> {{pkg.session_perweek}} session per week</li>
+                    <li><i class="fas fa-check"></i> Email &amp; chat support within 12 hours</li>
+                    <li><i class="fas fa-check"></i>Support {{pkg.session_type}} Tutoring method</li>
+                    <li><i class="fas fa-check"></i> Basic learning plan</li>
+                    <form id="starting" action="{% url 'request_session'  pkg.id%}" method="post">
+                        {%csrf_token%}
+                        <i class="fas fa-check"> </i><span style="color: var(--text-primary);">Choose Subject To Enroll</span>
+                        <select name="selected_subject" class="subject_drop" id="selected-subject">
+                          {%for subject in subjects %}
+                          <option name="subject" value="{{subject}}">
+                            {{subject}}
+                          </option>
+                          {%endfor%}
+                        </select>
+                        <input type="hidden" name="package_id" value="" />
+                        <div class="confirm-action">
+                  <div class="modal-actions">
 
-
-                                <div class="institutes">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <div>
-
-                                        <h4>Adama Science and Technology University</h4> <span>Masters in
-                                            Psychology</span>
-                                        <span>Master's degree in Psychology</span>
-                                    </div>
-                                </div>
-                                <div class="institutes">
-                                    <i class="fas fa-graduation-cap"></i>
-                                    <div>
-
-                                        <h4>Adama Science and Technology University</h4> <span>Masters in
-                                            Psychology</span>
-                                        <span>Bachelor's degree in Computer Science</span>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class="profile-courses">
-                                <h3>Course and subjects</h3>
-                                <ul>
-                                    <li>Mathimatics</li>
-                                    <li>Advanced Mathimatics</li>
-                                    <li>English</li>
-                                    <li>SAT</li>
-                                </ul>
-                            </div>
-                            <div class="profile-contact">
-                                <h3>Contact Info</h3>
-                                <div>
-                                    <span>Location</span>
-                                    <p><i class="fa-location"> </i> Addis-Ababa, Ethiopia</p>
-                                    <span>Phone number</span>
-                                    <p>+25-198-58-566</p>
-                                    <span>Social media</span>
-                                    <p><i class=" fas fa-twitter"> </i> @lishaleman</p>
-                                    <p><i class="fas fa-instagram"> </i> @lishaleman</p>
-
-
-                                </div>
-
-
-                            </div>
-                            <div class="profile-cta">
-
-                                <button class="btn btn-primary">Contact Me</button>
-                                <button class="btn btn-outline">Packages </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div id="packages" class="profile-view-tab">
-                        <div class="pkg-list">
-                            {% for pkg in packages %}
-                            <div class="pkg-card">
-                                <div class="pkg-header">
-                                    <h2>{{pkg.name}}</h2>
-                                </div>
-                                <div class="pkg-price">
-                                    <h2>{{pkg.price}} <small>ETB.</small></h2>
-                                </div>
-                                <div class="pkg-body">
-                                    {{pkg.description}}
-                                    <li><span><i class="fas fa-check-square"></i>Total session</span>
-                                        <span>{{pkg.total_session}}</span>
-                                    </li>
-                                    <li><span><i class="fas fa-check-square"></i>duration per session</span>
-                                        <span>{{pkg.session_duration}}-min</span>
-                                    </li>
-                                    <li><span><i class="fas fa-check-square"></i>session per week</span>
-                                        <span>{{pkg.session_perweek}}</span>
-                                    </li>
-                                    <li><span><i class="fas fa-check-square"></i>session type
-                                        </span><span>{{pkg.session_type}}</span></li>
-
-                                </div>
-                                <div class="pkg-cta">
-                                    <button onclick=(openConfirmModal()) class="btn btn-primary">Send A Request</button>
-
-                                </div>
-                            </div>
-                            <div id="confirmModal" class="modal">
-                                <div class="modal-content confermation">
-                                    <div class="confirm-header">
-                                        <small>Session Request </small>
-                                        <span class="close" onclick="closeConfirmModal()">&times;</span>
-                                    </div>
-                                    <div class="confirm-msg">
-                                        NB: This Process dose't Requier any payment. <br> Please Confirm To Send a
-                                        Request
-                                        & wait Until @{{tutor.user.username}} accept your request,
-                                        <div class="confirm-obj">
-
-
-                                            <h3>Choose the subject you want to enroll </h3>
-
-                                            <form id="starting" action="{% url 'request_session'  pkg.id%}" method="post">
-                                                {%csrf_token%}
-                                                <select name="selected_subject" id="selected-subject">
-                                                    {%for subject in subjects %}
-                                                    <option name='subject' value="{{subject}}">{{subject}}</option>
-                                                    {%endfor%}
-                                                </select>
-                                                <input type="hidden" name="package_id" value="">
-                                                <div class="confirm-action">
-                                                    <button type="submit" class="btn btn-danger">Confirm</button>
-                                                    <button type="button" class="btn btn-primary">cancel</button>
-                                                </div>
-                                            </form>
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div id="availablity" class="profile-view-tab">
-
-                    </div>
-                    <div id="feedback" class="profile-view-tab ">
-                        <h2>Rating and review</h2>
-                        <div class="feedback-list">
-                            <div class="feedback-body">
-                                <div class="feedback-header">
-                                    <h1>4.5 <i class="fas fa-star"></i></h1>
-
-                                    <div class=" feedback-bar">
-                                        <p>5</p>
-                                        <div class="rating-container">
-                                            <div class="rate 5" style="width: 90%; background-color: #21a177;">90%</div>
-                                        </div>
-
-                                        <p>4</p>
-                                        <div class="rating-container">
-                                            <div class="rate 4" style="width: 80%;  background-color: #21a177;">80%
-                                            </div>
-                                        </div>
-
-                                        <p>3</p>
-                                        <div class="rating-container">
-                                            <div class="rate 3" style="width: 65%; background-color: #21a177;">65%</div>
-                                        </div>
-
-                                        <p>2</p>
-                                        <div class="rating-container">
-                                            <div class="rate 2" style="width: 60%; background-color: #21a177;">60%</div>
-                                        </div>
-                                        <p>1</p>
-                                        <div class="rating-container">
-                                            <div class="rate " style="width: 60%; background-color: #21a177;">60%</div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <hr>
-                                <div class="feedbacks">
-                                    <div class="feedback-card">
-                                        <div class="feedbacker">
-                                            <img src="img/makima.jpg" alt="">
-                                            <span> Harley Quien</span>
-                                        </div>
-                                        <span> * * * * 7/27/25 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur voluptas nostrum nihil voluptatibus
-                                            ip
-                                            sa repellat distinctio corporis, modi amet odio beatae recusandae </p>
-                                    </div>
-
-                                    <div class="feedback-card">
-                                        <div class="feedbacker">
-                                            <img src="img/makima.jpg" alt="">
-                                            <span> Harley Quien</span>
-                                        </div>
-                                        <span> * * * * 7/27/25 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur voluptas nostrum nihil voluptatibus
-                                            ip
-                                            sa repellat distinctio corporis, modi amet odio beatae recusandae </p>
-                                    </div>
-
-                                    <div class="feedback-card">
-                                        <div class="feedbacker">
-                                            <img src="img/makima.jpg" alt="">
-                                            <span> Harley Quien</span>
-                                        </div>
-                                        <span> * * * * 7/27/25 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur voluptas nostrum nihil voluptatibus
-                                            ip
-                                            sa repellat distinctio corporis, modi amet odio beatae recusandae </p>
-                                    </div>
-
-                                    <div class="feedback-card">
-                                        <div class="feedbacker">
-                                            <img src="img/makima.jpg" alt="">
-                                            <span> Harley Quien</span>
-                                        </div>
-                                        <span> * * * * 7/27/25 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur voluptas nostrum nihil voluptatibus
-                                            ip
-                                            sa repellat distinctio corporis, modi amet odio beatae recusandae </p>
-                                    </div>
-
-                                    <div class="feedback-card">
-                                        <div class="feedbacker">
-                                            <img src="img/makima.jpg" alt="">
-                                            <span> Harley Quien</span>
-                                        </div>
-                                        <span> * * * * 7/27/25 </span>
-                                        <p>Lorem ipsum dolor sit amet, consectetur voluptas nostrum nihil voluptatibus
-                                            ip
-                                            sa repellat distinctio corporis, modi amet odio beatae recusandae </p>
-                                    </div>
-                                </div>
-                            </div>
+                           <button class="btn-purchase">
+                      <i class="fas fa-shopping-cart" style="color: white;"></i> Purchase Now
+                    </button>
+                           <button class="btn-details" onclick="closeConfirmModal()">
+                      <i class="fas fa-times"  style="color: white;"></i> Close
+                    </button>
+                  </div>
 
                         </div>
+                      </form>
+                  </ul>
+                    
+                   
+                    
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            </div>
+          </div>
+
+           <div id="feedback" class="profile-view-tab">
+            <h2>Rating and review</h2>
+            <div class="feedback-list">
+              <div class="feedback-body">
+                <div class="feedback-header">
+                  <h1>4.5 <i class="fas fa-star"></i></h1>
+
+                  <div class="feedback-bar">
+                    <p>5</p>
+                    <div class="rating-container">
+                      <div class="rate 5" style="width: 90%; background-color: #21a177">
+                        90%
+                      </div>
                     </div>
 
+                    <p>4</p>
+                    <div class="rating-container">
+                      <div class="rate 4" style="width: 80%; background-color: #21a177">
+                        80%
+                      </div>
+                    </div>
+
+                    <p>3</p>
+                    <div class="rating-container">
+                      <div class="rate 3" style="width: 65%; background-color: #21a177">
+                        65%
+                      </div>
+                    </div>
+
+                    <p>2</p>
+                    <div class="rating-container">
+                      <div class="rate 2" style="width: 60%; background-color: #21a177">
+                        60%
+                      </div>
+                    </div>
+                    <p>1</p>
+                    <div class="rating-container">
+                      <div class="rate" style="width: 60%; background-color: #21a177">
+                        60%
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-            </div>
-        </main>
-    </div>
+                <hr />
+                <div class="feedbacks">
+                  <div class="feedback-card">
+                    <div class="feedbacker">
+                      <img src="img/makima.jpg" alt="" />
+                      <span> Harley Quien</span>
+                    </div>
+                    <span> * * * * 7/27/25 </span>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
+                      nihil voluptatibus ip sa repellat distinctio corporis,
+                      modi amet odio beatae recusandae
+                    </p>
+                  </div>
 
+                  <div class="feedback-card">
+                    <div class="feedbacker">
+                      <img src="img/makima.jpg" alt="" />
+                      <span> Harley Quien</span>
+                    </div>
+                    <span> * * * * 7/27/25 </span>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
+                      nihil voluptatibus ip sa repellat distinctio corporis,
+                      modi amet odio beatae recusandae
+                    </p>
+                  </div>
 
+                  <div class="feedback-card">
+                    <div class="feedbacker">
+                      <img src="img/makima.jpg" alt="" />
+                      <span> Harley Quien</span>
+                    </div>
+                    <span> * * * * 7/27/25 </span>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
+                      nihil voluptatibus ip sa repellat distinctio corporis,
+                      modi amet odio beatae recusandae
+                    </p>
+                  </div>
 
-    <div id="confirmModal" class="modal">
-        <div class="modal-content confermation">
-            <div class="confirm-header">
-                <small>Delete File</small>
-                <span class="close" onclick="closeConfirmModal()">&times;</span>
-            </div>
-            <div class="confirm-msg">
-                are you you want to do smth tosure this thing
-                <div class="confirm-obj">
-                    package name and blah blah!
+                  <div class="feedback-card">
+                    <div class="feedbacker">
+                      <img src="img/makima.jpg" alt="" />
+                      <span> Harley Quien</span>
+                    </div>
+                    <span> * * * * 7/27/25 </span>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
+                      nihil voluptatibus ip sa repellat distinctio corporis,
+                      modi amet odio beatae recusandae
+                    </p>
+                  </div>
+
+                  <div class="feedback-card">
+                    <div class="feedbacker">
+                      <img src="img/makima.jpg" alt="" />
+                      <span> Harley Quien</span>
+                    </div>
+                    <span> * * * * 7/27/25 </span>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
+                      nihil voluptatibus ip sa repellat distinctio corporis,
+                      modi amet odio beatae recusandae
+                    </p>
+                  </div>
                 </div>
+              </div>
             </div>
-
-            <div class="confirm-action">
-                <button class="btn btn-danger">Confirm</button>
-                <button class="btn btn-primary">cancel</button>
-            </div>
+          </div>
         </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="confirmModal" class="modal">
+    <div class="modal-content confermation">
+      <div class="confirm-header">
+        <small>Delete File</small>
+        <span class="close" onclick="closeConfirmModal()">&times;</span>
+      </div>
+      <div class="confirm-msg">
+        are you you want to do smth tosure this thing
+        <div class="confirm-obj">package name and blah blah!</div>
+      </div>
+
+      <div class="confirm-action">
+        <button class="btn btn-danger">Confirm</button>
+        <button class="btn btn-primary">cancel</button>
+      </div>
     </div>
+  </div>
 
-    <script>
+  <script>
+    function openConfirmModal() {
+      document.getElementById("confirmModal").style.display = "block";
+    }
 
-        function openConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'block';
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'none';
-        }
-    </script>
-    {% include "includes/_scripts.html" %}
+    function closeConfirmModal() {
+      document.getElementById("confirmModal").style.display = "none";
+    }
+  </script>
+  {% include "includes/_scripts.html" %}
 </body>
 
 </html>

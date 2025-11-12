@@ -22,18 +22,17 @@ def get_tutor_dashboard_context(user):
     """Returns all common tutor dashboard context data."""
     today = timezone.now()
     tomorrow = timezone.now() + datetime.timedelta(days=1)
-    tutor = TutorProfile.objects.filter(user=user).first()
+#     tutor = TutorProfile.objects.filter(user=user).first()
+#     bookings = BaseSession.objects.filter(tutor=user)
+#     earning = Payment.objects.filter(tutor=user)
+#     feedback = FeedBack.objects.filter(tutor=user)
     sessions = BookedSession.objects.all()
-    bookings = BaseSession.objects.filter(tutor=user)
-    earning = Payment.objects.filter(tutor=user)
-    feedback = FeedBack.objects.filter(tutor=user)
     upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
-    avg_rating = FeedBack.get_tutor_average(user)
     chats = Chat.objects.filter(participants=user).order_by('-created_at')
      
     return {
         'user': user,
-        'tutor': tutor,
+     #    'tutor': tutor,
         'sessions': sessions,
         'upcoming_sessions': upcoming_sessions,
      #    'avg_rating': avg_rating,
@@ -47,7 +46,16 @@ def get_tutor_dashboard_context(user):
 def tutor_dashbord(request):
      if not request.user.role == 'tutor':
           return HttpResponseBadRequest('Please contact the Admin 9858')
+
+     sessions = BookedSession.objects.all()
+     earning = Payment.objects.filter(tutor=request.user)
+
+     avg_rating = FeedBack.get_tutor_average(request.user)
+     total_earnings = Payment.total_earnings(self=request.user)
+     pending_balance = Payment.pending_balance(self=request.user)
+     ctx = {'total_earning':total_earnings, 'pending_balance':pending_balance,'avg_rating':avg_rating}
      context = get_tutor_dashboard_context(request.user)
+     context.update(ctx)
      return render(request, 'dashboard/dashboard.html',context)
 
  
@@ -60,10 +68,9 @@ def tutor_dashbord(request):
 @login_required(login_url='/user/login/')
 def my_students(request):
      
-
      context = get_tutor_dashboard_context(request.user)
-     context.update({'sessions' :BaseSession.objects.filter(tutor=request.user)})
-     # use chats and join with base session to eliminate redundunt students with multiple BaseSession
+     my_students = User.objects.filter(chats__participants=request.user, role='student').distinct()
+     context.update( {'my_students':my_students})
      return render(request,'tutor/pages/my_students.html',context)
 
 @login_required(login_url='/user/login/')
@@ -99,38 +106,50 @@ def earning(request):
         return render(request, 'tutor/pages/earning.html/',context)
 
 @login_required(login_url='/user/login/')
-def tutor_profile(request): 
+def my_profile(request): 
      user = request.user
-    
+     avatar_form = AvatarForm(request.POST,request.FILES,instance=request.user)
      user_form = UserProfileEditForm(request.POST or None, instance=user)
      tutor_form = None
      student_form  = None
      if user.role == 'tutor':
         tutor_data = get_object_or_404(TutorProfile, user=user)
-        tutor_form = TutorProfileEditForm(request.POST or None, request.FILES or None, instance=tutor_data)
-
+        tutor_form = TutorProfileEditForm(request.POST or None,request.FILES or None,   instance=tutor_data)
+        ctx = {'tutor':tutor_data}
      elif user.role == 'student':
           student_data = get_object_or_404(StudentProfile, user=user)
           student_form = StudentProfileEditForm(request.POST or None, instance=student_data)
+          ctx = {'student':student_data}
        
-        
-
+         
      if request.method == 'POST':
-        if user_form.is_valid():
-            user_form.save()
+          if user_form.is_valid():
+               user_form.save()
+               
+               if tutor_form and tutor_form.is_valid():
+                    tutor_form.save()
 
-            if tutor_form and tutor_form.is_valid():
-                tutor_form.save()
+               if student_form and student_form.is_valid():
+                    student_form.save()
+          if avatar_form.is_valid():
+               avatar_form.save()
+               return redirect('my_profile')
 
-            if student_form and student_form.is_valid():
-                student_form.save()
-                return redirect('tutor_profile')
      context = {
         'user_form': user_form,
         'tutor_form': tutor_form,
         'student_form': student_form,
-    }
+          'avatar_form':avatar_form
+
+     }
+     context.update(ctx)
      return render(request, 'sessions/profile_settings.html',context)
+
+
+def view_student(request, student_id):
+     student = get_object_or_404(StudentProfile, id=student_id)
+     context = {'student':student}
+     return render(request, 'tutor/pages/student_view.html',context)
 
 
 

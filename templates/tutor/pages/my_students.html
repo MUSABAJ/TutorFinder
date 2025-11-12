@@ -14,26 +14,26 @@
             </div>
             <div class="section-body" id="studentsGrid" hx-get="/api/students" hx-trigger="load">
                 <div class="grid">
-                    {% for student in sessions %}
-                     <div class="card">
+                    {% for student in my_students %}
+                     <div class="my-card">
                         <div class="card-hero">
-                            <img class="avatar" src="/static{{student.student.avatar.url}} " alt="Student">
+                            <img class="avatar" src="/static{{student.avatar.url}} " alt="Student">
                         </div>
                         <div class="card-body">
-                            <strong>{{student.student}}</strong>
-                            <div class="meta">{{student.student.profile.grade_level}}· Joined Jan 2025</div>
+                            <strong>{{student.first_name}} {{student.last_name}}</strong>
+                            <div class="meta">{{student.profile.grade_level}} · {{student.profile.field_of_study}}</div>
                             <div class="chips">
                                 <span class="chip">Mathematics</span>
                                 <span class="chip">Physics</span>
                             </div>
                             <div class="actions">
-                                <a href="student-profile.html" class="btn btn-outline btn-vsm">View</a>
-                                <a href="chat.html" class="btn btn-primary btn-vsm">Message</a>
+                                <a href="{% url 'view_student' student.profile.id %}" class="btn btn-outline btn-vsm">View</a>
+                                <a href="{% url 'room_user'  student.id%}" class="btn btn-primary btn-vsm">Message</a>
                             </div>
                         </div>
                     </div> 
                     {% endfor %} 
-                    {% if not students %}
+                    {% if not sessions %}
                         you have no students
                     {% endif %}
                 </div>

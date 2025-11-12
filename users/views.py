@@ -150,48 +150,51 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-def profile_update(request):
-    user = request.user
-    
-    user_form = UserProfileEditForm(request.POST or None, instance=user)
-    tutor_form = None
-    student_form  = None
-    if user.role == 'tutor':
-        tutor_data = get_object_or_404(TutorProfile, user=user)
-        tutor_form = TutorProfileEditForm(request.POST or None, request.FILES or None, instance=tutor_data)
+# def profile_update(request):
+#     user = request.user
+#     avatar_form = AvatarForm(request.POST,request.FILES,instance=request.user)
+#     user_form = UserProfileEditForm(request.POST or None, instance=user)
+#     tutor_form = None
+#     student_form  = None
+#     if user.role == 'tutor':
+#         tutor_data = get_object_or_404(TutorProfile, user=user)
+#         tutor_form = TutorProfileEditForm(request.POST or None, request.FILES or None, instance=tutor_data)
 
-    elif user.role == 'student':
-        student_data = get_object_or_404(StudentProfile, user=user)
-        student_form = StudentProfileEditForm(request.POST or None, instance=student_data)
+#     elif user.role == 'student':
+#         student_data = get_object_or_404(StudentProfile, user=user)
+#         student_form = StudentProfileEditForm(request.POST or None, instance=student_data)
        
         
 
-    if request.method == 'POST':
-        if user_form.is_valid():
-            user_form.save()
+#     if request.method == 'POST':
+#         if user_form.is_valid():
+#             user_form.save()
 
-            if tutor_form and tutor_form.is_valid():
-                tutor_form.save()
+#             if tutor_form and tutor_form.is_valid():
+#                 tutor_form.save()
 
-            if student_form and student_form.is_valid():
-                student_form.save()
-        return redirect('profile')
-    context = {
-        'user_form': user_form,
-        'tutor_form': tutor_form,
-        'student_form': student_form,
-    }
-    return render(request, 'tutor/tutor_profile.html',context)
+#             if student_form and student_form.is_valid():
+#                 student_form.save()
+#         if avatar_form.is_valid():
+#             avatar_form.save()
+#         return redirect('profile')
+#     context = {
+#         'user_form': user_form,
+#         'tutor_form': tutor_form,
+#         'student_form': student_form,
+#         'avatar_form':avatar_form
+#     }
+#     return render(request, 'tutor/tutor_profile.html',context)
 
 
 def avatar_update(request):
     if request.method == 'POST':
-        form = AvatarForm(request.POST,request.FILES,instance=request.user)
+        avatar_form = AvatarForm(request.POST,request.FILES,instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('profile')
     form = AvatarForm(instance=request.user)
-    return render(request, 'tutor/profile.html',{'form':form})
+    return render(request, 'include/_avartar_form.html',{'avatar_form':form})
 
 
 # def add_certificate(request):

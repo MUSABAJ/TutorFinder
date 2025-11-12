@@ -43,7 +43,7 @@ class User(AbstractUser):
 
 
 class TutorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='tutor')
     language = models.TextField()
     qualification = models.TextField(blank=True, null=True)
     experience = models.CharField(max_length=50,blank=True, null=True)
@@ -57,7 +57,7 @@ class TutorProfile(models.Model):
     horuly_rate = models.IntegerField()
     rating = models.DecimalField(default=0.0 ,max_digits=5, decimal_places=2)
     is_verified = models.BooleanField(default=False)
-    # available = models.BooleanField(default=False)
+    available = models.BooleanField(default=False)
     def __str__(self):
         return self.user.username
 
@@ -83,6 +83,6 @@ class StudentProfile(models.Model):
     learning_goal = models.CharField(max_length=60, choices=GOAL_CHOICES ,default='other')
     grade_level = models.CharField(max_length=60,choices=GRADE_CHOICES, default='primary')
     favorite = models.CharField(blank=True, null=True)
-    #add 'field_of_study',
+    field_of_study = models.CharField(max_length=100,blank=True, null=True)
     def __str__(self):return self.user.username
     

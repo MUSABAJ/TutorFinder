@@ -1,33 +1,163 @@
+
 {% load static %}
-<script src="{% static 'HTMX.MINI.JS/htmx.min.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href='{% static "HTMX.MINI.JS/htmx.min.js"%}'>
 
-<h1>Requested Sessions</h1>
+<style>/* --- Global Reset --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
 
-{% for request in requests %}
-  <div class="session-request" style="border: 1px solid #ccc; margin: 10px; padding: 10px;">
-    <p><strong>ID:</strong> {{ request.id }}</p>
-    <p><strong>Student:</strong> {{ request.student }}</p>
+/* --- Page Layout --- */
+body {
+  background: linear-gradient(135deg, #f8f9fb, #eef1f5);
+  min-height: 100vh;
+  padding: 40px 20px;
+  color: #333;
+}
 
-    <div>
-      <button 
-        hx-post="{% url 'handle_request' request.id %}" 
-        hx-vals='{"action": "accept"}' 
-        hx-target="closest .session-request"
-        hx-swap="outerHTML"
-        class="accept-btn"
-      >
-        ✅ Accept
-      </button>
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+}
 
-      <button 
-        hx-post="{% url 'handle_request' request.id %}" 
-        hx-vals='{"action": "decline"}' 
-        hx-target="closest .session-request"
-        hx-swap="outerHTML"
-        class="decline-btn"
-      >
-        ❌ Decline
-      </button>
-    </div>
-  </div>
-{% endfor %}
+.page-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #2a2a2a;
+}
+
+/* --- Request Cards --- */
+.requests-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.session-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 5px solid transparent;
+}
+
+.session-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  border-left: 5px solid #4b9ce2;
+}
+
+/* --- Info --- */
+.session-info h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.session-info p {
+  margin-bottom: 6px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* --- Buttons --- */
+.actions {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 0.95rem;
+}
+
+.accept-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.accept-btn:hover {
+  background-color: #43a047;
+  transform: scale(1.03);
+}
+
+.decline-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.decline-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.03);
+}
+
+/* --- Empty State --- */
+.empty-state {
+  text-align: center;
+  margin-top: 100px;
+  color: #666;
+}
+
+.empty-state img {
+  max-width: 250px;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+}
+</style>
+    <h1 class="page-title">📚 Requested Sessions</h1>
+
+    {% if requests %}
+      <div class="requests-grid">
+        {% for request in requests %}
+          <div class="session-card" id="session-{{ request.id }}">
+            <div class="session-info">
+              <h3>Session #{{ request.id }}</h3>
+              <p><strong>Student:</strong> {{ request.student }}</p>
+              <p><strong>Requested on:</strong> {{ request.created_at|date:"M d, Y" }}</p>
+            </div>
+
+            <div class="actions">
+              <button 
+                hx-post="{% url 'handle_request' request.id %}" 
+                hx-vals='{"action": "accept"}' 
+                hx-target="#session-{{ request.id }}"
+                hx-swap="outerHTML"
+                class="btn accept-btn"
+              >
+                ✅ Accept
+              </button>
+
+              <button 
+                hx-post="{% url 'handle_request' request.id %}" 
+                hx-vals='{"action": "decline"}' 
+                hx-target="#session-{{ request.id }}"
+                hx-swap="outerHTML"
+                class="btn decline-btn"
+              >
+                ❌ Decline
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <img src="{% static 'img/empty_state.svg' %}" alt="No requests">
+        <p>No session requests yet. 🎧 Maybe grab a coffee while you wait ☕</p>
+      </div>
+    {% endif %}
+ 

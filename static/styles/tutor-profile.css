@@ -44,19 +44,43 @@
  
 
 .card-header {
-  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.0rem;
+  margin-top: 0.2rem;
 }
 
+#id_id_card{
+  padding-top: 2.92%;
+}
 .card-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
   padding: 0;
   color: var(--primary-color);
 }
-
+.file-form-group div {
+  text-align: left;
+  max-height: 100px;
+  display: grid;
+  grid-template-columns: 5rem auto;
+   overflow-y: hidden;
+   gap: 0.5rem;
+  border: 1px solid var(--border-color);
+  padding: 10px 10px;
+  border-radius: var(--radius-md);
+}
+.file-form-group label {
+    font-weight: 500;
+   padding-right: 0.5rem;
+  color: var(--text-primary);
+}
+.file-form-group input { 
+   padding-right: 0.5rem;
+   margin-right:10px;
+   margin-right:10px;
+  color: var(--text-primary);
+}
 .form-input {
   width: 100%;
   padding: 0.75rem;
@@ -66,8 +90,8 @@
   font-size: 0.675rem;
   transition: border-color 0.2s;
 }
-.form-group input, label{
-  font-size: 0.8rem;
+.form-group input{
+  font-size: 0.7rem;
   width: 100%;
 }
 .form-group{
@@ -106,19 +130,20 @@
     box-shadow: var(--shadow-sm);
     justify-content: flex-start;
  gap: 1.2rem;
-}
+ }
 .profile-avatar-large {
 display: flex;
 flex-direction: column;
 }
 .profile-avatar-large img{
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   border-radius: 50%;
 }
 
-.profile-card h3 {
+.profile-card h1 {
   font-weight: 600;
+  font-size: 40px;
   margin-bottom: 0.5rem;
 }
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseForbidden
-from django.contrib import messages
+from notifications.utils import create_notification
 from django.db.models import Avg
 from .models import FeedBack
 from .forms import FeedbackForm
@@ -33,6 +33,12 @@ def give_feedback(request, session_id):
             feedback.student = session.student
             feedback.tutor = session.tutor
             feedback.save()
+                
+            create_notification(
+            recipient= session.tutor,
+            user=request.user,
+            type='session_feedback',
+            link= "{% url 'base_session_list' %}")
 
 
             avg_rating = FeedBack.get_tutor_average(session.tutor)
@@ -55,7 +61,7 @@ def feedback_list(request):
     feedbacks = FeedBack.objects.filter(tutor=request.user)
     avg_rating = FeedBack.get_tutor_average(request.user)
 
-    return render(request, 'feedback/feedback_list.html', {
+    return render(request, 'feedback/list.html', {
         'feedbacks': feedbacks,
         'avg_rating': avg_rating
     })

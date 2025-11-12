@@ -1,0 +1,104 @@
+{% load static %} {%csrf_token%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include "includes/_head.html" %}
+</head>
+<style>
+  .dashboard-main {
+    display: block;
+  }
+</style>
+
+<body>
+  <!-- Navbar -->
+  {% include "includes/_navbar.html" %}
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      {% include "includes/_sidebar.html" %}
+    </aside>
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="main-view">
+        <div class="main-view-top">
+          <div id="about" class="profile-view-tab active">
+            <div class="profile">
+              <div class="profile-top" style="background-image: url(/static{{student.user.avatar.url}});">
+                <div class="profile-img">
+                  <img src="/static{{student.user.avatar.url}}" alt="makima san" />
+                </div>
+              </div>
+              <div class="profile-info">
+                <div class="profile-name">
+                  <h2 style="font-size: 43px;
+                              font-weight: 600;">
+                    {{student.user.first_name}} {{student.user.last_name}}<span> </span>
+                  </h2>
+                  <p>Studying 	• {{student.field_of_study}}</p>
+
+                  <p class="profile-info-icons">
+                    <span><i class="fas fa-location"></i>{{student.user.country}} 	• {{student.user.city}} </span>
+                  </p>
+                </div>
+                <div>
+                  <button class="btn btn-primary">Chat</button>
+                </div>
+              </div>
+            </div>
+            <div class="profile-detail">
+              <div class="profile-about" style=" border-bottom: none;">
+                <h3>About Me</h3>
+                <div style="display: flex; gap: 1rem; justify-content:space-between">
+                  <div class="profile-about"style="width: 500px;">
+                    <strong>Bio</strong>
+                    <i>{{student.user.bio}}</i>
+                    <span><i class="fas fa-user"></i> <strong>User</strong> - {{student.user.role}}
+                    </span>
+                    <span><i class="fas fa-female"></i> <strong>Gender</strong> -
+                      {{student.user.gender}}</span>
+                    <span><i class="fas fa-calendar"></i> <strong></strong> - 21 feb
+                      2025</span>
+                  </div>
+                  <div class="profile-contact" style="width: 400px;">
+                    <br>
+                  <span><i class="fas fa-user"></i>   <strong>Learning Goal</strong> - 
+                    <i>{{student.learning_goal}}</i>
+                    </span>
+
+                    <span><i class="fas fa-user"></i> <strong>Acadamic Level</strong> - {{student.grade_level}}
+                    </span>
+                    <span><i class="fas fa-female"></i> <strong>Field of Study</strong> -
+                      {{student.field_of_study}}</span>
+                    <span><i class="fas fa-calendar"></i> <strong></strong> - 21 feb
+                      2025</span>
+                  </div>
+                   <div class="profile-contact" style="width: 400px;">
+                   <div><br>
+                  <strong>Location</strong>
+                  <p>&ensp; &ensp; &ensp;<i class="fa-location"> </i> {{student.user.city}}, {{student.user.country}}</p>
+                  <span>Phone number</span>
+                  <p>&ensp; &ensp;&ensp;{{student.user.phone}}</p>
+                  <span>Social media</span>
+                  <p>&ensp; &ensp;&ensp;<i class="fas fa-twitter"> </i> @lishaleman</p>
+                  <p>&ensp; &ensp;&ensp;<i class="fas fa-instagram"> </i> @lishaleman</p>
+                </div>
+              </div>
+                </div>
+              </div> 
+            </div>
+
+
+          </div>
+        </div>
+    </main>
+  </div>
+
+
+
+  {% include "includes/_scripts.html" %}
+</body>
+
+</html>

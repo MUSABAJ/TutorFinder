@@ -1,57 +1,405 @@
 {% extends "dashboard.html" %}
 
 {% block main %}
+<style>
+    :root {
+        --primary: #1bb392;
+        --primary-light: #1bb392;
+        --primary-dark: #008165;
+        --accent: #027670;
+        --text-dark: #2C3E50;
+        --text-light: #7F8C8D;
+        --background: #F8F9FA;
+        --white: #FFFFFF;
+        --border: #E0E0E0;
+        --success: #28A745;
+        --warning: #FFC107;
+        --danger: #DC3545;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    #session {
+         width: 100%;
+         padding: 1rem;
+        margin: 0 auto;
+        overflow-y: scroll;
+    }
+
+    .session-header-main {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .session-header-main h1 {
+        color: var(--text-dark);
+        font-size: 2.2rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+
+    .session-header-main p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .session-list {
+        display: grid;
+        flex-direction: column;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 25px; 
+    }
+
+    .sessionR-card {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border);
+        position: relative;
+
+    }
+
+    .sessionR-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .session-header {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: var(--white);
+        padding: 20px 25px;
+        position: relative;
+    }
+
+    .session-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 600;
+        line-height:0.2;
+    }
+
+    .session-price {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        text-align: right;
+    }
+
+    .session-price h2 {
+        color: var(--white);
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .session-price small {
+        font-size: 0.9rem;
+        font-weight: 400;
+        opacity: 0.9;
+    }
+
+    .session-body {
+        padding: 25px;
+    }
+
+    .session-body li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+        list-style: none;
+    }
+
+    .session-body li:last-child {
+        border-bottom: none;
+    }
+
+    .session-body li span:first-child {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .session-body li span:last-child {
+        color: var(--text-dark);
+        font-weight: 600;
+        text-align: right;
+        font-size: 0.95rem;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-confirmed {
+        background: rgba(40, 167, 69, 0.15);
+        color: var(--success);
+    }
+
+    .status-pending {
+        background: rgba(255, 193, 7, 0.15);
+        color: var(--warning);
+    }
+
+    .status-cancelled {
+        background: rgba(220, 53, 69, 0.15);
+        color: var(--danger);
+    }
+
+    .session-actions {
+        padding: 20px 25px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 140px;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+    }
+
+    .btn-secondary {
+        background: var(--background);
+        color: var(--text-dark);
+        border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--border);
+        transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+        background: var(--text-light);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Payment Status */
+    .payment-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .payment-paid {
+        background: rgba(40, 167, 69, 0.15);
+        color: var(--success);
+    }
+
+    .payment-pending {
+        background: rgba(255, 193, 7, 0.15);
+        color: var(--warning);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--border);
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--text-light);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        #session {
+            padding: 20px 15px;
+        }
+
+        .session-list {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .session-header-main h1 {
+            font-size: 1.8rem;
+        }
+
+        .session-header {
+            padding: 15px 20px;
+        }
+
+        .session-price {
+            position: static;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .session-body {
+            padding: 20px;
+        }
+
+        .session-body li {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .session-body li span:last-child {
+            text-align: left;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .session-list {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
 <div id="session">
+    
     <div class="session-list">
         {% for session in base_session %}
-        <div class="session-card">
+        <div class="sessionR-card">
             <div class="session-header">
-                <h2>{{session.subject_name}}</h2>
-            </div>
-            <div class="session-price">
-                <h2>{{session.price}} <small>ETB.</small></h2>
-            </div>
+                <h2>{{ session.subject_name }}</h2>
+                    <h2>{{ session.price }} <small>ETB</small></h2>
+                                 
+             </div>
+            
             <div class="session-body">
-                
-                <li><span> Session Status</span>
-                    <span>{{session.status}}</span>
+                <li>
+                    <span>Session Status</span>
+                    <span class="status-badge status-{{ session.status|lower }}">
+                        {{ session.status }}
+                    </span>
                 </li>
-                <li><span> Price</span>
-                    <span>{{session.price}} : {{session.is_payed}}</span>
+                <li>
+                    <span>Price</span>
+                    <span>
+                        {{ session.price }} ETB
+                        <span class="payment-status payment-{% if session.is_payed %}paid{% else %}pending{% endif %}">
+                            {% if session.is_payed %}
+                                ✓ Paid
+                            {% else %}
+                                ⏳ Pending
+                            {% endif %}
+                        </span>
+                    </span>
                 </li>
-                <li><span> Total session</span>
-                    <span>{{session.total_session}}</span>
+                <li>
+                    <span>Total Sessions</span>
+                    <span>{{ session.total_session }}</span>
                 </li>
-                <li><span>Unscheduld session</span>
-                    <span>{{session.remaining_sessions}}</span>
+                <li>
+                    <span>Unscheduled Sessions</span>
+                    <span>{{ session.remaining_sessions }}</span>
                 </li>
-                 
-                <li><span> session type
-                    </span><span>{{session.session_type}}</span></li>
-                    <li><span>Requested at </span>
-                    <span>{{session.scheduled_at}}</span>
+                <li>
+                    <span>Session Type</span>
+                    <span>{{ session.session_type }}</span>
+                </li>
+                <li>
+                    <span>Requested At</span>
+                    <span>{{ session.scheduled_at }}</span>
                 </li>
             </div>
-            {% if session.status == 'confirmed' %}
-                <a href="{% url  'book_session' session.id %}" >
-                  <button class="btn btn-primary">BOOK</button></a>
-         {% endif %}
+            
+            <div class="session-actions">
+                {% if session.status == 'confirmed' %}
+                    <a href="{% url 'book_session' session.id %}" class="btn btn-primary">
+                        <i class="fas fa-calendar-plus"></i>
+                        Book Session
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary" disabled>
+                        {% if session.status == 'pending' %}
+                            <i class="fas fa-clock"></i>
+                            Waiting Confirmation
+                        {% else %}
+                            <i class="fas fa-times"></i>
+                            Declined    
+                        {% endif %}
+                    </button>
+                {% endif %}
+            </div>
         </div>
-        
-
-        {% comment %} <div id="confirmModal" class="modal">
-            <div class="modal-content booking">
-                <div class="confirm-header">
-                    <small>Session Request </small>
-                    <span class="close" onclick="closeConfirmModal()">&times;</span>
-                </div>
-                  {% include "student/pages/buy_package.html" %}
-
-            </div>
-        </div> {% endcomment %}
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Sessions Found</h3>
+            <p>You don't have any sessions yet. Start by booking a session with your tutor.</p>
+        </div>
         {% endfor %}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects and animations
+        const sessionCards = document.querySelectorAll('.session-card');
+        
+        sessionCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Format dates if needed
+        const dateElements = document.querySelectorAll('.session-body li span:last-child');
+        dateElements.forEach(element => {
+            const text = element.textContent;
+            // You can add date formatting logic here if needed
+            // For example: element.textContent = new Date(text).toLocaleDateString();
+        });
+    });
+</script>
 
 {% endblock main %}

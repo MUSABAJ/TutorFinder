@@ -12,7 +12,7 @@
     {% with message=chat.messages.all.last %}
 
     <div hx-get="{% url 'room' chat.id %}" hx-swap="outerHTML" hx-target=".main-view-top" hx-push-url="true"  class="message-item">
-      <img src=" /static{{ message.sender.avatar.url}}" alt="Tutor" class="message-avatar">
+      <img src=" /static{% if message.sender != request.user %}{{ message.sender.avatar.url }}{% else %}{{ message.receiver.avatar.url }}{% endif %}" alt="Tutor" class="message-avatar">
       <div class="message-content">
         <div class="message-header">
 

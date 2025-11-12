@@ -1,4 +1,5 @@
 {% block main %}
+{% if chat %}
 <div class="chat-content-header">
     <div class="current-chat-info">
         <img src="/static{{receiver.avatar.url}}" alt="Dr. Sarah Ahmed">
@@ -11,10 +12,18 @@
 </div>
 
     {% include "chat/partials/_messages.html" %}
-
+    {% else %}
+    <div style="display: flex;
+                background-color: rgba(243, 243, 243, 0.53);
+                align-items: center;
+                justify-content: center ;
+                height: 90%;"
+                ><p style="background-color: rgb(235, 235, 235); padding: 0.31rem; border-radius: 0.51rem;"> Select a chat to Start messaging</p></div>
+{% endif %}
 <div class="chat-input-container">
-
-    {%include "chat/partials/_message_form.html" %}
+{% if chat %}
+        {%include "chat/partials/_message_form.html" %}
+{% endif %}
 
 </div>
 </div>

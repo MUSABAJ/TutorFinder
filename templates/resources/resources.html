@@ -17,41 +17,8 @@
         </div>
 
         <div class="resources-filters">
-            <div class="filter-group">
-                <label for="subject-filter">Subject</label>
-                <select id="subject-filter" hx-get="/api/resources/filter" hx-target="#resources-grid">
-                    <option value="all">All Subjects</option>
-                    <option value="mathematics">Mathematics</option>
-                    <option value="physics">Physics</option>
-                    <option value="chemistry">Chemistry</option>
-                    <option value="biology">Biology</option>
-                    <option value="english">English</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="type-filter">Type</label>
-                <select id="type-filter">
-                    <option value="all">All Types</option>
-                    <option value="notes">Notes</option>
-                    <option value="practice">Practice Tests</option>
-                    <option value="videos">Videos</option>
-                    <option value="books">E-Books</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="level-filter">Level</label>
-                <select id="level-filter">
-                    <option value="all">All Levels</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="<i class="fa fa-download"></i>  7 days ago"><i class="fa fa-download"></i>  7 days ago</option>
-                    <option value="advanced">Advanced</option>
-                </select>
-            </div>
-
-            <div class="search-group">
-                <input type="text" placeholder="Search resources..." hx-get="/api/resources/search"
+              <div class="search-group">
+                <input type="text" placeholder="Search resources..." hx-get="{% url 'resource_search' %}" name="query" value="{{query}}"
                     hx-target="#resources-grid" hx-trigger="keyup changed delay:500ms">
             </div>
         </div>
@@ -66,34 +33,12 @@
         </div>
 
         <div class="resources-grid" id="resources-grid">
-            {% for resource in resources %}
-             <div class="resource-card">
-                <div class="resource-thumbnail">
-                    <img src="img/makima.jpg?height=200&width=300" alt="Algebra Fundamentals">
-                    <div class="resource-type">{{resource.title}}</div>
-                </div>
-                <div class="resource-content">
-                    <h3>{{resource.title}}</h3>
-                    <p>{{resource.description}}</p>
-                    <div class="resource-meta">
-                        <span class="subject">{{resource.subject}}</span>
-                        <span class="level"><i class="fa fa-download"></i>  2 months ago</span>
-                    </div>
-                    <div class="resource-stats">
-                        <button class=" btn btn-primary btn-vsm">Download</button>
-                        <button class=" btn btn-danger btn-vsm">Delete</button>
-                        <span><i class="fa fa-download"></i> 1,234 </span>
-                    </div>
-
-                </div>
-            </div>
-            {% endfor %}
+            {% include "resources/_results.html" %}
             
         </div>
         {% if not resources %}
         <div class="load-more">
-            <button class="btn-outline btn-sm" hx-get="/api/resources/load-more" hx-target="#resources-grid"
-                hx-swap="beforeend">
+            <button class="btn-outline btn-sm"  >
                 No Resources Availabele
             </button>
         </div>

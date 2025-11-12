@@ -7,7 +7,7 @@
         <img src="{% static 'img/icon.png' %}" alt="PI">
         <h2>FLARE</h2>
           <div class="dashboard-header">
-            <h3>Welcome back, Sarah!</h3>
+            <h3>Selam, {{request.user}}</h3>
         </div>
       </div>
   
@@ -24,9 +24,9 @@
         </div>
   
         <div class="user-info">
-          <img src="{% static 'img/makima.jpg' %}" alt="Profile" id="user-avatar" class="user-avatar">
+          <img src="/static{{request.user.avatar.url}}" alt="Profile" id="user-avatar" class="user-avatar">
           <div id="profile-dropdown" class="dropdown-container">
-            <a href="{% url 'tutor_profile' %}">My Account</a>
+            <a href="{% url 'my_profile' %}">My Account</a>
              <a href="{% url 'logout' %}">Log Out</a>
             <hr>
         <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode"><span>☀️</span><span>Light</span></button>

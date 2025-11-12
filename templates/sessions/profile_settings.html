@@ -31,7 +31,8 @@
                         <div class="profile-tabs">
                             <button class="tab-btn active" value="profile" onclick="showProfileTab('personal')">Personal
                                 Info</button>
-                            <button class="tab-btn" value="tutor" onclick="showProfileTab('tutor')">Tutor
+                            <button class="tab-btn" value="tutor" onclick="showProfileTab('tutor')">
+                                {% if request.user.role == 'tutor' %} Tutor {% else %}Student {% endif %}
                                 Details</button>
                             <button class="tab-btn" value="settings"
                                 onclick="showProfileTab('settings')">Settings</button>
@@ -47,17 +48,25 @@
                                         <h3>Personal Information</h3>
                                     </div>
                                     <div class="profile-card">
-                                        <div class="profile-avatar-large"><img src="img/makima.jpg" alt=""></div>
-                                        <div>
-                                            <h3>John Doe</h3>
-                                            <p>Mathematics & Physics Tutor</p>
-
-                                            <a class="btn btn-sm">Change Avatar</a>
-                                    <button class="btn btn-outline">Edit</button>
-
+                                        <div class="profile-avatar-large"><img src="/static{{user.avatar.url}}" alt="">
                                         </div>
+
+                                        <div>
+                                            <h1>{{user.first_name}} {{user.last_name}}</h1>
+                                            {% if request.user.role == 'tutor' %}
+                                            <p>{{tutor.subjects }} Tutor</p>
+                                            {% else %}
+                                            <p>{{student.field_of_study }} </p>
+                                            {% endif %}
+
+                                            <a onclick="openAvatarModal()" class="btn btn-sm">Change Avatar</a>
+                                            {% if not user.telegram_id %}<a href="https://t.me/yameteKudasiBot?start={{ user.id }}" class="btn btn-primary">
+                                                🔗 Link to your Telegram
+                                            </a>{% endif %}
+                                        </div>
+                                        
                                     </div>
-                                    <form class="profile-form" method="post">
+                                    <form class="profile-form" method="post" enctype="multipart/form-data">
                                         {% csrf_token%}
                                         <div class="card-header">
                                             <h4>Personal Details</h2>
@@ -79,7 +88,7 @@
                                                 <label>Email</label>
                                                 {{user_form.email}}
                                             </div>
-                                            
+
                                             <div class="form-group">
                                                 <label>Username</label>
                                                 {{user_form.username}}
@@ -115,71 +124,108 @@
 
                                         </div>
                                         <button type="submit" class=" btn btn-primary">Save</button>
-                                    
-                                    <!-- </form> -->
+
+                                        <!-- </form> -->
                                 </div>
                             </div>
 
                             <div id="tutor" class="tab-content">
-                                <div class="card">
+                                <div class="card-container">
+                                    {%if request.user.role == 'tutor' %}
+
                                     <div class="card-header">
                                         <h3>Tutor Profile</h3>
-                                        <button class="btn btn-outline">Edit</button>
-                                    </div>
+                                     </div>
                                     <!-- <form class="profile-form" method="post">
                                         {% csrf_token%} -->
-                                        <div class="form-group">
-                                            <label>Bio</label>
-                                            {{user_form.bio}}
-                                        </div>
-                                       {%if request.user.roll == 'tutor' %}
-                                         <div class="form-group">
-                                            <label>Subjects</label>
-                                            {{tutor_form.subjects}}
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <label>Experience (Years)</label>
-                                                    {{tutor_form.experience}}
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Hourly Rate</label>
-                                                    {{tutor_form.horuly_rate}}
-
-                                                </div>
+                                    <div class="form-group">
+                                        <label>Bio</label>
+                                        {{user_form.bio}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Subjects</label>
+                                        {{tutor_form.subjects}}
+                                    </div>
+                                         <div class="input-group">
+                                            <div class="form-group">
+                                                <label>Experience (Years)</label>
+                                                {{tutor_form.experience}}
                                             </div>
+                                            <div class="form-group">
+                                                <label>Hourly Rate</label>
+                                                {{tutor_form.horuly_rate}}
+
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Teaching prefrence</label>
+                                                {{tutor_form.teaching_prefrence}}
+
+                                            </div>
+                                        </div>
+                                     <div class="form-row">
+                                        <div class="file-form-group">
+                                            <label>ID-Card </label>
+                                            <div>
+                                            {{tutor_form.id_card}}
+
+                                            </div>
+                                        </div>
+                                        <div class="file-form-group">
+                                            <label>Certificate File </label>
+                                            <div>
+                                            {{tutor_form.certificate_file}}
+
+                                            </div>
+                                            </div>
+                                    </div>
+                                     <div class="card-header">
+                                    <h3>Payment Info</h3>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="form-group">
+                                            <label>Account Type </label>
+                                            {{tutor_form.account_type}}
                                         </div>
                                         <div class="form-group">
                                             <label>Education </label>
-                                            {{tutor_form.qualification}}
-
-                                        </div> 
-                                       {% else %}
-                                        <div class="form-group">
-                                            <label>Grade Level</label>
-                                            {{student_form.grade_level}}
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="input-group">
-                                                <div class="form-group">
-                                                    <label>Learning Goal</label>
-                                                    {{student_form.learning_goal}}
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Field of Study</label>
-                                                    {{tutor_form.learning_goal}}
-
-                                                </div>
-                                            </div>
+                                            {{tutor_form.account_number}}
                                         </div>
                                         <div class="form-group">
                                             <label>Education </label>
-                                            {{tutor_form.qualification}}
+                                            {{tutor_form.bank_code}}
+                                        </div>
+                                    </div>
+                                    {% else %}
+ 
+                                    <div class="card-header">
+                                        <h3>Student Profile</h3>
+                                        <button class="btn btn-outline">Edit</button>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label>Bio</label>
+                                        {{user_form.bio}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Grade Level</label>
+                                        {{student_form.grade_level}}
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="input-group">
+                                            <div class="form-group">
+                                                <label>Learning Goal</label>
+                                                {{student_form.learning_goal}}
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Field of Study</label>
+                                                {{student_form.field_of_study}}
 
-                                        </div> 
-                                       {% endif %}
-                                        <button type="submit" class=" btn btn-primary">Save</button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% endif %}
+                                    <button type="submit" class=" btn btn-primary">Save</button>
                                     </form>
                                 </div>
                             </div>
@@ -250,6 +296,7 @@
 
 
     {% include "includes/_scripts.html" %}
+    {%include 'includes/_avatar_form.html' %}
 </body>
 
 </html>

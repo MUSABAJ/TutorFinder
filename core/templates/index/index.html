@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PI – Find expert tutors anytime, anywhere. Modern, fast, and simple.">
     <title>PI- Connect with Expert Tutors</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{% static 'styles/styles.css '%}"> 
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -21,8 +22,8 @@
             --surface-2: #141924;
             --text: #000000;
             --muted: #aab0bb;
-            --brand-1: #6ee7ff;
-            --brand-2: #4084e4;
+            --brand-1: #49b6cbff;
+            --brand-2: #49b6cbff;
             --brand-3: #00d28f;
             --ring: rgba(124, 92, 255, .35);
             --card: rgba(255, 255, 255, .03);
@@ -36,6 +37,7 @@
         body {
              color: var(--text);
             font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            overflow:visible;
         }
 
         .container {
@@ -46,6 +48,7 @@
 
         /* ---- Animated gradient background blob ---- */
         .background {
+
             border-bottom: 1px solid rgba(6, 9, 70, 0.223);
             border-top: 1px solid rgba(6, 9, 70, 0.223);
             position: relative;
@@ -339,6 +342,12 @@
             animation: orb 12s ease-in-out infinite alternate-reverse;
         }
 
+        .bkimg{
+             background-image: url(static/img/bgimage.png);
+              background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        height: 100vh; }
         @keyframes orb {
             0% {
                 transform: translate(0, 0) scale(1);
@@ -699,7 +708,7 @@
     <nav class="navbar reveal">
         <div class="nav-container">
             <div class="nav-brand">
-                <h2>PI</h2>
+                <h1>PI</h1>
             </div>
             <div class="nav-container-left">
 
@@ -707,24 +716,17 @@
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#features" class="nav-link">Features</a>
                     <a href="#how" class="nav-link">How it works</a>
-                    <a href="#tutors" class="nav-link">Top Tutors</a>
+                    {% comment %} <a href="#tutors" class="nav-link">Top Tutors</a> {% endcomment %}
                     <a href="#testimonials" class="nav-link">Reviews</a>
 
                 </div>
 
             </div>
             <div class="nav-container-action-bttn">
-                <a href="login.html" class="btn btn-outline">Login</a>
-                <a href="register.html" class="btn btn-primary">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'student_register' %}" class="btn btn-primary">Get Started</a>
             </div>
-            <!-- Language Switcher -->
-            <div class="language-switcher">
-
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="ar">العربية</button>
-                <button class="lang-btn" data-lang="am">አማርኛ</button>
-            </div>
-
+ 
             <div class="mobile-menu-toggle" role="button" aria-label="Toggle navigation" aria-expanded="false"
                 tabindex="0">
                 <span></span>
@@ -736,7 +738,7 @@
 
 
     <!-- Hero Section -->
-    <div class="background bkimg">
+    <div class="background bkimg" >
         <section class="hero" id="home">
 
             <div class="">
@@ -753,11 +755,11 @@
                             results.</p>
 
                         <div class="hero-buttons">
-                            <a href="register.html?role=student" class="btn btn-primary btn-mid">
+                            <a href="{% url 'student_register' %}" class="btn btn-primary btn-mid">
                                 <i class="fas fa-user-graduate"></i>Join for free
                             </a>
-                            <a href="register.html?role=tutor" class="btn btn-outline btn-mid">
-                                <i class="fas fa-chalkboard-teacher"></i>Explore Tutors
+                            <a href="{% url 'tutor_register' %}" class="btn btn-outline btn-mid">
+                                <i class="fas fa-chalkboard-teacher"></i>Be a Tutor
                             </a>
                         </div>
 
@@ -803,23 +805,7 @@
                     <h3>Flexible Scheduling</h3>
                     <p>Book sessions that fit your schedule with instant confirmation and easy rescheduling</p>
                     <div class="feature-highlight gradient-icon ">✓ 24/7 availability</div>
-                </div>
-                <!-- <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-globe gradient-icon"></i>
-                    </div>
-                    <h3>Secure Payment</h3>
-                    <p>Learn in your preferred language: English, Arabic, or Amharic</p>
-                    <div class="feature-highlight gradient-icon">✓ Native speakers</div>
-                </div> -->
-                <!-- <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line gradient-icon"></i>
-                    </div>
-                    <h3>Progress Tracking</h3>
-                    <p>Monitor your learning journey with detailed analytics and performance insights</p>
-                    <div class="feature-highlight gradient-icon">✓ Detailed reports</div>
-                </div> -->
+                </div> 
                 <div class="feature-card reveal">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt gradient-icon"></i>
@@ -857,88 +843,7 @@
         </div>
     </section>
 
-    <!-- Top Tutors Section -->
-    <section class="top-tutors background" id="tutors">
-        <div class="container">
-            <div class="section-header">
-                <div class="section-badge">Meet Our Stars</div>
-                <h2>Featured <span class="gradient-text">Top-Rated Tutors</span></h2>
-                <p>Learn from the best educators in their fields</p>
-            </div>
-            <div class="tutors-grid reveal" hx-get="/api/featured-tutors" hx-trigger="load">
-                <!-- Added dynamic tutor loading with HTMX -->
-                <div class="tutor-card">
-                    <div class="tutor-image">
-                        <img src="img/makima.jpg?height=120&width=120" alt="Ahmed Hassan">
-                        <div class="tutor-badge">⭐ 4.9</div>
-                    </div>
-                    <div class="tutor-info">
-                        <h3>Dr. Ahmed Hassan</h3>
-                        <p class="tutor-subject">Mathematics & Physics</p>
-                        <p class="tutor-experience">8+ years experience</p>
-                        <div class="tutor-languages">
-                            <span class="lang-tag">English</span>
-                            <span class="lang-tag">Arabic</span>
-                        </div>
-                        <div class="tutor-price">$25/hour</div>
-                        <button class="btn btn-primary btn-small">View Profile</button>
-                    </div>
-                </div>
-                <div class="tutor-card">
-                    <div class="tutor-image">
-                        <img src="img/makima.jpg?height=120&width=120" alt="Dr. Fatima Ali">
-                        <div class="tutor-badge">⭐ 4.8</div>
-                    </div>
-                    <div class="tutor-info">
-                        <h3>Dr. Fatima Ali</h3>
-                        <p class="tutor-subject">Chemistry & Biology</p>
-                        <p class="tutor-experience">6+ years experience</p>
-                        <div class="tutor-languages">
-                            <span class="lang-tag">English</span>
-                            <span class="lang-tag">Arabic</span>
-                        </div>
-                        <div class="tutor-price">$30/hour</div>
-                        <button class="btn btn-primary btn-small">View Profile</button>
-                    </div>
-                </div>
-                <div class="tutor-card">
-                    <div class="tutor-image">
-                        <img src="img/makima.jpg?height=120&width=120" alt="Sarah Johnson">
-                        <div class="tutor-badge">⭐ 5.0</div>
-                    </div>
-                    <div class="tutor-info">
-                        <h3>Sarah Johnson</h3>
-                        <p class="tutor-subject">English Literature</p>
-                        <p class="tutor-experience">10+ years experience</p>
-                        <div class="tutor-languages">
-                            <span class="lang-tag">English</span>
-                        </div>
-                        <div class="tutor-price">$35/hour</div>
-                        <button class="btn btn-primary btn-small">View Profile</button>
-                    </div>
-                </div>
-                <div class="tutor-card">
-                    <div class="tutor-image">
-                        <img src="img/makima.jpg?height=120&width=120" alt="Michael Chen">
-                        <div class="tutor-badge">⭐ 4.9</div>
-                    </div>
-                    <div class="tutor-info">
-                        <h3>Michael Chen</h3>
-                        <p class="tutor-subject">Computer Science</p>
-                        <p class="tutor-experience">5+ years experience</p>
-                        <div class="tutor-languages">
-                            <span class="lang-tag">English</span>
-                        </div>
-                        <div class="tutor-price">$40/hour</div>
-                        <button class="btn btn-primary btn-small">View Profile</button>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center">
-                <a href="tutor-search.html" class="btn btn-outline btn-large">View All Tutors</a>
-            </div>
-        </div>
-    </section>
+   
 
     <!-- Testimonials Section -->
     <section class="testimonials " id="testimonials">
@@ -1022,11 +927,11 @@
                 <h2>Ready to Start Your Learning Journey?</h2>
                 <p>Join thousands of students and tutors already using PIto achieve their educational goals</p>
                 <div class="cta-buttons">
-                    <a href="register.html?role=student" class="btn btn-white btn-large">
+                    <a href="{% url 'student_register' %}" class="btn btn-white btn-large">
                         <i class="fas fa-user-graduate"></i>
                         Start Learning
                     </a>
-                    <a href="register.html?role=tutor" class="btn btn-outline-white btn-large">
+                    <a href="{% url 'tutor_register' %}" class="btn btn-outline-white btn-large">
                         <i class="fas fa-chalkboard-teacher"></i>
                         Start Teaching
                     </a>
@@ -1060,8 +965,8 @@
                 <div class="footer-section">
                     <h4>For Students</h4>
                     <ul>
-                        <li><a href="tutor-search.html">Find Tutors</a></li>
-                        <li><a href="register.html?role=student">Sign Up</a></li>
+                        <li><a href="#tutors">Find Tutors</a></li>
+                        <li><a href="{% url 'student_register' %}">Sign Up</a></li>
                         <li><a href="#subjects">Subjects</a></li>
                         <li><a href="#pricing">Pricing</a></li>
                     </ul>

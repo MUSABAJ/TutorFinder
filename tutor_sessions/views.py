@@ -8,16 +8,14 @@ from availablity.models import Availablity
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from availablity.models import TutorPackage
-from django.contrib import messages
-from .forms import BookingForm
 import uuid
 from django.utils import timezone
 import json
 from users.models import *
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
 from django.conf import settings
+from notifications.utils import create_notification
 import datetime
 from django.utils import timezone
 from payments.chapa import ChapaPayment 
@@ -55,7 +53,7 @@ def request_session(request, pkg_id):
     subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
     print(subjects)
     if request.method=='POST':
-        request = BaseSession.objects.create(
+        pkg_request = BaseSession.objects.create(
             student = request.user,
             tutor = tutor,
             subject_name =  request.POST.get('selected_subject',''),
@@ -66,11 +64,21 @@ def request_session(request, pkg_id):
             total_hours = pkg.total_session*pkg.session_duration/60, # in hour
             remaining_hours = pkg.total_session*pkg.session_duration/60,
         )
-        request.save()
-        return JsonResponse('success page', safe=False)
-     
-    return JsonResponse( 'error', safe=False)
-
+        pkg_request.save()
+        create_notification(
+        recipient=tutor,
+        user=request.user,
+        type='session_request',
+        link= "{% url 'base_session_list' %}"
+    )
+        return render(request,'status/page.html',{
+            'success': True,
+            'message': f"Your request has been sent. You will be notified with ${tutor}'s response ."
+        })     
+    return render(request,'status/page.html',{
+                'error': True,
+                'message': f'You Request submission has failed . '
+            })
 @login_required
 def session_requests(request):
     
@@ -90,7 +98,13 @@ def handle_request(request, req_id):
     if action == "accept":
         requestd_session.status = 'confirmed' 
         requestd_session.save()
-
+    
+        create_notification(
+        recipient=requestd_session.student,
+        user=request_session.student,
+        type='session_confirmed',
+        link= "{% url 'base_session_list' %}"
+        )
         message = f"<div class='session-request'>✅ Request {req_id} accepted!</div>"
     elif action == "decline":
         requestd_session.status = 'decline' 
@@ -183,7 +197,13 @@ def book_sessions(request, base_id):
                 # Don’t mark success yet! Wait for callback verification
                 checkout_url = response['data']['checkout_url']
                 
+                create_notification(
+                recipient=tutor,
+                user=request.user,
+                type='payment_confirmed',
+                link= "{% url 'base_session_list' %}")
                 return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
+                
             else:
                 # Payment initialization failed
                 # payment.status = "failed"
@@ -192,9 +212,10 @@ def book_sessions(request, base_id):
                 return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
 
         except Exception as e:
-            print("Booking error:", e)
-            return JsonResponse({'error': str(e)}, status=500)
-
+             return render(request,'status/page.html',{
+                        'error': True,
+                        'message': f'Failed Booking Process, Please Start again'
+        })
     context = {     
         'tutor': tutor,
         'availablity_json': json.dumps(availablity),
@@ -214,6 +235,19 @@ def check_in_out(request, session_id):
     if session.status == 'confirmed' or session.status == 'ongoing':
         session.start_session()
         button = 'End Session'
+        
+        create_notification(
+        recipient=session.tutor,
+        user=request.user,
+        type='session_confirmed',
+        link= "{% url 'base_session_list' %}")
+        
+        create_notification(
+        recipient=session.student,
+        user=request.user,
+        type='session_confirmed',
+        link= "{% url 'base_session_list' %}")
+
     elif session.status == 'active':
         session.end_session()
         button = 'Start Session'
@@ -254,14 +288,12 @@ def session_reschedule(request, session_id):
 
     if request.method == 'POST':
         if booked_session.status in ['scheduled', 'rescheduled']:
-            print(5555555555555555555555555555555563)
             slot = json.loads(request.POST.get('selected_slot', '{}'))
             start = slot.get('start')
             end = slot.get('end')
 
             if not start or not end:
                 return JsonResponse({'error': 'Invalid slot data'}, status=400)
-            print(00000000000000000000000000000)
 
             booked_session.start_time = start
             booked_session.end_time = end
@@ -269,6 +301,12 @@ def session_reschedule(request, session_id):
             booked_session.status = 'rescheduled'
             
             booked_session.save()
+            recipient = booked_session.base_session.student if request.user == booked_session.base_session.tutor else booked_session.base_session.student
+            create_notification(
+            recipient=recipient,
+            user=request.user,
+            type='session_confirmed',
+            link= "{% url 'base_session_list' %}")
             return redirect('session_list')
 
     context = {
@@ -290,6 +328,13 @@ def cancel_schedule(request, session_id):
         booked_session.start_time=''
         booked_session.end_time=''
         booked_session.save()
+
+        recipient = booked_session.base_session.student if request.user == booked_session.base_session.tutor else booked_session.base_session.student
+        create_notification(
+        recipient=recipient,
+        user=request.user,
+        type='session_cancel',
+        link= "{% url 'base_session_list' %}")
         return redirect('check_in_out')
 
     return render(request, 'session/session_detail.html',{'session':booked_session})

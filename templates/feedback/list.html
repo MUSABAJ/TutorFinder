@@ -1,0 +1,334 @@
+{% extends "dashboard.html" %}
+{% block main %}
+<style>
+    :root {
+        --primary: #2E8B57;
+        --primary-light: #3CB371;
+        --primary-dark: #228B22;
+        --accent: #20B2AA;
+        --text-dark: #2C3E50;
+        --text-light: #7F8C8D;
+        --background: #F8F9FA;
+        --white: #FFFFFF;
+        --border: #E0E0E0;
+        --star-active: #FFD700;
+        --star-inactive: #E0E0E0;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .feedback-container {
+        padding: 30px 20px;
+        width: 100%;
+        margin: 0 auto;
+        overflow-y:scroll;
+    }
+
+    .feedback-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    .feedback-header h1 {
+        color: var(--text-dark);
+        font-size: 2.2rem;
+        font-weight: 300;
+        margin-bottom: 15px;
+    }
+
+    .feedback-stats {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        text-align: center;
+        min-width: 150px;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .feedback-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .feedback-card {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        padding: 25px;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border);
+    }
+
+    .feedback-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .feedback-header-row {
+        display: flex;
+        justify-content: between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        gap: 15px;
+    }
+
+    .student-info {
+        flex: 1;
+    }
+
+    .student-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+    }
+
+    .session-info {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .rating-display {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stars {
+        display: flex;
+        gap: 2px;
+    }
+
+    .star {
+        color: var(--star-inactive);
+        font-size: 1.2rem;
+    }
+
+    .star.active {
+        color: var(--star-active);
+    }
+
+    .rating-value {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+    }
+
+    .date-info {
+        color: var(--text-light);
+        font-size: 0.85rem;
+        text-align: right;
+        min-width: 120px;
+    }
+
+    .feedback-content {
+        margin-top: 15px;
+    }
+
+    .feedback-text {
+        color: var(--text-dark);
+        line-height: 1.6;
+        font-size: 1rem;
+        margin: 0;
+        padding: 15px;
+        background: var(--background);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+    }
+
+    .no-feedback {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+    }
+
+    .no-feedback i {
+        font-size: 4rem;
+        color: var(--border);
+        margin-bottom: 20px;
+    }
+
+    .no-feedback h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--text-light);
+    }
+
+    .feedback-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border);
+    }
+
+    .tutor-info {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .tutor-name {
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .feedback-container {
+            padding: 20px 15px;
+        }
+
+        .feedback-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .feedback-stats {
+            gap: 20px;
+        }
+
+        .stat-card {
+            padding: 15px 20px;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+        }
+
+        .feedback-header-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .date-info {
+            text-align: left;
+            align-self: flex-start;
+        }
+
+        .feedback-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .feedback-stats {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-card {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+</style>
+
+<div class="feedback-container">
+    <div class="feedback-header">
+        
+        <div class="feedback-stats">
+                    <h1>Student Feedbacks</h1>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ avg_rating|default:"0.0" }}/5</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ feedbacks|length }}</div>
+                <div class="stat-label">Total Reviews</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="feedback-list">
+        {% for feedback in feedbacks%}
+        <div class="feedback-card">
+            <div class="feedback-header-row">
+                <div class="student-info">
+                    <div class="student-name">{{ feedback.student.get_full_name|default:feedback.student.username }}</div>
+                    <div class="session-info">{{ feedback.session.subject_name }}</div>
+                    <div class="rating-display">
+                        <div class="stars">
+                            {% for i in "12345" %}
+                                <span class="star {% if forloop.counter <= feedback.rating %}active{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                        <span class="rating-value">{{ feedback.rating }}/5</span>
+                    </div>
+                </div>
+                <div class="date-info">
+                    {{ feedback.created_at|date:"M j, Y" }}
+                </div>
+            </div>
+
+            <div class="feedback-content">
+                <p class="feedback-text">
+                    {{ feedback.feedback|default:"No comments provided" }}
+                </p>
+            </div>
+
+            <div class="feedback-meta">
+                <div class="tutor-info">
+                    Session with <span class="tutor-name">{{ feedback.tutor.get_full_name|default:feedback.tutor.username }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-feedback">
+            <i class="fas fa-comment-dots"></i>
+            <h3>No Feedback Yet</h3>
+            <p>No students have left feedback for sessions yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any interactive functionality here
+        const feedbackCards = document.querySelectorAll('.feedback-card');
+        
+        feedbackCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Format dates if needed
+        const dateElements = document.querySelectorAll('.date-info');
+        dateElements.forEach(element => {
+            // You can add custom date formatting here if needed
+            console.log('Date element:', element.textContent);
+        });
+    });
+</script>
+{% endblock main %}

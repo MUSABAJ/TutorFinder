@@ -2,18 +2,18 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import FileResponse, HttpResponseForbidden, HttpResponse
 from .forms import ResourceForm
-from .models import Resource
+from .models import Resource   
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 from users.models import TutorProfile
+from django.db.models import Q
 import os
 
 @login_required
 def list_resources(request):
-    query = request.GET.get('q')
+    query = request.GET.get('query','')
     resources = Resource.objects.all()
-    resource = Resource.objects.all().first()
-    
-    if query:
-        resources = resources.filter(title__icontains=query)
+   
 
     if request.method == 'POST':
         if request.user.role != 'tutor':
@@ -24,9 +24,7 @@ def list_resources(request):
         if tutor_profile and tutor_profile.subjects:
             subjects = [s.strip() for s in tutor_profile.subjects.split(',')]
         form = ResourceForm(request.POST, request.FILES)
-            
-        print(request.POST)
-        print('oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo')
+             
         if form.is_valid():
             resource = form.save(commit=False)
             resource.tutor = request.user
@@ -38,7 +36,18 @@ def list_resources(request):
 
     return render(request,'resources/resources.html',context)
 
+def search_resource(request):
+    query = request.GET.get('query','')
+    resources = Resource.objects.all()
+     
+    if query:
+        resources = resources.filter(Q(title__icontains=query)
+                                     |Q(subject__icontains=query)
+                                     )
 
+        
+    html = render_to_string('resources/_results.html', {'resources': resources}, request=request)
+    return HttpResponse(html)
 # @login_required
 # def upload_resource(request):
 #     if request.user.role != 'tutor':
@@ -66,6 +75,8 @@ def list_resources(request):
 @login_required
 def delete_resource(request, id):
     resource = get_object_or_404(Resource, id=id)
+    resources = Resource.objects.all()
+
     if resource.tutor != request.user:
         return HttpResponseForbidden("You can only delete your own resources.")
     
@@ -73,9 +84,8 @@ def delete_resource(request, id):
         if resource.file:
             resource.file.delete()
         resource.delete()
-        return redirect('resource_list')
-
-    return render(request, 'resources/confirm_delete.html', {'resource': resource})
+ 
+    return render(request, 'resources/_results.html', {'resources': resources})
 
 
 @login_required

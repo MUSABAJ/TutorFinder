@@ -93,36 +93,34 @@ class UserProfileEditForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name','email', 
                 'phone','bio','date_of_birth', 'gender','country','city','sub_city',
-                'username',
+                'username','avatar'
                 
                  ]
 
 
 class StudentProfileEditForm(forms.ModelForm):
     grade_level = forms.ChoiceField(choices=GRADE_CHOICES, required=False)
-    # field_of_study = forms.CharField(required=False)
-    learning_goal = forms.CharField(
-        widget=forms.Textarea(attrs={'placeholder': 'Describe your learning goals...'}),
-        required=False
-    )
+    field_of_study = forms.CharField(required=False)
+    learning_goal = forms.ChoiceField(choices=GOAL_CHOICES, required=False)
+    
 
     class Meta:
         model = StudentProfile
-        fields = ['grade_level',  'learning_goal']  #add 'field_of_study',
+        fields = ['grade_level','field_of_study',  'learning_goal']  #add 'field_of_study',
 
 
 class TutorProfileEditForm(forms.ModelForm):
-    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple(attrs={'class': 'classname'}), choices=LANGUAGE_CHOICES)
-    qualification = forms.CharField(widget=forms.Textarea(attrs={'class':'classnmae'}))
-    experience = forms.ChoiceField( choices=EXPIRIENCE_CHOICES   )
-    subjects = forms.CharField(widget=forms.Textarea)
-    prefrence = forms.ChoiceField(  choices=TEACHING_PREFRENCE_CHOICES)
-    horuly_rate = forms.IntegerField()
-    account_type = forms.ChoiceField( choices=PAYMMENT_METHOD)
-    account_number = forms.CharField()
-    bank_code = forms.CharField()
-    id_card = forms.FileField()
-    certificate_file = forms.FileField()
+    language = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=LANGUAGE_CHOICES, required=False)
+    qualification = forms.CharField(widget=forms.Textarea() , required=False)
+    experience = forms.ChoiceField( choices=EXPIRIENCE_CHOICES ,required=False )
+    subjects = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'English, Math, CS, Hemtigna'}))
+    teaching_prefrence = forms.ChoiceField(  choices=TEACHING_PREFRENCE_CHOICES,required=False)
+    horuly_rate = forms.IntegerField( required=False)
+    account_type = forms.ChoiceField( choices=PAYMMENT_METHOD, required=False)
+    account_number = forms.CharField( required=False,)
+    bank_code = forms.CharField( required=False)
+    id_card = forms.FileField( required=False)
+    certificate_file = forms.FileField( required=False)
     class Meta:
         model = TutorProfile
         fields = ['language','qualification','experience','subjects','teaching_prefrence'

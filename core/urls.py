@@ -8,7 +8,7 @@ urlpatterns = [
      path('tutor/students',views.my_students, name='my_students'),
     path('tutor/packages',views.manage_package,name='manage_package'),
      path('tutor/earning',views.earning,name='earning'),
-    path('tutor/tutor_profile',views.tutor_profile,name='tutor_profile'),
+    path('tutor/view_student/<str:student_id>',views.view_student,name='view_student'),
 
     path('student/tutors',views.my_tutors,name='my_tutors'),
     # path('student/sessions',views.my_sessions,name='my_sessions'),
@@ -18,6 +18,7 @@ urlpatterns = [
 
     path('search/', views.main_serach, name="main_search"),
     path('search/tutor/', views.tutor_serach, name="tutor_search"),
+    path('my_profile/',views.my_profile,name='my_profile'),
     path('search/my_tutor/', views.my_tutor_search, name="my_tutor_search")
 
 ]

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django_htmx',
     'users',
     'core',
+    'core_admin',
     'chat',
     'tutor_sessions',
     'payments',
@@ -159,3 +161,40 @@ AUTH_USER_MODEL = 'users.User'
 
 CHAPA_SECRET_KEY ="CHASECK_TEST-DPrtYLJQX75RsZwow4CHBkURqroZsENs".strip()
 CHAPA_BASE_URL="https://api.chapa.co/v1"
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "TUTOR HUB",
+    "site_header": "TUTOR HUB Admin",
+    "site_brand": " FLARE",
+    "welcome_sign": "Tutor HUB",
+
+     "copyright": "FLARE 2024",
+    
+    "show_ui_builder": True,
+    
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+    ],
+    
+    "usermenu_links": [
+        {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        {"model": "auth.user"}
+    ],
+    
+    "custom_links": {
+        "auth": [
+            {
+                "name": "Dashboard Stats",
+                "url": "/admin_stats/",
+                "icon": "fas fa-chart-bar",
+                "permissions": ["auth.view_user"]
+            }
+        ]
+    },
+    
+    
+}
+TELEGRAM_API_TOKEN="7564093391:AAGJYuuFGFnedl2k73XOfyPNI93VmjqASjs" 
+TELEGRAM_BOT_TOKEN="7564093391:AAGJYuuFGFnedl2k73XOfyPNI93VmjqASjs"

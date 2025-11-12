@@ -1,0 +1,36 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/modal.css' %}" />
+
+<div id="confirmModal" class="modal">
+  <form method="post" enctype="multipart/form-data">
+    {%csrf_token%}
+    <div class="modal-content confermation">
+      <div class="confirm-header">
+        <small>Profile Picture</small>
+        <span class="close" onclick="closeConfirmModal()">&times;</span>
+      </div>
+      <div class="confirm-msg">
+         <div class="confirm-obj">
+            <img src="/static{{user.avatar.url}}" alt="">
+            <div>{{avatar_form}}</div>
+         </div>
+      </div>
+
+      <div class="confirm-action">
+        <button type="submit" class=" btn btn-outline">Upload</button>
+
+        <button class="btn btn-primary">Cancel</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+  function openAvatarModal() {
+    document.getElementById("confirmModal").style.display = "block";
+  }
+
+  function closeConfirmModal() {
+    document.getElementById("confirmModal").style.display = "none";
+  }
+</script>

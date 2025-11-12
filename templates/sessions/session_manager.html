@@ -10,7 +10,11 @@
         <button class="tab-btn" onclick="sessionTab('completed')">Completed Sessions</button>
         <button class="tab-btn" onclick="sessionTab('cancelled')">Cancelled Sessions</button>
     </div>
-
+<style>
+    #upcoming, #completed, #cancelled{
+        overflow-y: scroll;
+    }
+</style>
     <div id="upcoming" class="tab-content active">
         <div class="sessions-list">
             {% for session in sessions %}

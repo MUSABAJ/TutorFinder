@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from notifications.utils import create_notification
 from tutor_sessions.models import BookedSession, VirtualClass
 import uuid
 
@@ -11,25 +12,24 @@ def create_virtual_class(request, session_id):
     """Tutor creates or accesses the virtual classroom for a given session."""
     session = get_object_or_404(BookedSession, id=session_id)
 
-    # Ensure only the tutor can create the room...
     if request.user != session.base_session.tutor:
         messages.error(request, "You are not authorized to create this virtual class.")
         return redirect("session_list")
 
-    # Create or get the room
     room, created = VirtualClass.objects.get_or_create(
         session=session,
         defaults={"room_name": f"VCRoom-{uuid.uuid4().hex[:10]}"}
     )
 
-    # If created, attach the room link to session
     if created or not session.room_name:
         session.room_name = room.room_name
         session.save()
-
-    # Optionally notify student (email, Telegram, etc.)
-    # Example:
-    # notify_user(session.parent.student, f"Virtual class for your session {session.id} is ready!")
+        create_notification(
+                recipient= session.base_session.student,
+                user=request.user,
+                type='five_min_session_reminder',
+                link= "{% url 'session_list' %}"
+                )
 
     messages.success(request, f"Virtual classroom ready! Room: {room.room_name}")
     return redirect('join_virtual_class', session_id=session.id)

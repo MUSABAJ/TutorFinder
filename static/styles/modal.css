@@ -14,20 +14,20 @@
 }
 
 .modal-content {
-  background-color: rgba(255, 255, 255, 0.863);
+  background-color: rgb(243, 255, 250);
   backdrop-filter: blur(59px);
   margin: 2% auto;
   padding: 0;
-  border-radius: var(--radius-lg);
-  width: 90%;
-  max-width: 500px;
+  border-radius:  5px;
+   max-width: 500px;
   box-shadow: var(--shadow-lg);
+  height: 170px;
 }
 .modal-content.confermation{
   position: fixed;
   top: 30%;
   left: 34%; 
-  height: 25%;
+  height: 30%;
   width: 450px;
 }
 
@@ -37,16 +37,30 @@
 .modal-content.large {
   max-width: 700px;
 }
+.confirm-obj a{
+  visibility: hidden;
+  display: none;
+}
 .confirm-header{
   display: flex;
   align-items: center;
   height: 30px;
   width: 100%;
-  color:  var(--text-primary);
+  color:  var(--text-secondary);
   justify-content: space-between;
   border-bottom: 1px solid rgb(74, 74, 74);
-  background-color: var(--background);
+  background-color: var(--primary-color);
   padding: 0.7rem 0.7rem;
+}
+.confirm-obj{
+  display: flex;
+   gap: 1.31rem;
+   color: black;
+}
+img{
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
 }
 .confirm-msg{
   padding: 0.7rem 1.51rem;
@@ -89,6 +103,10 @@
   height: 90%;
   min-width: 93%;
   
+}.modal-content.detail{
+  background-color:var(--background);
+  height: 85%;
+   
 }
 
 .availability-form,

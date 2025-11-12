@@ -7,6 +7,7 @@ from .models import Notification
 
 def send_telegram_message(chat_id, text):
     """Send a Telegram message to a specific chat_id."""
+
     if not chat_id:
         return False  # user hasn't linked Telegram
 
@@ -17,9 +18,11 @@ def send_telegram_message(chat_id, text):
         "parse_mode": "HTML",
     }
 
+
     try:
         response = requests.post(url, json=payload, timeout=10)
         response.raise_for_status()
+ 
         return True
     except requests.exceptions.RequestException as e:
         print(f"⚠️ Telegram message failed: {e}")
@@ -30,6 +33,7 @@ def send_telegram_message(chat_id, text):
 
 NOTIFICATION_MESSAGES = {
     'session_request': "📩 You have a new session request from @{username}.",
+    'session_cancel': "❌  @{username} canceld a Session .",
     'session_confirmed': "✅ Your session request with @{username} has been confirmed.",
     'session_feedback': "💬 You have received feedback from @{username}.",
     'payment_confirmed': "💰 Payment confirmed for your session with @{username}.",
@@ -38,6 +42,8 @@ NOTIFICATION_MESSAGES = {
     'five_min_session_reminder': "⚡ Reminder: Your session with @{username} starts in 5 minutes.",
     'tutor_match': "🎯 We found a new tutor that matches your preferences — @{username}.",
     'important_announcement': "📢 Dear {recipient}, your account has been verified successfully.",
+    'session_started': "📢 session with {username} just started",
+    'session_ended': "📢 session with {username} just ended",
     'feedback_reminder': "📝 Don’t forget to share your experience by leaving feedback.",
 }
 
@@ -66,6 +72,7 @@ def create_notification(recipient, user=None, type=None, link=None):
     Notification.objects.create(recipient=recipient, message=message, link=link)
 
     # Send Telegram message (optional)
-    send_telegram_message(getattr(recipient, 'telegram_chat_id', None), message)
+    send_telegram_message(getattr(recipient, 'telegram_id', None), message)
+
 
     print(f"📨 Notification sent to {recipient.username}: {message}")

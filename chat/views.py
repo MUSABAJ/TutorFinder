@@ -18,6 +18,13 @@ def chat_rooms(request):
 
 
 @login_required
+def room_by_user_id(request, user_id):
+       other_user = get_object_or_404(User, id=user_id)
+       chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
+       return redirect('room', chat_id=chat.id)
+
+
+@login_required
 def room(request, chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
     chats = Chat.objects.filter(participants=request.user).order_by('-created_at')
@@ -52,6 +59,7 @@ def send_message(request, chat_id):
 
 
 
+
 def get_messages(request,chat_id):
     chat = get_object_or_404(Chat, id=chat_id)
     receiver = chat.participants.exclude(id=request.user.id).first()
@@ -66,7 +74,7 @@ def get_or_create_chat(request, id):
     if not chat:
         chat = Chat.objects.create()
         chat.participants.add(request.user, user)
-        return redirect('room', chat_id=id)
+        return redirect('room', chat_id=chat.id)
 
     return redirect('room', chat_id=chat.id)
 

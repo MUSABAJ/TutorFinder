@@ -105,7 +105,7 @@
           </div>
         </div>
         <div class="tutor-stats">
-            <a href="{% url 'new_chat' tutor.id%} ">
+            <a href="{% url 'new_chat' tutor.user.id%} ">
             <button class="btn btn-primary">Start Chat</button>
           </a>      
               <a href="{% url 'view_tutor' tutor.id%} ">
@@ -147,21 +147,26 @@
       
     </div>
   </div>
-    <div class="my-tutors-list">
+    <div class=" grid ">
        {% for tutor in my_tutors %}     
-       <div class="my-tutor-card">
-        <div class="profile-header">
-          <img src="/static{{tutor.avatar.url}}" alt="Dr. Sarah Ahmed" />
-          <div class="tutor-info">
-            <h3>{{tutor.username}}</h3>
-            <p>{{tutor.first_name}}</p>
-          </div>
-        </div>
-        <div class="card-buttons">
-          <button class="btn-sm btn-primary">Buy Package</button>
-          <button class="btn-sm btn-outline">Book Session</button>
-        </div>
-      </div>
+       <div class="my-card">
+                        <div class="card-hero"  >
+                            <img class="avatar" src="/static{{tutor.avatar.url}} " alt="Student">
+                        </div>
+                        <div class="card-body">
+                            <div class="meta"> <strong>{{tutor.first_name}} · {{tutor.last_name}}</strong>   <div><i class="fas fa-star"></i> {{tutor.tutor.rating}}</div></div>
+                            
+                            <div class="meta"> Tutor · {% if tutor.profile.is_availabel %} Availabel {% else %}Not Availabel {%endif%}  </div>
+                            <div class="chips">
+                                <span class="chip">Mathematics</span>
+                                <span class="chip">Physics</span>
+                            </div>
+                            <div class="actions">
+                                <a href="student-profile.html" class="btn btn-outline btn-vsm">Request Package</a>
+                                <a href="chat.html" class="btn btn-primary btn-vsm">Book Session</a>
+                            </div>
+                        </div>
+                    </div> 
        {% endfor%}
       
     </div>
