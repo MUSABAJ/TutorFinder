@@ -119,7 +119,6 @@ def student_register(request):
         form = StudentRegisterForm()
     return render(request, 'auth/student_reg.html', {'form': form})
 
-
 def login_view(request):
     if request.user.is_authenticated:
         if request.user.role == 'tutor':
@@ -149,42 +148,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
-
-# def profile_update(request):
-#     user = request.user
-#     avatar_form = AvatarForm(request.POST,request.FILES,instance=request.user)
-#     user_form = UserProfileEditForm(request.POST or None, instance=user)
-#     tutor_form = None
-#     student_form  = None
-#     if user.role == 'tutor':
-#         tutor_data = get_object_or_404(TutorProfile, user=user)
-#         tutor_form = TutorProfileEditForm(request.POST or None, request.FILES or None, instance=tutor_data)
-
-#     elif user.role == 'student':
-#         student_data = get_object_or_404(StudentProfile, user=user)
-#         student_form = StudentProfileEditForm(request.POST or None, instance=student_data)
-       
-        
-
-#     if request.method == 'POST':
-#         if user_form.is_valid():
-#             user_form.save()
-
-#             if tutor_form and tutor_form.is_valid():
-#                 tutor_form.save()
-
-#             if student_form and student_form.is_valid():
-#                 student_form.save()
-#         if avatar_form.is_valid():
-#             avatar_form.save()
-#         return redirect('profile')
-#     context = {
-#         'user_form': user_form,
-#         'tutor_form': tutor_form,
-#         'student_form': student_form,
-#         'avatar_form':avatar_form
-#     }
-#     return render(request, 'tutor/tutor_profile.html',context)
 
 
 def avatar_update(request):
@@ -235,3 +198,22 @@ def profile_view(request, id):
                    'tutor':tutor} 
     return render(request, 'profile_view.html', context)
 
+def payment_info_form(request):
+    if request.method == 'POST':
+        user = TutorProfile.objects.get(user=request.user)
+        user.account_type = request.POST.get('method_type')
+        if user.account_type == 'bank':
+            user.bank_code = request.POST.get('bank_code')
+            user.account_number = request.POST.get('account_number')
+        if user.account_type == 'mobile':
+            user.bank_code = request.POST.get('mobile_provider')
+            user.account_number = request.POST.get('phone_number')
+        if user.account_type == 'card':
+            user.bank_code = request.POST.get('card_name')
+            user.account_number = request.POST.get('card_number')
+            # user.bank_code = request.POST.get('card_expiry')
+            # user.account_number = request.POST.get('card_cvc')
+
+        user.save()
+        return redirect('my_profile')
+ 

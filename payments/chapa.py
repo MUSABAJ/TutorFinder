@@ -16,7 +16,8 @@ class ChapaPayment:
             'Authorization': f'Bearer {self.secret_key}',
             'Content-Type': 'application/json'
         }
-    
+   
+
     def initialize_transaction(self, email, amount, tx_ref, first_name, last_name, callback_url=None):
         """Initialize payment to platform account"""
         url = "https://api.chapa.co/v1/transaction/initialize"
@@ -36,15 +37,11 @@ class ChapaPayment:
         
         try:
             response = requests.post(url, headers=self.get_headers(), data=json.dumps(payload))
-            data = response.text
-            print(data)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"Chapa API Error: {e}")
             if hasattr(e, 'response') and e.response:
-                print(f"Response content: {e.response.text}")
-            return None
+                return None
     
     def verify_transaction(self, tx_ref):
         """Verify transaction status"""
@@ -58,24 +55,22 @@ class ChapaPayment:
             print(f"Chapa Verification Error: {e}")
             return None
     
-    def transfer_to_bank(self, account_number, amount, reference, bank_code, account_name=None):
+    def transfer_to_bank(self, account_number, amount, bank_code, account_name=None):
         """Transfer funds from platform account to tutor's bank account"""
-        url = f"{self.base_url}/transfer"
+        url = "https://api.chapa.co/v1/transfers"
         
         payload = {
             "account_number": account_number,
             "amount": str(amount),
-            "currency": "ETB",
-            "reference": reference,
             "bank_code": bank_code
         }
-        
+        print(payload)
         if account_name:
             payload["account_name"] = account_name
         
         try:
             response = requests.post(url, headers=self.get_headers(), data=json.dumps(payload))
-            response.raise_for_status()
+            print(response.text)
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Chapa Transfer Error: {e}")
@@ -98,4 +93,38 @@ class ChapaPayment:
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Chapa Refund Error: {e}")
+            return None
+        
+
+    def view_transactions(self):
+            # '''VIEW ALL TRANSACTIONS'''
+        payload = {}
+        url = "https://api.chapa.co/v1/transactions"
+        try:
+            response = requests.get(url, headers=self.get_headers(), data=payload)
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            if hasattr(e, 'response') and e.response:
+                print(f"Chapa transaction list Error: {e}")
+                return None
+
+    def bank_list(self):
+        url = "https://api.chapa.co/v1/banks"
+        payload = {}
+        try:
+            response = requests.get(url, headers=self.get_headers(), data=payload)
+            return response.json
+        except requests.exceptions.RequestException as e:
+            print(f"Chapa bank list Error: {e}")
+            return None
+        
+    def balance(self):
+        url = "https://api.chapa.co/v1/balances"
+        payload = {}
+        try:
+            response = requests.get(url, headers=self.get_headers(), data=payload)
+            return response.text
+
+        except requests.exceptions.RequestException as e:
+            print(f"Chapa bank list Error: {e}")
             return None

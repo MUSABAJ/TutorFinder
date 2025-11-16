@@ -707,23 +707,7 @@ img{
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--border-color);
 }
-
-.tab-btn {
-  padding: 1rem 2rem;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: all 0.2s;
-}
-
-.tab-btn.active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
-}
-
+ 
      
 
 .sessions-list {
@@ -789,7 +773,7 @@ img{
   font-weight: 600;
 }
 
-.session-status.upcoming {
+.session-status.rescheduled {
   background: var(  --secondary-dark);
   color: var(--text-secondary);
 }
@@ -798,6 +782,14 @@ img{
   background: var(--success-color);
   color: var(--text-secondary);
 }
+.session-status.scheduled {
+  background: rgb(221, 200, 82);
+  color: var(--text-secondary);
+}.session-status.cancelled {
+  background: rgb(103, 43, 43);
+  color: var(--text-secondary);
+}
+
 
 .session-details {
   display: flex;
@@ -868,25 +860,8 @@ img{
   overflow-y: scroll;
 }
 
-.tab-btn {
-  padding: 1rem 2rem;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--text-muted);
-  transition: all 0.32s ease-in-out;
-}
 
-.tab-btn.active {
-  color: var(--text-secondary);
-  background:linear-gradient(45deg, var(--secondary-dark), var(--primary-color));
-  border-bottom-color: var(--primary-color);
-  transition: all 0.32s ease-in-out;
-
-}
+ 
 
      .tab-content {
   flex: 1; 

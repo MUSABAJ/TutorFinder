@@ -14,6 +14,9 @@
     #upcoming, #completed, #cancelled{
         overflow-y: scroll;
     }
+    .btn-sm{
+        min-width:100%;
+    }
 </style>
     <div id="upcoming" class="tab-content active">
         <div class="sessions-list">
@@ -24,7 +27,7 @@
                         <div class="session-date">Today</div>
                         <div class="session-hour">{{session.start_time}}</div>
                     </div>
-                    <div class="session-status upcoming">Upcoming</div>
+                    <div class="session-status {{session.status}}"> {{session.status}}</div>
                 </div>
                 <div class="session-details">
                     <div class="session-student">
@@ -51,7 +54,13 @@
                 </div> {% if request.user.role == 'tutor' %}
                     
                     <div class="session-actions">
-                        <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
+                        {% if session.status == 'up_comming' %}
+                    <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
+                    {% else %}
+                    <a  ><button disabled class="btn-sm btn-primary">Start Class</button> </a>
+                    
+                        {% endif %}
+
                         <button class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
                          <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline"> Reschedule </button>
@@ -59,7 +68,10 @@
                     </div>
                     {% else %}
                     <div class="session-actions">
+                        {% if session.status == 'up_comming' %}
                         <a href="{% url 'join_virtual_class' session.id %}"><button  class="btn-sm btn-primary">Join Class</button> </a>
+                         {% endif %}
+
                         <button class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
                         <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline "> Reschedule </button>
@@ -67,60 +79,142 @@
                     </div>
                     {% endif %} 
             </div>
+            {% empty %}
+            <div class="sessions-list">
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>No Cancelled Sessions</h3>
+                <p>You don't have any cancelled sessions.</p>
+            </div>
+        </div>
             {% endfor %}
-
              
         </div>
     </div>
 
     <div id="completed" class="tab-content">
         <div class="sessions-list">
+             {% for session in completed_sessions %}
             <div class="session-card">
                 <div class="session-header">
                     <div class="session-time">
-                        <div class="session-date">Yesterday</div>
-                        <div class="session-hour">2:00 PM - 3:00 PM</div>
+                        <div class="session-date">Today</div>
+                        <div class="session-hour">{{session.start_time}}</div>
                     </div>
-                    <div class="session-status completed">Completed</div>
+                    <div class="session-status {{session.status}}">{{session.status}}</div>
                 </div>
                 <div class="session-details">
                     <div class="session-student">
-                        <div class="student-avatar">ED</div>
+                        <div class="student-avatar"><img src="/static{{session.base_session.tutor.avatar.url}}" alt="{{session.base_session.tutor.username}}"></div>
                         <div class="student-info">
-                            <h4>Emma Davis</h4>
-                            <p>Organic Chemistry Package</p>
+                            <h4>{{session.base_session.tutor.username}}</h4>
+                            <p>{{session.topic}}</p>
                         </div>
                     </div>
                     <div class="session-info">
                         <div class="info-item">
                             <span class="info-label">Subject:</span>
-                            <span class="info-value">Organic Reactions</span>
+                            <span class="info-value">{{session.base_session.subject_name}}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Type:</span>
-                            <span class="info-value">Online</span>
+                            <span class="info-value">{{session.session_type}}</span>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Rating:</span>
-                            <span class="info-value">⭐⭐⭐⭐⭐</span>
+                            <span class="info-label">Duration:</span>
+                            <span class="info-value">{{session.base_session.session_duration}}</span>
                         </div>
                     </div>
-                </div>
-                <div class="session-actions">
-                    <button class="btn-secondary">View Recording</button>
-                    <button class="btn-outline">View Feedback</button>
-                </div>
+                </div> {% if request.user.role == 'tutor' %}
+                    
+                   <div class="session-actions">
+                        <a href="{% url 'create_virtual_class'  session.id %}"><button  disabled class="btn-sm btn-primary">Start Class</button> </a>
+                        <button disabled class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
+                         <a href="{% url 'session_reschedule' session.id %}">
+                            <button disabled class="btn-sm btn-outline"> Reschedule </button>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="session-actions">
+                        <a href="{% url 'join_virtual_class' session.id %}"><button  class="btn-sm btn-primary">Join Class</button> </a>
+                        <button disabled class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
+                        <a href="{% url 'session_reschedule' session.id %}">
+                            <button disabled class="btn-sm btn-outline "> Reschedule </button>
+                        </a>
+                    </div>
+                    {% endif %} 
             </div>
-        </div>
-    </div>
-
-    <div id="cancelled" class="tab-content">
-        <div class="sessions-list">
+            {% empty %}
+            <div class="sessions-list">
             <div class="empty-state">
                 <div class="empty-icon">📅</div>
                 <h3>No Cancelled Sessions</h3>
                 <p>You don't have any cancelled sessions.</p>
             </div>
+        </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="cancelled" class="tab-content">
+        <div class="sessions-list">
+             {% for session in canceld_sessions %}
+            <div class="session-card">
+                <div class="session-header">
+                    <div class="session-time">
+                        <div class="session-date">Today</div>
+                        <div class="session-hour">{{session.start_time}}</div>
+                    </div>
+                    <div class="session-status {{session.status}}">{{session.status}}</div>
+                </div>
+                <div class="session-details">   
+                    <div class="session-student">
+                        <div class="student-avatar"><img src="/static{{session.base_session.tutor.avatar.url}}" alt="{{session.base_session.tutor.username}}"></div>
+                        <div class="student-info">
+                            <h4>{{session.base_session.tutor.username}}</h4>
+                            <p>{{session.topic}}</p>
+                        </div>
+                    </div>
+                    <div class="session-info">
+                        <div class="info-item">
+                            <span class="info-label">Subject:</span>
+                            <span class="info-value">{{session.base_session.subject_name}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Type:</span>
+                            <span class="info-value">{{session.session_type}}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Duration:</span>
+                            <span class="info-value">{{session.base_session.session_duration}}</span>
+                        </div>
+                    </div>
+                </div> {% if request.user.role == 'tutor' %}
+                    
+                    <div class="session-actions">
+                        <button disabled class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
+                         <a href="{% url 'session_reschedule' session.id %}">
+                            <button disabled class="btn-sm btn-outline"> Reschedule </button>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="session-actions">
+                        <button disabled class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
+                        <a href="{% url 'session_reschedule' session.id %}">
+                            <button disabled class="btn-sm btn-outline "> Reschedule </button>
+                        </a>
+                    </div>
+                    {% endif %} 
+            </div>
+            {% empty %}
+            <div class="sessions-list">
+            <div class="empty-state">
+                <div class="empty-icon">📅</div>
+                <h3>No Cancelled Sessions</h3>
+                <p>You don't have any cancelled sessions.</p>
+            </div>
+        </div>
+            {% endfor %}
         </div>
     </div>
 

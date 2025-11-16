@@ -49,7 +49,7 @@
     api.addEventListener('readyToClose' , (event)=>{
             console.log('Participant left:', event);
             let  id={{session.id}}
-             window.location.href = "{% url 'feedback' session.base_session.id  %}"
+             window.location.href = "{% url 'give_feedback' session.base_session.id  %}"
 
     }) 
     

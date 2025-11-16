@@ -1,0 +1,711 @@
+<style>
+    :root {
+        --primary: #2E8B57;
+        --primary-light: #3CB371;
+        --primary-dark: #228B22;
+        --secondary: #3498db;
+        --accent: #20B2AA;
+        --text-dark: #2C3E50;
+        --text-light: #7F8C8D;
+        --background: #F8F9FA;
+        --white: #FFFFFF;
+        --border: #E0E0E0;
+        --success: #27ae60;
+        --warning: #f39c12;
+        --danger: #e74c3c;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .packages-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        background: var(--background);
+        min-height: 100vh;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        color: var(--text-dark);
+        font-size: 2.2rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+
+    .page-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .packages-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-height: 600px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+
+    .package-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: var(--card-shadow);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary);
+        position: relative;
+    }
+
+    .package-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--hover-shadow);
+    }
+
+    .package-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .package-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 5px;
+    }
+
+    .package-subject {
+        color: var(--primary);
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .package-price {
+        text-align: right;
+    }
+
+    .price-amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .price-period {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .package-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--background);
+        border-radius: 8px;
+    }
+
+    .detail-item {
+        text-align: center;
+    }
+
+    .detail-label {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1rem;
+    }
+
+    .package-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: var(--secondary);
+        color: var(--white);
+    }
+
+    .btn-secondary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+        background: var(--primary);
+        color: var(--white);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: rgba(39, 174, 96, 0.15);
+        color: var(--success);
+    }
+
+    .status-expired {
+        background: rgba(231, 76, 60, 0.15);
+        color: var(--danger);
+    }
+
+    .status-pending {
+        background: rgba(243, 156, 18, 0.15);
+        color: var(--warning);
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: var(--white);
+        border-radius: 16px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        padding: 25px 30px 15px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .modal-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-light);
+        cursor: pointer;
+        transition: color 0.3s;
+        padding: 5px;
+    }
+
+    .close-modal:hover {
+        color: var(--danger);
+    }
+
+    .modal-body {
+        padding: 25px 30px;
+    }
+
+    .package-info {
+        background: var(--background);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .info-item {
+        margin-bottom: 15px;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+    }
+
+    .sessions-section {
+        margin-top: 30px;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+    }
+
+    .sessions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .session-item {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .session-item:hover {
+        border-color: var(--primary);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .session-info h4 {
+        margin: 0 0 5px;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+    }
+
+    .session-meta {
+        display: flex;
+        gap: 15px;
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .session-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-small {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-light);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: var(--border);
+        margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: var(--text-light);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .packages-container {
+            padding: 15px;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .package-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .package-price {
+            text-align: left;
+        }
+
+        .package-details {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+            max-height: 95vh;
+        }
+
+        .modal-header,
+        .modal-body {
+            padding: 20px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .session-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .session-actions {
+            align-self: flex-end;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .package-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="packages-container">
+    <div class="page-header">
+        <h1>My Purchased Packages</h1>
+        <p>Manage your tutoring packages and scheduled sessions</p>
+    </div>
+
+    <div class="packages-list">
+       {% for bs in base_session %}
+         <!-- Package Card 1 -->
+        <div class="package-card" onclick="openPackageModal(1)">
+            <div class="package-header">
+                <div>
+                    <h3 class="package-name">{{Premium Math Package}}</h3>
+                    <p class="package-subject">Mathematics - Algebra & Calculus</p>
+                </div>
+                <div class="package-price">
+                    <div class="price-amount">$129</div>
+                    <div class="price-period">/ 16 hours</div>
+                </div>
+            </div>
+
+            <div class="package-details">
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-active">Active</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Total Sessions</div>
+                    <div class="detail-value">8</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Completed</div>
+                    <div class="detail-value">3</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Remaining</div>
+                    <div class="detail-value">5</div>
+                </div>
+            </div>
+
+            <div class="package-actions">
+                <button class="btn btn-primary" onclick="event.stopPropagation(); bookSession(1)">
+                    <i class="fas fa-calendar-plus"></i> Book Session
+                </button>
+                <button class="btn btn-outline" onclick="event.stopPropagation(); extendPackage(1)">
+                    <i class="fas fa-clock"></i> Extend Package
+                </button>
+            </div>
+        </div>
+       {% endfor %}
+    </div>
+</div>
+
+<!-- Package Details Modal -->
+<div class="modal" id="packageModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalPackageName">Package Name</h2>
+            <button class="close-modal" onclick="closePackageModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="package-info">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Subject</div>
+                        <div class="info-value" id="modalSubject">Mathematics</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Total Hours</div>
+                        <div class="info-value" id="modalTotalHours">16 hours</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Price</div>
+                        <div class="info-value" id="modalPrice">$129</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" id="modalStatus">
+                            <span class="status-badge status-active">Active</span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Purchase Date</div>
+                        <div class="info-value" id="modalPurchaseDate">Oct 15, 2023</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Expiry Date</div>
+                        <div class="info-value" id="modalExpiryDate">Jan 15, 2024</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sessions-section">
+                <h3 class="section-title">Scheduled Sessions</h3>
+                <div class="sessions-list" id="sessionsList">
+                    <!-- Sessions will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sample data for packages and sessions
+    const packagesData = {
+        1: {
+            name: "Premium Math Package",
+            subject: "Mathematics - Algebra & Calculus",
+            totalHours: "16 hours",
+            price: "$129",
+            status: "active",
+            purchaseDate: "Oct 15, 2023",
+            expiryDate: "Jan 15, 2024",
+            sessions: [
+                {
+                    id: 1,
+                    title: "Algebra Basics",
+                    date: "Nov 10, 2023",
+                    time: "2:00 PM - 3:00 PM",
+                    status: "completed",
+                    tutor: "John Doe"
+                },
+                {
+                    id: 2,
+                    title: "Calculus Introduction",
+                    date: "Nov 17, 2023",
+                    time: "3:00 PM - 4:00 PM",
+                    status: "completed",
+                    tutor: "John Doe"
+                },
+                {
+                    id: 3,
+                    title: "Advanced Functions",
+                    date: "Nov 24, 2023",
+                    time: "2:00 PM - 3:00 PM",
+                    status: "scheduled",
+                    tutor: "John Doe"
+                },
+                {
+                    id: 4,
+                    title: "Integration Techniques",
+                    date: "Dec 1, 2023",
+                    time: "3:00 PM - 4:00 PM",
+                    status: "scheduled",
+                    tutor: "John Doe"
+                }
+            ]
+        },
+        2: {
+            name: "Standard English Package",
+            subject: "English Literature & Writing",
+            totalHours: "8 hours",
+            price: "$79",
+            status: "active",
+            purchaseDate: "Sep 20, 2023",
+            expiryDate: "Dec 20, 2023",
+            sessions: [
+                {
+                    id: 5,
+                    title: "Essay Writing Basics",
+                    date: "Oct 5, 2023",
+                    time: "10:00 AM - 11:00 AM",
+                    status: "completed",
+                    tutor: "Alice Smith"
+                },
+                {
+                    id: 6,
+                    title: "Literary Analysis",
+                    date: "Oct 12, 2023",
+                    time: "10:00 AM - 11:00 AM",
+                    status: "completed",
+                    tutor: "Alice Smith"
+                }
+            ]
+        },
+        3: {
+            name: "Science Starter Pack",
+            subject: "Physics & Chemistry",
+            totalHours: "4 hours",
+            price: "$49",
+            status: "expired",
+            purchaseDate: "Aug 10, 2023",
+            expiryDate: "Nov 10, 2023",
+            sessions: [
+                {
+                    id: 7,
+                    title: "Physics Fundamentals",
+                    date: "Aug 25, 2023",
+                    time: "4:00 PM - 5:00 PM",
+                    status: "completed",
+                    tutor: "Robert Johnson"
+                }
+            ]
+        }
+    };
+
+    function openPackageModal(packageId) {
+        const package = packagesData[packageId];
+        if (!package) return;
+
+        // Update modal content
+        document.getElementById('modalPackageName').textContent = package.name;
+        document.getElementById('modalSubject').textContent = package.subject;
+        document.getElementById('modalTotalHours').textContent = package.totalHours;
+        document.getElementById('modalPrice').textContent = package.price;
+        document.getElementById('modalPurchaseDate').textContent = package.purchaseDate;
+        document.getElementById('modalExpiryDate').textContent = package.expiryDate;
+
+        // Update status badge
+        const statusElement = document.getElementById('modalStatus');
+        statusElement.innerHTML = '';
+        const statusBadge = document.createElement('span');
+        statusBadge.className = `status-badge status-${package.status}`;
+        statusBadge.textContent = package.status.charAt(0).toUpperCase() + package.status.slice(1);
+        statusElement.appendChild(statusBadge);
+
+        // Populate sessions list
+        const sessionsList = document.getElementById('sessionsList');
+        sessionsList.innerHTML = '';
+
+
+        // Show modal
+        document.getElementById('packageModal').style.display = 'flex';
+    }
+
+    function closePackageModal() {
+        document.getElementById('packageModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('packageModal');
+        if (event.target === modal) {
+            closePackageModal();
+        }
+    });
+
+    // Action functions
+    function bookSession(packageId) {
+        alert(`Booking session for package ${packageId}`);
+        // Implement booking logic
+    }
+
+    function extendPackage(packageId) {
+        alert(`Extending package ${packageId}`);
+        // Implement extension logic
+    }
+
+    function renewPackage(packageId) {
+        alert(`Renewing package ${packageId}`);
+        // Implement renewal logic
+    }
+
+    function rescheduleSession(sessionId) {
+        alert(`Rescheduling session ${sessionId}`);
+        // Implement reschedule logic
+    }
+
+    function cancelSession(sessionId) {
+        if (confirm('Are you sure you want to cancel this session?')) {
+            alert(`Cancelling session ${sessionId}`);
+            // Implement cancel logic
+        }
+    }
+
+    function viewSessionDetails(sessionId) {
+        alert(`Viewing details for session ${sessionId}`);
+        // Implement view details logic
+    }
+</script>

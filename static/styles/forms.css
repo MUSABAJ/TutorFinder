@@ -1,0 +1,76 @@
+/* Modern simple form styles for TutorFinder
+   - Add .form-card wrapper for panels
+   - Style inputs, textareas, selects and buttons
+   - Non-invasive defaults that can be overridden by page-specific styles
+*/
+:root{
+  --form-bg: #0b1220;
+  --form-card: rgba(255,255,255,0.03);
+  --form-border: rgba(255,255,255,0.06);
+  --accent: #7c3aed;
+  --muted: #94a3b8;
+  --text: #e6eef8;
+}
+
+.form-card{
+  background: var(--form-card);
+  border: 1px solid var(--form-border);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+.form-row{display:flex;gap:1rem;flex-wrap:wrap}
+.form-col{flex:1;min-width:220px}
+
+label{display:block;font-size:0.9rem;color:var(--muted);margin-bottom:0.35rem}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea{
+  width:100%;
+  padding:0.6rem 0.75rem;
+  border-radius:10px;
+  background:transparent;
+  border:1px solid var(--form-border);
+  color:var(--text);
+  outline:none;
+  transition: box-shadow .12s ease, border-color .12s ease, transform .06s ease;
+}
+
+input::placeholder, textarea::placeholder{color: rgba(230,238,248,0.45)}
+
+input:focus, textarea:focus, select:focus{
+  border-color: var(--accent);
+  box-shadow: 0 6px 20px rgba(124,58,237,0.12);
+  transform: translateY(-1px);
+}
+
+textarea{min-height:100px;resize:vertical}
+
+.form-help{font-size:0.85rem;color:var(--muted);margin-top:0.35rem}
+
+.btn-modern{
+  display:inline-flex;align-items:center;gap:0.6rem;padding:0.6rem 1rem;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent),#4f46e5);color:white;font-weight:600;text-decoration:none
+}
+
+.btn-outline-modern{
+  display:inline-flex;align-items:center;gap:0.6rem;padding:0.5rem 0.9rem;border-radius:10px;border:1px solid var(--form-border);background:transparent;color:var(--text);font-weight:600;text-decoration:none
+}
+
+.form-inline{display:flex;gap:.5rem;align-items:center}
+
+/* small screens adjustments */
+@media (max-width:720px){
+  .form-row{flex-direction:column}
+}
+
+/* Page specific helpers used across templates */
+.form-group{margin-bottom:0.9rem}
+.form-group > .helptext, .form-group > .form-help{color:var(--muted);font-size:0.85rem;margin-top:0.25rem}
+.profile-form input, .profile-form select, .profile-form textarea{background:transparent}
+.profile-form .form-row{gap:1rem}
+.profile-form .btn{border-radius:10px}

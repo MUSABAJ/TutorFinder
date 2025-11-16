@@ -61,6 +61,8 @@ class BookedSession(models.Model):
         ('missed', 'Missed'),
         ('cancelled', 'Cancelled'),
         ('rescheduled', 'Reschedule'),
+        ('completed', 'completed'),
+        ('up_comming', 'Up Comming'),
         ]   
     TYPE_CHOICES = [
         ('online', 'Online'),

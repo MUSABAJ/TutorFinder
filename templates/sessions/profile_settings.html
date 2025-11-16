@@ -44,11 +44,11 @@
                                 <div class="card ">
 
 
-                                    <div class="card-header">
-                                        <h3>Personal Information</h3>
-                                    </div>
+
                                     <div class="profile-card">
                                         <div class="profile-avatar-large"><img src="/static{{user.avatar.url}}" alt="">
+                                                <a onclick="openAvatarModal()" class="change_avatar"><i class="fas fa-pen" ></i></a>
+
                                         </div>
 
                                         <div>
@@ -59,18 +59,17 @@
                                             <p>{{student.field_of_study }} </p>
                                             {% endif %}
 
-                                            <a onclick="openAvatarModal()" class="btn btn-sm">Change Avatar</a>
+                                        </div>
+                                        <div style="   position: absolute; right: 2rem;">
                                             {% if not user.telegram_id %}<a href="https://t.me/yameteKudasiBot?start={{ user.id }}" class="btn btn-primary">
                                                 🔗 Link to your Telegram
                                             </a>{% endif %}
-                                        </div>
-                                        
+                                        </div> 
+                                    </div>                                    <div class="card-header">
+                                        <h3>Personal Information</h3>
                                     </div>
                                     <form class="profile-form" method="post" enctype="multipart/form-data">
-                                        {% csrf_token%}
-                                        <div class="card-header">
-                                            <h4>Personal Details</h2>
-                                        </div>
+                                        {% csrf_token%} 
                                         <div class="form-row">
 
                                             <div class="form-group">
@@ -178,28 +177,11 @@
                                             </div>
                                             </div>
                                     </div>
-                                     <div class="card-header">
-                                    <h3>Payment Info</h3>
-                                    </div>
-                                    <div class="input-group">
-                                        <div class="form-group">
-                                            <label>Account Type </label>
-                                            {{tutor_form.account_type}}
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Education </label>
-                                            {{tutor_form.account_number}}
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Education </label>
-                                            {{tutor_form.bank_code}}
-                                        </div>
-                                    </div>
+                                     
                                     {% else %}
  
                                     <div class="card-header">
                                         <h3>Student Profile</h3>
-                                        <button class="btn btn-outline">Edit</button>
                                     </div> 
                                     <div class="form-group">
                                         <label>Bio</label>
@@ -232,35 +214,104 @@
 
                             <div id="settings" class="tab-content">
                                 <div class="card">
-                                    <div class="card-header">
-                                        <h3>Account Settings</h3>
-                                    </div>
-                                    <form class="profile-form">
-                                        <div class="form-group">
-                                            <label>Language</label>
-                                            <select class="form-input">
-                                                <option value="en" selected>English</option>
-                                                <option value="am">Amharic</option>
-                                                <option value="ar">Arabic</option>
-                                            </select>
+                                    {#<div class="card-header"><h3>Account Settings</h3></div>#}
+                                    <form id="payment-form" class="profile-form"
+                                          hx-post="{% url 'payment_info_form' %}"
+                                          hx-target="body"
+                                          hx-swap="outerHTML">
+                                        {% csrf_token %}
+                                        <div class="card-header">
+                                            <h3>Payment Info</h3>
                                         </div>
-                                        <br>
-                                        <div class="form-group">
-                                            <label>Time Zone</label>
-                                            <select class="form-input">
-                                                <option value="EST" selected>Eastern Standard Time</option>
-                                                <option value="PST">Pacific Standard Time</option>
-                                                <option value="GMT">Greenwich Mean Time</option>
-                                            </select>
-                                        </div>
-                                        <br>
-                                        <div class="form-actions">
-                                            <button type="submit" class=" btn btn-primary btn-sm">Save
-                                                Settings</button>
+                                            
+                                        <div class="input-group">
+                                            <div class="form-group">
+                                                <label for="method_type">Payment Method</label>
+                                                <select id="method_type" name="method_type" required>
+                                                    <option value="">-- Choose method --</option>
+                                                    <option value="card">Credit / Debit Card</option>
+                                                    <option value="bank">Bank Account</option>
+                                                    <option value="mobile">Mobile / Phone Money</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group" id="bank-wrapper" style="display:none;">
+                                                <label for="bank_code">Bank</label>
+
+                                                <select id="bank_code" name="bank_code">
+                                                    <option value="">-- Select bank --</option>
+
+                                                <option value="3">sdf</option>
+                                                    
+                                                    {% for bank in bank_list.data %}
+
+                                                <option value="{{ bank.id }}">{{ bank.name }}</option>
+                                            {% endfor %}
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group" id="account-wrapper" style="display:none;">
+                                                <label for="account_number">Account Number</label>
+                                                <input id="account_number" name="account_number" type="text" placeholder="Account number">
+                                            </div>
+
+                                            <div class="form-group" id="card-wrapper" style="display:none;">
+                                                <label for="card_number">Card Number</label>
+                                                <input id="card_number" name="card_number" type="text" placeholder="1234 5678 9012 3456" inputmode="numeric" maxlength="19">
+                                                <label for="card_name">Name on Card</label>
+                                                <input id="card_name" name="card_name" type="text" placeholder="Cardholder name">
+                                                <div style="display:flex;gap:.5rem;">
+                                                    <input id="card_expiry" name="card_expiry" type="text" placeholder="MM/YY" maxlength="5" style="flex:1">
+                                                    <input id="card_cvc" name="card_cvc" type="text" placeholder="CVC" maxlength="4" style="width:6rem">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" id="phone-wrapper" style="display:none;">
+                                                <label for="phone_number">Phone Number (for mobile money)</label>
+                                                <input id="phone_number" name="phone_number" type="tel" placeholder="+251 9xx xxx xxx">
+                                                <label for="mobile_provider">Provider (optional)</label>
+                                                <input id="mobile_provider" name="mobile_provider" type="text" placeholder="e.g. M-Pesa">
+                                            </div>
                                         </div>
 
+                                        <div style="margin-top:1rem;">
+                                            <button type="submit" class="btn btn-primary">Save Payment Info</button>
+                                        </div>
                                     </form>
-                                    <div class="card-header">
+
+                                    <script>
+                                        (function(){
+                                            const method = document.getElementById('method_type');
+                                            const bankWrapper = document.getElementById('bank-wrapper');
+                                            const accountWrapper = document.getElementById('account-wrapper');
+                                            const cardWrapper = document.getElementById('card-wrapper');
+                                            const phoneWrapper = document.getElementById('phone-wrapper');
+
+                                            function updateVisibility() {
+                                                const v = method.value;
+                                                bankWrapper.style.display = v === 'bank' ? 'block' : 'none';
+                                                accountWrapper.style.display = v === 'bank' ? 'block' : 'none';
+                                                cardWrapper.style.display = v === 'card' ? 'block' : 'none';
+                                                phoneWrapper.style.display = v === 'mobile' ? 'block' : 'none';
+
+                                                // toggle required attributes
+                                                document.getElementById('bank_code').required = v === 'bank';
+                                                document.getElementById('account_number').required = v === 'bank';
+                                                document.getElementById('card_number').required = v === 'card';
+                                                document.getElementById('card_name').required = v === 'card';
+                                                document.getElementById('card_expiry').required = v === 'card';
+                                                document.getElementById('card_cvc').required = v === 'card';
+                                                document.getElementById('phone_number').required = v === 'mobile';
+                                            }
+
+                                            method.addEventListener('change', updateVisibility);
+                                            // initialize on load (for HTMX-replaced content)
+                                            document.addEventListener('DOMContentLoaded', updateVisibility);
+                                            // also run immediately in case DOMContentLoaded already fired
+                                            updateVisibility();
+                                        })();
+                                    </script>
+                                    <!-- <div class="card-header">
                                         <h3>Security</h3>
                                     </div>
                                     <div class="security-options">
@@ -269,7 +320,7 @@
                                                 <h4>Change Password</h4>
                                                 <p>Update your account password</p>
                                             </div>
-                                            <button class=" btn btn-outline">Change</button>
+                                            <button onclick="openP" class=" btn btn-outline">Change</button>
                                         </div>
 
                                         <div class="security-item">
@@ -279,7 +330,7 @@
                                             </div>
                                             <button class="btn  btn-danger">Delete</button>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
 
 

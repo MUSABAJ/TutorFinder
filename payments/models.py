@@ -8,8 +8,9 @@ User = get_user_model()
 
 STATUS_CHOICE = [
     ('pending', 'Pending'),
-    ('held', 'Held in System'),
+    ('held', 'Held in Escrow'),
     ('success', 'Succsess'),
+    ('released', 'Withdrawn'),
     ('failed', 'Failed'),
 ]
 class Payment(models.Model):

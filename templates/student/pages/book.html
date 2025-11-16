@@ -119,16 +119,16 @@
       ],
       
 
-        eventClick: function(info) {
-          if (info.event.title==='Booked')
-            return alert('this slot is already booked');
-
+       eventClick: async function(info) {
+          if (info.event.title==='Booked'){
+            await openModal({message: 'This slot is already booked', confirmText: 'OK', cancelText: 'Close', showInput:false});
+            return;
+          }
           const start = info.event.start.toISOString();
-          const end =info.event.end.toISOString();
-          console.log(info.event.end)
-          console.log(end)
+          const end = info.event.end.toISOString();
           const confirmMsg = `Book this slot? \n${start} - ${end}`;
-          if (confirm(confirmMsg)){
+          const resp = await openModal({message: confirmMsg, confirmText: 'Book', cancelText: 'Cancel', showInput:false});
+          if (resp.confirmed){
             slotInput.value = JSON.stringify({start,end});
             bookBtn.disabled = false;
           }
@@ -138,25 +138,73 @@
       calendar.render();
     });
   
-  //  function findOverLappingEvents(newEvent){
-  //       const events = calendar.getEvents();
-  //       const overlaps =[]
-  //       events.forEach(ev => {
-  //         if(newEvent.start < ev.end && newEvent.end > ev.start ){
-  //           overlaps.push(ev);
-  //         }
-  //       })
-  //     return overlaps
-  //     }
-      
-  //     function rmvOverlapping(newEvent, calendar){
-  //      const tempEvent = {
-  //        start: new Date(newEvent.start),
-  //        end: new Date(newEvent.end)
-  //      }
-  //      const overlaps=  findOverLappingEvents(tempEvent, calendar);
-  //      overlaps.forEach(ev => ev.remove())
-  //      calendar.addEvent(newEvent)
-    //EE }   
   </script>
 </html>
+
+
+  <!-- Modal UI (local): modern confirmation/prompt replacement -->
+  <div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);backdrop-filter:blur(2px);z-index:9999;align-items:center;justify-content:center;padding:1rem">
+  <div id="modal-dialog" style="background:#0b1220;color:#e6eef8;border-radius:12px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(2,6,23,0.6);overflow:hidden">
+    <div style="padding:1rem 1rem 0.5rem;font-weight:700">Confirm</div>
+    <div id="modal-message" style="padding:0 1rem 1rem;color:#9ca3af"></div>
+    <div style="padding:0 1rem 1rem">
+      <input id="modal-input" type="text" style="width:100%;padding:.5rem;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;display:none">
+    </div>
+    <div style="display:flex;gap:.5rem;padding:0.75rem;border-top:1px solid rgba(255,255,255,0.02);justify-content:flex-end">
+      <button id="modal-cancel" style="background:transparent;border:1px solid rgba(255,255,255,0.06);padding:.5rem 0.9rem;border-radius:8px;color:#cbd5e1">Cancel</button>
+      <button id="modal-confirm" style="background:linear-gradient(90deg,#7c3aed,#4f46e5);border:none;padding:.5rem 0.9rem;border-radius:8px;color:white">OK</button>
+    </div>
+  </div>
+  </div>
+
+  <script>
+  // modal helper returns Promise resolved with {confirmed: boolean, value: string|null}
+  function openModal(options){
+    options = options || {};
+    const overlay = document.getElementById('modal-overlay');
+    const messageEl = document.getElementById('modal-message');
+    const inputEl = document.getElementById('modal-input');
+    const btnConfirm = document.getElementById('modal-confirm');
+    const btnCancel = document.getElementById('modal-cancel');
+
+    messageEl.textContent = options.message || '';
+    inputEl.style.display = options.showInput ? 'block' : 'none';
+    inputEl.value = options.defaultValue || '';
+    inputEl.type = options.inputType || 'text';
+    btnConfirm.textContent = options.confirmText || 'OK';
+    btnCancel.textContent = options.cancelText || 'Cancel';
+
+    overlay.style.display = 'flex';
+    if(options.showInput) inputEl.focus();
+
+    return new Promise(resolve => {
+      function cleanup(){
+        btnConfirm.removeEventListener('click', onConfirm);
+        btnCancel.removeEventListener('click', onCancel);
+        overlay.style.display = 'none';
+      }
+      function onConfirm(){
+        const value = options.showInput ? inputEl.value : null;
+        cleanup();
+        resolve({confirmed:true, value: value});
+      }
+      function onCancel(){
+        cleanup();
+        resolve({confirmed:false, value: null});
+      }
+      btnConfirm.addEventListener('click', onConfirm);
+      btnCancel.addEventListener('click', onCancel);
+      function onKey(e){
+        if(e.key === 'Escape') { onCancel(); }
+        if(e.key === 'Enter' && options.showInput) { onConfirm(); }
+      }
+      document.addEventListener('keydown', onKey);
+      const origResolve = resolve;
+      resolve = function(val){
+        document.removeEventListener('keydown', onKey);
+        origResolve(val);
+      }
+    });
+  }
+  </script>
+  

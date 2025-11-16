@@ -26,12 +26,37 @@ def list_session(request):
     tomorrow = today + datetime.timedelta(days=1)
     if (request.user.role == 'tutor'):
         sessions = BookedSession.objects.filter(base_session__tutor=request.user)
+        canceld_sessions = BookedSession.objects.filter(base_session__tutor=request.user).filter(status='cancelled')
+        completed_sessions = BookedSession.objects.filter(base_session__tutor=request.user).filter(status='completed')
     else:
         sessions = BookedSession.objects.filter(base_session__student=request.user)
     upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
+    canceld_sessions = sessions.filter(status='cancelled')
+    completed_sessions = sessions.filter(status='completed')
 
-    return render(request,'sessions/session_manager.html', {"sessions":sessions,'upcoming_sessions':upcoming_sessions})
+    up =upcoming_sessions.filter().first()
+    if up:
+        up.status='up_comming'
+    return render(request,'sessions/session_manager.html', {"sessions":sessions,
+                                                            'completed_sessions':completed_sessions,
+                                                            'upcoming_sessions':upcoming_sessions,
+                                                            'canceld_sessions':canceld_sessions})
 
+
+@login_required
+def base_session_manager(request):
+    user = request.user
+    if (user.role == 'tutor'):
+        base_session = BaseSession.objects.filter(tutor=user)
+    elif (user.role == 'student'):
+        base_session = BaseSession.objects.filter(student=user)
+
+    context = {
+        'base_session':base_session,
+
+        }
+    return render(request, 'sessions/base_session_manager.html',context)
+        
 @login_required
 def list_BaseSession(request):
     
@@ -83,7 +108,7 @@ def request_session(request, pkg_id):
 def session_requests(request):
     
     if not request.user.role == 'tutor':
-        return HttpResponseForbidden(request.user,'You are not allow hear')
+        return HttpResponseForbidden(request.user,'You are not allowd hear')
     requests = BaseSession.objects.filter(status='pending')
     
     return render(request, 'tutor/pages/requests.html', {'requests':requests})
@@ -194,7 +219,6 @@ def book_sessions(request, base_id):
                     refrence_id=tx_ref
                 )
 
-                # Don’t mark success yet! Wait for callback verification
                 checkout_url = response['data']['checkout_url']
                 
                 create_notification(
@@ -229,7 +253,7 @@ def check_in_out(request, session_id):
     session = get_object_or_404(BaseSession, id=session_id) 
     user = request.user
     if user not in [session.student,session.tutor]:
-        return JsonResponse({'error': 'Unauthorized'}, status=403)
+        return HttpResponseForbidden("Unauthorized action")
 
     button = 'Rate Your Session'
     if session.status == 'confirmed' or session.status == 'ongoing':

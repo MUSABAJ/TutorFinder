@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from django.shortcuts import render
 from datetime import timedelta
 from users.models import User
+from payments.chapa import ChapaPayment
 #send  Broadcast view //all user, only student, only tutor
 # compose messagess
 # send it
@@ -25,10 +26,15 @@ def admin_stats_view(request):
         'labels': ['Students', 'Tutors', 'Verified Tutors'],
         'data': [total_students, total_tutors, verified_tutors]
     }
+    chapa = ChapaPayment()
 
+    transactions_response = chapa.balance()
+    print(transactions_response)
+    print(8888888888)
     context = {
         'chart_data': chart_data,
         'sessions_this_month': sessions_this_month,
      }
 
     return render(request, 'admin/stats.html', context)
+

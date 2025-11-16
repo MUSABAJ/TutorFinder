@@ -30,8 +30,6 @@ def create_virtual_class(request, session_id):
                 type='five_min_session_reminder',
                 link= "{% url 'session_list' %}"
                 )
-
-    messages.success(request, f"Virtual classroom ready! Room: {room.room_name}")
     return redirect('join_virtual_class', session_id=session.id)
 
 

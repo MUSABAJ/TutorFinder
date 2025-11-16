@@ -116,15 +116,15 @@ class TutorProfileEditForm(forms.ModelForm):
     subjects = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'English, Math, CS, Hemtigna'}))
     teaching_prefrence = forms.ChoiceField(  choices=TEACHING_PREFRENCE_CHOICES,required=False)
     horuly_rate = forms.IntegerField( required=False)
-    account_type = forms.ChoiceField( choices=PAYMMENT_METHOD, required=False)
-    account_number = forms.CharField( required=False,)
-    bank_code = forms.CharField( required=False)
+    # account_type = forms.ChoiceField( choices=PAYMMENT_METHOD, required=False)
+    # account_number = forms.CharField( required=False,)
+    # bank_code = forms.CharField( required=False)
     id_card = forms.FileField( required=False)
     certificate_file = forms.FileField( required=False)
     class Meta:
         model = TutorProfile
         fields = ['language','qualification','experience','subjects','teaching_prefrence'
-                ,'horuly_rate','account_type','account_number','bank_code','id_card','certificate_file','horuly_rate']
+                ,'horuly_rate','id_card','certificate_file','horuly_rate']
 
 
 # class ChangePasswordForm(forms.ModelForm):

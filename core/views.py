@@ -4,13 +4,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from users.forms import TutorProfileEditForm,StudentProfileEditForm, UserProfileEditForm, AvatarForm
 from tutor_sessions.models import BaseSession, BookedSession
 from feedback.models import FeedBack
-from resources.models import Resource
 from availablity.models import TutorPackage
 from availablity.forms import PackageForm
 from users.models import User, TutorProfile, StudentProfile
 from payments.models import Payment
+from payments.chapa import ChapaPayment
 from django.utils import timezone 
 from django.db.models import Q
+from django.db.models import Sum
 import datetime
 import urllib
 from chat.models import Chat
@@ -96,14 +97,31 @@ def manage_package(request):
  
 @login_required(login_url='/user/login/')
 def earning(request): 
-        tutor = request.user
-        packages = TutorPackage.objects.filter(tutor=tutor)         
- 
-        context = {
-            'packages':packages, 
-            'tutor':tutor,}
-        context.update(get_tutor_dashboard_context(request.user))
-        return render(request, 'tutor/pages/earning.html/',context)
+     tutor = request.user
+     packages = TutorPackage.objects.filter(tutor=tutor)
+     payments = Payment.objects.filter(tutor=tutor)
+     
+     status_totals_qs = payments.values('status').annotate(total=Sum('amount'))
+     # convert to dict for easy access in template
+     status_totals = {item['status']: item['total'] or 0 for item in status_totals_qs}
+
+     held_payment = status_totals.get('held', 0)
+     available_balance = status_totals.get('released', 0)
+     total_earning = payments.aggregate(total=Sum('amount'))['total'] or 0
+
+     transactions = payments.order_by('-created_at')
+
+     context = {
+          'held_payment': held_payment,
+          'available_balance': available_balance,
+          'total_earning': total_earning,
+          'transactions': transactions,
+          'status_totals': status_totals,
+          'packages': packages,
+          'tutor': tutor,
+     }
+     context.update(get_tutor_dashboard_context(request.user))
+     return render(request, 'tutor/pages/earning.html', context)
 
 @login_required(login_url='/user/login/')
 def my_profile(request): 
@@ -112,10 +130,12 @@ def my_profile(request):
      user_form = UserProfileEditForm(request.POST or None, instance=user)
      tutor_form = None
      student_form  = None
+
      if user.role == 'tutor':
+        bank_list = ChapaPayment().bank_list()
         tutor_data = get_object_or_404(TutorProfile, user=user)
         tutor_form = TutorProfileEditForm(request.POST or None,request.FILES or None,   instance=tutor_data)
-        ctx = {'tutor':tutor_data}
+        ctx = {'tutor':tutor_data, 'bank_list':bank_list}
      elif user.role == 'student':
           student_data = get_object_or_404(StudentProfile, user=user)
           student_form = StudentProfileEditForm(request.POST or None, instance=student_data)
@@ -176,12 +196,7 @@ def my_tutors(request):
      context = get_tutor_dashboard_context(request.user)
      context.update(ctx)
      return render(request,'student/pages/tutors.html',context)
-# 
-# Redundunt function , combine it with the session manager view and commonn html template
-# @login_required(login_url='/user/login/')
-# def my_sessions(request):
-#      context = get_tutor_dashboard_context(request.user)
-#      return render(request,'sessions/session_manager.html',context)
+
 
 def view_tutor(request, tutor_id):
      tutor = get_object_or_404(TutorProfile, id=tutor_id)

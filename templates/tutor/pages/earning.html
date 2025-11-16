@@ -3,84 +3,59 @@
 {% block main %}
 
 <div class="main-view-top">
+    <style>
+        /* Make the transactions area scrollable with a sticky header */
+        #transactions-table{max-height:400px;overflow:auto;border-radius:8px}
+        #transactions-table table{width:100%;border-collapse:collapse}
+        #transactions-table thead th{position:sticky;top:0;background:rgba(255, 255, 255, 1);z-index:3;padding:0.75rem;text-align:left}
+        #transactions-table tbody tr{border-bottom:1px solid rgba(255,255,255,0.03)}
+        /* subtle alternate row shading */
+        #transactions-table tbody tr:nth-child(even){background:rgba(255,255,255,0.01)}
+    </style>
     <div class="dashboard-section">
         <h3>Payments Overview</h3>
-        <div class="actions">
-            <button class="btn btn-outline btn-vsm" hx-get="/api/payments/export" hx-trigger="click">Export CSV</button>
-            <button class="btn btn-primary btn-vsm" onclick="document.getElementById('addMethodModal').style.display='block'">Add Method</button>
-        </div>
+         
     </div>
-
+ 
     <div class="payments-wrapper">
         <div class="card-grid">
             <div class="summary-card">
                 <i class="fas fa-wallet"></i>
                 <div>
-                    <h4>$1,240.00</h4>
+                    <h4>{{available_balance}}</h4>
                     <p class="muted">Available Balance</p>
+                    <br>
+                        <button id="open-withdraw" class="btn btn-sm">Request Withdrawal</button>
                 </div>
             </div>
             <div class="summary-card">
                 <i class="fas fa-receipt"></i>
                 <div>
-                    <h4>$9,560.00</h4>
+                    <h4>{{total_earning}} <small>ETB</small></h4>
                     <p class="muted">Total Earnings</p>
                 </div>
             </div>
             <div class="summary-card">
                 <i class="fas fa-money-check"></i>
                 <div>
-                    <h4>$820.00</h4>
+                    <h4>{{held_payment}}</h4>
                     <p class="muted">Pending Payouts</p>
                 </div>
             </div>
-            <div class="summary-card">
-                <i class="fas fa-arrow-up-right-dots"></i>
-                <div>
-                    <h4>+12%</h4>
-                    <p class="muted">30d Growth</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="dashboard-section">
-                <h3>Payment Methods</h3>
-                <div class="actions">
-                    <button class="btn btn-outline btn-vsm" onclick="document.getElementById('addMethodModal').style.display='block'">Add New</button>
-                </div>
-            </div>
-            <div class="section-body">
-                <div class="methods" hx-get="/api/payment-methods" hx-trigger="load">
-                    <div class="method-card">
+            <div class="method-card">
                         <div class="method-meta">
                             <i class="fab fa-cc-visa"></i>
                             <div>
-                                <div>Visa •••• 4242</div>
-                                <div class="muted">Expires 08/28 · Default</div>
+                                <h4>Payment Method</h4>
+
+                                <div>{{user.tutor.bank_code}} {{user.tutor.account_number}}</div>
+                                <div class="muted">{{user.tutor.account_type}}</div>
                             </div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-outline btn-vsm">Make Default</button>
-                            <button class="btn btn-danger btn-vsm">Remove</button>
-                        </div>
+                        </div> 
+                            
                     </div>
-                    <div class="method-card">
-                        <div class="method-meta">
-                            <i class="fab fa-cc-mastercard"></i>
-                            <div>
-                                <div>Mastercard •••• 9911</div>
-                                <div class="muted">Expires 03/27</div>
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-outline btn-vsm">Make Default</button>
-                            <button class="btn btn-danger btn-vsm">Remove</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+ 
 
         <div class="section">
             <div class="dashboard-section">
@@ -107,35 +82,113 @@
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class=tbody>
+                    {% for tran in transactions %}
+
                         <tr>
-                            <td>Feb 20, 2025</td>
-                            <td>Algebra Session (60m)</td>
-                            <td>Sarah Johnson</td>
-                            <td>$40.00</td>
-                            <td><span class="status-badge status-paid">Paid</span></td>
-                            <td><button class="btn btn-outline btn-vsm">Invoice</button></td>
+                            <td>{{tran.updated_at}}</td>
+                            <td>{{tran.session.subject_name}}</td>
+                            <td>{{tran.student}}</td>
+                            <td>{{tran.amount}}</td>
+                            <td><span class="status-badge status-{{tran.status}}">{{tran.status}}</span></td>
+                            <td><a href="{{tran.refrence_id}}" ><button class="btn btn-outline btn-vsm">Invoice</button></a>
+                            </td>
                         </tr>
-                        <tr>
-                            <td>Feb 18, 2025</td>
-                            <td>Physics Prep (45m)</td>
-                            <td>Michael Chen</td>
-                            <td>$35.00</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                            <td><button class="btn btn-outline btn-vsm">Details</button></td>
-                        </tr>
-                        <tr>
-                            <td>Feb 12, 2025</td>
-                            <td>Essay Review (30m)</td>
-                            <td>Emily Davis</td>
-                            <td>$25.00</td>
-                            <td><span class="status-badge status-failed">Failed</span></td>
-                            <td><button class="btn btn-outline btn-vsm">Retry</button></td>
-                        </tr>
+                        
+                    {% endfor %}
+                    
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<!-- Withdraw modal -->
+<div id="withdraw-modal" class="modal" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:1000;">
+    <div class="modal-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" style="position:relative;max-width:480px;margin:6% auto;background:#fff;border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2)">
+        <button id="withdraw-close" aria-label="Close" style="position:absolute;right:12px;top:12px;background:none;border:0;font-size:18px">✕</button>
+        <h3 style="margin-top:0">Request Withdrawal</h3>
+        <div id="withdraw-feedback" style="margin-bottom:8px;color:#333;"></div>
+
+        <form id="withdraw-form" action="{% url 'withdraw_request' %}" method="post">
+            {% csrf_token %}
+
+            <div class="form-row" style="margin-bottom:10px">
+                <label for="withdraw-amount">Amount (ETB)</label>
+                <input type="number" name="amount" id="withdraw-amount" step="0.01" min="1" required style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px">
+            </div>
+
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button type="button" id="withdraw-cancel" class="btn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Small modal + AJAX submit helper for withdraw
+;(function(){
+    function getCookie(name) {
+        let v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return v ? v.pop() : '';
+    }
+
+    const openBtn = document.getElementById('open-withdraw');
+    const modal = document.getElementById('withdraw-modal');
+    const overlay = modal && modal.querySelector('.modal-overlay');
+    const closeBtn = document.getElementById('withdraw-close');
+    const cancelBtn = document.getElementById('withdraw-cancel');
+    const form = document.getElementById('withdraw-form');
+    const feedback = document.getElementById('withdraw-feedback');
+
+    function showModal(){ if(!modal) return; modal.style.display='block'; modal.setAttribute('aria-hidden','false'); const inp = modal.querySelector('input[name="amount"]'); if(inp) inp.focus(); }
+    function hideModal(){ if(!modal) return; modal.style.display='none'; modal.setAttribute('aria-hidden','true'); feedback.innerText = ''; form.reset(); }
+
+    if(openBtn) openBtn.addEventListener('click', function(e){ e.preventDefault(); showModal(); });
+    if(closeBtn) closeBtn.addEventListener('click', function(){ hideModal(); });
+    if(cancelBtn) cancelBtn.addEventListener('click', function(){ hideModal(); });
+    if(overlay) overlay.addEventListener('click', function(){ hideModal(); });
+
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hideModal(); });
+
+    if(form){
+        form.addEventListener('submit', async function(e){
+            e.preventDefault();
+            feedback.style.color = '#333';
+            feedback.innerText = 'Submitting withdrawal...';
+
+            const data = new URLSearchParams(new FormData(form));
+
+            try{
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: data
+                });
+
+                const json = await res.json().catch(()=>({ok:false,message:'Invalid server response'}));
+
+                if(res.ok && json.ok !== false){
+                    feedback.style.color = 'green';
+                    feedback.innerText = json.message || 'Withdrawal submitted';
+                    // refresh page after short delay to show updated balances
+                    setTimeout(()=> location.reload(), 1100);
+                } else {
+                    feedback.style.color = 'crimson';
+                    feedback.innerText = json.error || json.message || 'Failed to submit withdrawal';
+                }
+
+            } catch(err){
+                feedback.style.color = 'crimson';
+                feedback.innerText = 'Network error: ' + (err.message || err);
+            }
+        });
+    }
+})();
+</script>
 {% endblock main %}
