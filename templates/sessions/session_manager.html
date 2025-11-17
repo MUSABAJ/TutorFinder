@@ -55,8 +55,13 @@
                     
                     <div class="session-actions">
                         {% if session.status == 'up_comming' %}
-                    <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
-                    {% else %}
+                            {% if session.session_type == 'online' %}
+                                <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Create Room</button> </a>
+                            {% else %}
+                                <a href="{% url 'check_in_out'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
+
+                            {% endif %}
+                        {% else %}
                     <a  ><button disabled class="btn-sm btn-primary">Start Class</button> </a>
                     
                         {% endif %}

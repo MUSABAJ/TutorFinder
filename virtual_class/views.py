@@ -1,11 +1,65 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
+from tutor_sessions.models import BaseSession
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from django.db import transaction
 from notifications.utils import create_notification
 from tutor_sessions.models import BookedSession, VirtualClass
 import uuid
 
+
+
+
+@login_required
+def check_in_out(request, session_id):
+    current_session = get_object_or_404(BookedSession, id=session_id) 
+    session = BaseSession.objects.get(sessions=current_session)
+    user = request.user
+    if user not in [session.student,session.tutor]:
+        return HttpResponseForbidden("Unauthorized action")
+
+    button = 'Rate Your Session'
+    with transaction.atomic():
+
+        if session.status == 'confirmed' or session.status == 'ongoing':
+            session.start_session()
+            current_session.status='active'
+            button = 'End Session'
+            
+            create_notification(
+            recipient=session.tutor,
+            user=request.user,
+            type='session_started',
+            link= "{% url 'base_session_list' %}")
+            
+            create_notification(
+            recipient=session.student,
+            user=request.user,
+            type='session_started',
+            link= "{% url 'base_session_list' %}")
+
+        elif session.status == 'active':
+            session.end_session()
+            create_notification(
+            recipient=session.tutor,
+            user=request.user,
+            type='session_ended',
+            link= "{% url 'base_session_list' %}")
+            
+            create_notification(
+            recipient=session.student,
+            user=request.user,
+            type='session_ended',
+            link= "{% url 'base_session_list' %}")
+            current_session.status='completed'
+            button = 'Start Session'
+
+    percentage = (session.remaining_sessions/ session.total_session)*100
+
+    context = {'session': session, 'button':button, 'percentage':percentage}
+    return render(request,"virtualclass/in_person_checkin.html", context)
 
 @login_required
 def create_virtual_class(request, session_id):

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2E8B57;
+            --primary-light: #3CB371;
+            --primary-dark: #228B22;
+            --accent: #20B2AA;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+        .action-note{
+            border-radius: 2rem;
+            padding: 0 10px;
+            background-color: var(--text-border);
+            color: var(--text-light);
+        }
+        body {
+            padding-top:1rem;
+            overflow: hidden;
+            background: var(--background);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+         }
+
+        .session-container {
+            display:flex;
+             width: 100%;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 90px;
+            text-align: center;
+            align-content: center;
+
+            flex:0.8;
+            position: relative;
+        }
+
+        .session-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .session-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .session-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .session-content {
+            padding: 3rem;
+            flex: 1.5;
+        }
+
+        .participants {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .participant-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            background: var(--white);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 200px;
+            transition: transform 0.3s ease;
+        }
+
+        .participant-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .participant-role {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .participant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .session-details {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 4rem;
+            margin-bottom: 30px;
+        }
+
+        .details-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .details-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .details-grid {
+            justify-content: center;
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 20px;
+            column-gap: 4rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-confirmed {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+        }
+
+        .status-ongoing {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--secondary);
+        }
+
+        .status-active {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+        }
+
+        .status-completed {
+            background: rgba(149, 165, 166, 0.15);
+            color: var(--text-light);
+        }
+
+        .session-actions {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 16px;
+        }
+
+        .action-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 139, 87, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #1a9c95;
+            transform: translateY(-3px);
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            font-size: 1.1rem;
+        }
+
+        .status-message strong {
+            color: var(--primary);
+        }
+
+        /* Progress bar for hours */
+        .hours-progress {
+            margin-top: 20px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Animation for elements */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .session-container {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .session-header {
+                padding: 25px 20px;
+            }
+
+            .session-title {
+                font-size: 1.8rem;
+            }
+
+            .session-content {
+                padding: 20px;
+            }
+
+            .participants {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .participant-card {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .session-title {
+                font-size: 1.6rem;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .detail-value {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="session-container">
+        <div class="session-header">
+            <h1 class="session-title">Session: {{session.subject_name}}</h1>
+            <p class="session-subtitle">Attendance for In_persone tutoring, please don't forget to terminate your session</p>
+        </div>
+
+        <div class="session-content">
+            <div class="participants">
+                <div class="participant-card">
+                    <div class="participant-role">Tutor</div>
+                    <div class="participant-name">{{session.tutor.first_name}} {{session.tutor.last_name}}</div>
+                </div>
+                <div class="participant-card">
+                    <div class="participant-role">Student</div>
+                    <div class="participant-name">{{session.student.first_name}} {{session.student.last_name}}</div>
+                </div>
+            </div>
+
+            <div class="session-details">
+                <h2 class="details-title">Session Information</h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Session Status</span>
+                        <span class="detail-value">
+                            <span class="status-badge status-confirmed">{{session.status}}</span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total Sessions</span>
+                        <span class="detail-value"> {{session.total_session}} sessions in total</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Remaining sessions</span>
+                        <span class="detail-value"> {{session.remaining_sessions}} sessions remainded</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Session Type </span>
+                        <span class="detail-value">In-Person Tutoring</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">First Scheduled Time </span>
+                        <span class="detail-value">: {{session.scheduled_at}}</span>
+                    </div>
+                </div>
+
+                <div class="hours-progress">
+                    <div class="progress-info">
+                        <span class="progress-label">Progress: {{session.remaining_sessions}} of {{session.total_session}}  Sessions completed</span>
+                        <span class="progress-label">{{percentage}}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{percentage}}%"></div>
+                    </div>
+                </div>
+            </div>
+
+{% if session.status == 'confirmed' or session.status == 'ongoing'%}            
+            <div class="session-actions">
+                <form method="post" class="action-form">
+                      {% csrf_token%}
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-play-circle"></i> {{button}}
+                    </button>
+                    <p class="action-note">Click to begin this tutoring session</p>
+                </form>
+                <a href={% url 'tutor_dashbord' %}> <-  Go back to Home</a>
+{% elif session.status == 'active' %}
+                <form method="post" class="action-form">
+                      {% csrf_token%}
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-play-circle"></i> {{button}}
+                    </button>
+                    <p class="action-note">Click to end this tutoring session</p>
+                </form>
+
+            </div>
+            {% else %}
+
+            <div class="status-message">
+                <p>Your Session Hours are <strong>Completed</strong></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add subtle animations to elements
+            const detailItems = document.querySelectorAll('.detail-item');
+            detailItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.style.animation = 'fadeIn 0.5s ease-out forwards';
+                item.style.opacity = '0';
+            });
+
+            // Add hover effect to the entire session container
+            const sessionContainer = document.querySelector('.session-container');
+            sessionContainer.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = 'var(--hover-shadow)';
+            });
+
+            sessionContainer.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--card-shadow)';
+            });
+ 
+
+             function updateProgress(percentage='{{percentage}}') {
+                 progressFill.style.width = `${percentage}%`;
+                progressLabel.textContent = `Progress:{{session.remaining_sessions}}  of {{session.total_session}}  hours completed`;
+                progressPercent.textContent = `${Math.round(percentage)}%`;
+            }
+
+            // Demo: Update progress after 2 seconds
+            setTimeout(() => {
+                updateProgress(5, 16);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

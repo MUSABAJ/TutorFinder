@@ -19,6 +19,7 @@ from notifications.utils import create_notification
 import datetime
 from django.utils import timezone
 from payments.chapa import ChapaPayment 
+from django.db import transaction
 
 @login_required
 def list_session(request):
@@ -42,21 +43,74 @@ def list_session(request):
                                                             'upcoming_sessions':upcoming_sessions,
                                                             'canceld_sessions':canceld_sessions})
 
-
+@csrf_exempt
 @login_required
 def base_session_manager(request):
     user = request.user
     if (user.role == 'tutor'):
         base_session = BaseSession.objects.filter(tutor=user)
+        booked_session = BookedSession.objects.filter(base_session__tutor=user)
     elif (user.role == 'student'):
         base_session = BaseSession.objects.filter(student=user)
+        booked_session = BookedSession.objects.filter(base_session__student=user)
 
     context = {
         'base_session':base_session,
-
+        'booked_session':booked_session,
         }
-    return render(request, 'sessions/base_session_manager.html',context)
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        requestd_session = get_object_or_404(BaseSession,id=id )
+        action = request.POST.get("action")
+
+
+        if action == "accept":
+            requestd_session.status = 'confirmed' 
+            requestd_session.save()
         
+            create_notification(
+            recipient=requestd_session.student,
+            user=requestd_session.student,
+            type='session_confirmed',
+            link= "{% url 'base_session_list' %}"
+            )
+        elif action == "decline":
+            requestd_session.status = 'decline' 
+            requestd_session.save()
+            create_notification(
+            recipient=requestd_session.student,
+            user=requestd_session.student,
+            type='session_declined',
+            link= "{% url 'base_session_list' %}"
+            )
+        elif action == "cancel":
+            requestd_session.status = 'cancel' 
+            trailing_sessions = BookedSession.objects.filter(base_session=requestd_session)
+            for ts in trailing_sessions:
+                ts.status='cancelled'
+                ts.save()
+            requestd_session.save()
+
+            create_notification(
+            recipient=requestd_session.student,
+            user=requestd_session.student,
+            type='session_cancel',
+            link= "{% url 'base_session_list' %}"
+            )
+    
+    return render(request, 'sessions/base_session_manage.html',context)
+
+@login_required
+def base_session_detail(request, bs_id):
+    bs = get_object_or_404(BaseSession, id=bs_id)
+    booked_session = BookedSession.objects.filter(base_session=bs)
+    context = {
+        'bs':bs,
+        'booked_session':booked_session
+    }
+    return render(request, 'sessions/_base_session_detail.html',context)
+
+
 @login_required
 def list_BaseSession(request):
     
@@ -113,30 +167,30 @@ def session_requests(request):
     
     return render(request, 'tutor/pages/requests.html', {'requests':requests})
 
-@csrf_exempt   
-def handle_request(request, req_id):    
-    if not request.user.role == 'tutor':
-        return HttpResponseForbidden('You are not allowed here')
-    requestd_session = get_object_or_404(BaseSession, id=req_id)
+# @csrf_exempt   
+# def handle_request(request, req_id):    
+#     if not request.user.role == 'tutor':
+#         return HttpResponseForbidden('You are not allowed here')
+#     requestd_session = get_object_or_404(BaseSession, id=req_id)
 
-    action = request.POST.get("action")
-    if action == "accept":
-        requestd_session.status = 'confirmed' 
-        requestd_session.save()
+#     action = request.POST.get("action")
+#     if action == "accept":
+#         requestd_session.status = 'confirmed' 
+#         requestd_session.save()
     
-        create_notification(
-        recipient=requestd_session.student,
-        user=request_session.student,
-        type='session_confirmed',
-        link= "{% url 'base_session_list' %}"
-        )
-        message = f"<div class='session-request'>✅ Request {req_id} accepted!</div>"
-    elif action == "decline":
-        requestd_session.status = 'decline' 
-        requestd_session.save()
-        message = f"<div class='session-request'>❌ Request {req_id} declined!</div>"
+#         create_notification(
+#         recipient=requestd_session.student,
+#         user=request_session.student,
+#         type='session_confirmed',
+#         link= "{% url 'base_session_list' %}"
+#         )
+#         message = f"<div class='session-request'>✅ Request {req_id} accepted!</div>"
+#     elif action == "decline":
+#         requestd_session.status = 'decline' 
+#         requestd_session.save()
+#         message = f"<div class='session-request'>❌ Request {req_id} declined!</div>"
     
-    return HttpResponse(message)
+#     return HttpResponse(message)
 
 
 @login_required
@@ -177,39 +231,11 @@ def book_sessions(request, base_id):
             start, end = slot.get('start'), slot.get('end')
             if not start or not end:
                 return JsonResponse({'error': 'Invalid slot data.'}, status=400)
-
-           
-            # Create payment
-            tx_ref = f"tutor_escrow_{uuid.uuid4().hex[:16]}"
-            callback_url = request.build_absolute_uri(f'/sessions/payment/verify/{tx_ref}/')
-            obj, payment = Payment.objects.get_or_create(
-                student=student,
-                tutor=tutor,
-                session=base_session,
-                amount=base_session.price,
-                status="pending",
-                refrence_id=tx_ref
-            )
-
-            # Initialize Chapa payment
-            chapa = ChapaPayment()
-            response = chapa.initialize_transaction(
-                email=request.user.email,
-                amount=base_session.price,
-                tx_ref=tx_ref,
-                first_name=request.user.first_name,
-                last_name=request.user.last_name,
-                callback_url=callback_url
-            )
-
-            if response and response.get('status') == 'success':
-    # Create booked session
-                obj, booked_session = BookedSession.objects.get_or_create(
-                    base_session=base_session,
-                    start_time=start,
-                    end_time=end,
-                    schedule_date=start
-                )
+    
+            with transaction.atomic():
+                # Create payment
+                tx_ref = f"tutor_escrow_{uuid.uuid4().hex[:16]}"
+                callback_url = request.build_absolute_uri(f'/sessions/payment/verify/{tx_ref}/')
                 obj, payment = Payment.objects.get_or_create(
                     student=student,
                     tutor=tutor,
@@ -219,24 +245,52 @@ def book_sessions(request, base_id):
                     refrence_id=tx_ref
                 )
 
-                checkout_url = response['data']['checkout_url']
-                
-                create_notification(
-                recipient=tutor,
-                user=request.user,
-                type='payment_confirmed',
-                link= "{% url 'base_session_list' %}")
-                return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
-                
-            else:
-                # Payment initialization failed
-                # payment.status = "failed"
-                # payment.save()
-                
-                return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
+                # Initialize Chapa payment
+                chapa = ChapaPayment()
+                response = chapa.initialize_transaction(
+                    email=request.user.email,
+                    amount=base_session.price,
+                    tx_ref=tx_ref,
+                    first_name=request.user.first_name,
+                    last_name=request.user.last_name,
+                    callback_url=callback_url
+                )
+
+                if response and response.get('status') == 'success':
+        # Create booked session
+                    obj, booked_session = BookedSession.objects.get_or_create(
+                        base_session=base_session,
+                        start_time=start,
+                        end_time=end,
+                        schedule_date=start
+                    )
+                    obj, payment = Payment.objects.get_or_create(
+                        student=student,
+                        tutor=tutor,
+                        session=base_session,
+                        amount=base_session.price,
+                        status="pending",
+                        refrence_id=tx_ref
+                    )
+
+                    checkout_url = response['data']['checkout_url']
+                    
+                    create_notification(
+                    recipient=tutor,
+                    user=request.user,
+                    type='payment_confirmed',
+                    link= "{% url 'base_session_list' %}")
+                    return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
+                    
+                else:
+                    # Payment initialization failed
+                    # payment.status = "failed"
+                    # payment.save()
+                    
+                    return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
 
         except Exception as e:
-             return render(request,'status/page.html',{
+            return render(request,'status/page.html',{
                         'error': True,
                         'message': f'Failed Booking Process, Please Start again'
         })
@@ -248,39 +302,8 @@ def book_sessions(request, base_id):
     return render(request, 'student/pages/book.html', context)
 
 
-@login_required
-def check_in_out(request, session_id):
-    session = get_object_or_404(BaseSession, id=session_id) 
-    user = request.user
-    if user not in [session.student,session.tutor]:
-        return HttpResponseForbidden("Unauthorized action")
-
-    button = 'Rate Your Session'
-    if session.status == 'confirmed' or session.status == 'ongoing':
-        session.start_session()
-        button = 'End Session'
-        
-        create_notification(
-        recipient=session.tutor,
-        user=request.user,
-        type='session_confirmed',
-        link= "{% url 'base_session_list' %}")
-        
-        create_notification(
-        recipient=session.student,
-        user=request.user,
-        type='session_confirmed',
-        link= "{% url 'base_session_list' %}")
-
-    elif session.status == 'active':
-        session.end_session()
-        button = 'Start Session'
-
-    context = {'session': session, 'button':button}
-    return render(request, 'session/session_detail.html', context)
 
 @login_required 
-
 def session_reschedule(request, session_id):
     booked_session = get_object_or_404(BookedSession, id=session_id)
     tutor = booked_session.base_session.tutor
@@ -311,27 +334,28 @@ def session_reschedule(request, session_id):
         return JsonResponse({'error': 'Unauthorized'}, status=403)
 
     if request.method == 'POST':
-        if booked_session.status in ['scheduled', 'rescheduled']:
-            slot = json.loads(request.POST.get('selected_slot', '{}'))
-            start = slot.get('start')
-            end = slot.get('end')
+        with transaction.atomic():
+            if booked_session.status in ['scheduled', 'rescheduled']:
+                slot = json.loads(request.POST.get('selected_slot', '{}'))
+                start = slot.get('start')
+                end = slot.get('end')
 
-            if not start or not end:
-                return JsonResponse({'error': 'Invalid slot data'}, status=400)
+                if not start or not end:
+                    return JsonResponse({'error': 'Invalid slot data'}, status=400)
 
-            booked_session.start_time = start
-            booked_session.end_time = end
-            booked_session.schedule_date = start
-            booked_session.status = 'rescheduled'
-            
-            booked_session.save()
-            recipient = booked_session.base_session.student if request.user == booked_session.base_session.tutor else booked_session.base_session.student
-            create_notification(
-            recipient=recipient,
-            user=request.user,
-            type='session_confirmed',
-            link= "{% url 'base_session_list' %}")
-            return redirect('session_list')
+                booked_session.start_time = start
+                booked_session.end_time = end
+                booked_session.schedule_date = start
+                booked_session.status = 'rescheduled'
+                
+                booked_session.save()
+                recipient = booked_session.base_session.student if request.user == booked_session.base_session.tutor else booked_session.base_session.student
+                create_notification(
+                recipient=recipient,
+                user=request.user,
+                type='session_confirmed',
+                link= "{% url 'base_session_list' %}")
+                return redirect('session_list')
 
     context = {
         'tutor': tutor,

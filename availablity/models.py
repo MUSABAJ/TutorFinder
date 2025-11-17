@@ -25,4 +25,5 @@ class TutorPackage(models.Model):
     session_duration = models.PositiveIntegerField()    # eg..........5 session ///1 session=60 min
     session_perweek = models.PositiveIntegerField()
 
+    def __str__(self): return f'{self.name} Package'
  

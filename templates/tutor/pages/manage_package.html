@@ -1,4 +1,7 @@
 {% extends "dashboard.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/package.css' %}">
+
 {% block main %}
 <div class="main-view-top">
     <button class="pkg-create btn  " onclick="openPackageModal()">Create Package</button>

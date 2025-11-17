@@ -1,3 +1,12 @@
+{% extends "dashboard.html" %}
+
+{% block main  %}
+{% load static %}
+     <script src='{% static "HTMX.MINI.JS/htmx.min.js"%}'></script>
+     {# Working HTMX #}
+     
+
+</static>
 <style>
     :root {
         --primary: #2E8B57;
@@ -16,9 +25,25 @@
         --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         --hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
     }
+    
+        /* --- Empty State --- */
+        .empty-state {
+        text-align: center;
+        margin-top: 100px;
+        color: #666;
+        } 
 
+        .empty-state img {
+        max-width: 250px;
+        margin-bottom: 20px;
+        opacity: 0.8;
+        }
+
+        .empty-state p {
+        font-size: 1.1rem;
+        }
     .packages-container {
-        max-width: 1000px;
+        min-width: 100%;
         margin: 0 auto;
         padding: 20px;
         background: var(--background);
@@ -27,15 +52,14 @@
 
     .page-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 10px;
     }
 
     .page-header h1 {
         color: var(--text-dark);
         font-size: 2.2rem;
         font-weight: 300;
-        margin-bottom: 10px;
-    }
+     }
 
     .page-header p {
         color: var(--text-light);
@@ -146,6 +170,7 @@
         gap: 8px;
         font-size: 0.9rem;
         text-decoration: none;
+        
     }
 
     .btn-primary {
@@ -189,44 +214,49 @@
     }
 
     .status-active {
-        background: rgba(39, 174, 96, 0.15);
+        background: rgba(113, 126, 44, 0.15);
+        color: var(--success);
+    }
+    .status-confirmed {
+        background: rgba(47, 206, 113, 0.15);
         color: var(--success);
     }
 
-    .status-expired {
-        background: rgba(231, 76, 60, 0.15);
+    .status-cancel {
+        background: rgba(226, 73, 56, 0.15);
         color: var(--danger);
     }
 
     .status-pending {
-        background: rgba(243, 156, 18, 0.15);
+        background: rgba(219, 141, 16, 0.332);
         color: var(--warning);
     }
 
     /* Modal Styles */
-    .modal {
-        display: none;
+    .base_modal {
+        display: flex;
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         background: rgba(0, 0, 0, 0.7);
         z-index: 1000;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(1px);
         padding: 20px;
     }
 
-    .modal-content {
+    .base_modal-content {
         background: var(--white);
         border-radius: 16px;
         max-width: 800px;
         width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        max-height: 80vh;
+         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         animation: modalFadeIn 0.3s ease;
+
     }
 
     @keyframes modalFadeIn {
@@ -234,6 +264,7 @@
             opacity: 0;
             transform: translateY(-30px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -277,8 +308,7 @@
         background: var(--background);
         border-radius: 12px;
         padding: 20px;
-        margin-bottom: 25px;
-    }
+     }
 
     .info-grid {
         display: grid;
@@ -287,7 +317,7 @@
     }
 
     .info-item {
-        margin-bottom: 15px;
+        margin-bottom: 7px;
     }
 
     .info-label {
@@ -304,6 +334,8 @@
 
     .sessions-section {
         margin-top: 30px;
+         max-height: 290px ;
+        overflow-y: scroll;
     }
 
     .section-title {
@@ -352,6 +384,7 @@
 
     .session-actions {
         display: flex;
+        flex-direction:row;
         gap: 10px;
     }
 
@@ -401,7 +434,7 @@
             grid-template-columns: 1fr;
         }
 
-        .modal-content {
+        .base_modal-content {
             max-height: 95vh;
         }
 
@@ -425,7 +458,7 @@
         }
     }
 
-    @media (max-width: 480px) {
+        @media (max-width: 480px) {
         .package-actions {
             flex-direction: column;
         }
@@ -438,226 +471,99 @@
 </style>
 
 <div class="packages-container">
-    <div class="page-header">
-        <h1>My Purchased Packages</h1>
-        <p>Manage your tutoring packages and scheduled sessions</p>
-    </div>
-
     <div class="packages-list">
-       {% for bs in base_session %}
-         <!-- Package Card 1 -->
-        <div class="package-card" onclick="openPackageModal(1)">
+        {% for bs in base_session %}
+        <!-- Package Card 1 -->
+        <div class="package-card" >
             <div class="package-header">
                 <div>
-                    <h3 class="package-name">{{Premium Math Package}}</h3>
-                    <p class="package-subject">Mathematics - Algebra & Calculus</p>
+                    <h3 class="package-name">{{bs.package.name}}</h3>
+                    <p class="package-subject">{{bs.subject_name}}</p>
                 </div>
                 <div class="package-price">
-                    <div class="price-amount">$129</div>
-                    <div class="price-period">/ 16 hours</div>
+                    <div class="price-amount">{{bs.package.price}}<small>ETB</small></div>
+                    <div class="price-period">/{{bs.total_hours}}</div>
                 </div>
             </div>
 
-            <div class="package-details">
+            <div class="package-details"          
+            hx-get="{% url 'base_session_detail' bs.id %}"
+            hx-swap="innerHTML"  
+            hx-target="#target"      
+            >
                 <div class="detail-item">
                     <div class="detail-label">Status</div>
                     <div class="detail-value">
-                        <span class="status-badge status-active">Active</span>
+                        <span class="status-badge status-{{bs.status}}">{{bs.status}}</span>
                     </div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Total Sessions</div>
-                    <div class="detail-value">8</div>
+                    <div class="detail-value">{{bs.package.total_session}}</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Completed</div>
-                    <div class="detail-value">3</div>
+                    <div class="detail-value">{{ bs.package.total_session }}</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Remaining</div>
-                    <div class="detail-value">5</div>
+                    <div class="detail-value">{{bs.remaining_sessions}}</div>
                 </div>
             </div>
 
+           {% if bs.status == 'pending' %}
             <div class="package-actions">
-                <button class="btn btn-primary" onclick="event.stopPropagation(); bookSession(1)">
-                    <i class="fas fa-calendar-plus"></i> Book Session
+                <button class="btn btn-primary" 
+                hx-post="{% url 'base_session_manage'  %}" 
+                hx-vals='{ "action":"accept", "id":"{{bs.id}}" }' 
+                hx-target="body"
+                hx-swap="innerHTML"
+                class="btn accept-btn">
+                    <i class="fas fa-calendar-plus"></i>{% csrf_token %} Accept
                 </button>
-                <button class="btn btn-outline" onclick="event.stopPropagation(); extendPackage(1)">
-                    <i class="fas fa-clock"></i> Extend Package
+                <button class="btn btn-outline" 
+                hx-post="{% url 'base_session_manage'  %}" 
+                hx-vals='{ "action":"decline", "id":"{{bs.id}}" }' 
+                hx-target="body"
+                hx-swap="innerHTML"
+                class="btn decline-btn">
+                    <i class="fas fa-clock"></i>Decline
                 </button>
             </div>
+            {% elif not bs.status == 'cancel' %}
+             <button class="btn btn-outline" 
+                hx-post="{% url 'base_session_manage'  %}" 
+                hx-vals='{ "action":"cancel", "id":"{{bs.id}}" }' 
+                hx-target=".packages-container"
+                hx-swap="outerHTML"
+                class="btn decline-btn">
+                    <i class="fas fa-clock"></i>Cancel
+                </button>
+                {% else %}
+           {% endif %}
         </div>
-       {% endfor %}
+        
+        <!-- Package Details Modal -->
+            <div id="target"></div>
+
+        {% empty %}
+        <div class="empty-state">
+        <img src="{% static 'img/empty_state.svg' %}" alt="No requests">
+        <p>No session requests yet. 🎧 Maybe grab a coffee while you wait ☕</p>
+      </div>
+       
+        {% endfor %}
     </div>
 </div>
 
 <!-- Package Details Modal -->
-<div class="modal" id="packageModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title" id="modalPackageName">Package Name</h2>
-            <button class="close-modal" onclick="closePackageModal()">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="package-info">
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Subject</div>
-                        <div class="info-value" id="modalSubject">Mathematics</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Total Hours</div>
-                        <div class="info-value" id="modalTotalHours">16 hours</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Price</div>
-                        <div class="info-value" id="modalPrice">$129</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Status</div>
-                        <div class="info-value" id="modalStatus">
-                            <span class="status-badge status-active">Active</span>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Purchase Date</div>
-                        <div class="info-value" id="modalPurchaseDate">Oct 15, 2023</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Expiry Date</div>
-                        <div class="info-value" id="modalExpiryDate">Jan 15, 2024</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sessions-section">
-                <h3 class="section-title">Scheduled Sessions</h3>
-                <div class="sessions-list" id="sessionsList">
-                    <!-- Sessions will be populated by JavaScript -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="#target"></div>
 
 <script>
     // Sample data for packages and sessions
-    const packagesData = {
-        1: {
-            name: "Premium Math Package",
-            subject: "Mathematics - Algebra & Calculus",
-            totalHours: "16 hours",
-            price: "$129",
-            status: "active",
-            purchaseDate: "Oct 15, 2023",
-            expiryDate: "Jan 15, 2024",
-            sessions: [
-                {
-                    id: 1,
-                    title: "Algebra Basics",
-                    date: "Nov 10, 2023",
-                    time: "2:00 PM - 3:00 PM",
-                    status: "completed",
-                    tutor: "John Doe"
-                },
-                {
-                    id: 2,
-                    title: "Calculus Introduction",
-                    date: "Nov 17, 2023",
-                    time: "3:00 PM - 4:00 PM",
-                    status: "completed",
-                    tutor: "John Doe"
-                },
-                {
-                    id: 3,
-                    title: "Advanced Functions",
-                    date: "Nov 24, 2023",
-                    time: "2:00 PM - 3:00 PM",
-                    status: "scheduled",
-                    tutor: "John Doe"
-                },
-                {
-                    id: 4,
-                    title: "Integration Techniques",
-                    date: "Dec 1, 2023",
-                    time: "3:00 PM - 4:00 PM",
-                    status: "scheduled",
-                    tutor: "John Doe"
-                }
-            ]
-        },
-        2: {
-            name: "Standard English Package",
-            subject: "English Literature & Writing",
-            totalHours: "8 hours",
-            price: "$79",
-            status: "active",
-            purchaseDate: "Sep 20, 2023",
-            expiryDate: "Dec 20, 2023",
-            sessions: [
-                {
-                    id: 5,
-                    title: "Essay Writing Basics",
-                    date: "Oct 5, 2023",
-                    time: "10:00 AM - 11:00 AM",
-                    status: "completed",
-                    tutor: "Alice Smith"
-                },
-                {
-                    id: 6,
-                    title: "Literary Analysis",
-                    date: "Oct 12, 2023",
-                    time: "10:00 AM - 11:00 AM",
-                    status: "completed",
-                    tutor: "Alice Smith"
-                }
-            ]
-        },
-        3: {
-            name: "Science Starter Pack",
-            subject: "Physics & Chemistry",
-            totalHours: "4 hours",
-            price: "$49",
-            status: "expired",
-            purchaseDate: "Aug 10, 2023",
-            expiryDate: "Nov 10, 2023",
-            sessions: [
-                {
-                    id: 7,
-                    title: "Physics Fundamentals",
-                    date: "Aug 25, 2023",
-                    time: "4:00 PM - 5:00 PM",
-                    status: "completed",
-                    tutor: "Robert Johnson"
-                }
-            ]
-        }
-    };
 
-    function openPackageModal(packageId) {
-        const package = packagesData[packageId];
-        if (!package) return;
 
-        // Update modal content
-        document.getElementById('modalPackageName').textContent = package.name;
-        document.getElementById('modalSubject').textContent = package.subject;
-        document.getElementById('modalTotalHours').textContent = package.totalHours;
-        document.getElementById('modalPrice').textContent = package.price;
-        document.getElementById('modalPurchaseDate').textContent = package.purchaseDate;
-        document.getElementById('modalExpiryDate').textContent = package.expiryDate;
-
-        // Update status badge
-        const statusElement = document.getElementById('modalStatus');
-        statusElement.innerHTML = '';
-        const statusBadge = document.createElement('span');
-        statusBadge.className = `status-badge status-${package.status}`;
-        statusBadge.textContent = package.status.charAt(0).toUpperCase() + package.status.slice(1);
-        statusElement.appendChild(statusBadge);
-
-        // Populate sessions list
-        const sessionsList = document.getElementById('sessionsList');
-        sessionsList.innerHTML = '';
+    function openPackageModal() {
 
 
         // Show modal
@@ -669,7 +575,7 @@
     }
 
     // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
+    window.addEventListener('click', function (event) {
         const modal = document.getElementById('packageModal');
         if (event.target === modal) {
             closePackageModal();
@@ -708,4 +614,12 @@
         alert(`Viewing details for session ${sessionId}`);
         // Implement view details logic
     }
+
+    
+    document.addEventListener('htmx:configRequest',function(evt){
+        const csrftoken =document.querySelector('[name=csrfmiddlewaretoken]').value;
+        evt.detail.headers['X-CSRFToken']=csrftoken
+    })
 </script>
+
+{% endblock main  %}

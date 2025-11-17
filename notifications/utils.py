@@ -34,6 +34,7 @@ def send_telegram_message(chat_id, text):
 NOTIFICATION_MESSAGES = {
     'session_request': "📩 You have a new session request from @{username}.",
     'session_cancel': "❌  @{username} canceld a Session .",
+    'session_declined': "Sorry Your request was denied, please  contact @{username} for more information",
     'session_confirmed': "✅ Your session request with @{username} has been confirmed.",
     'session_feedback': "💬 You have received feedback from @{username}.",
     'payment_confirmed': "💰 Payment confirmed for your session with @{username}.",
@@ -45,6 +46,8 @@ NOTIFICATION_MESSAGES = {
     'session_started': "📢 session with {username} just started",
     'session_ended': "📢 session with {username} just ended",
     'feedback_reminder': "📝 Don’t forget to share your experience by leaving feedback.",
+    'session_started': "📝 Your session with @{username} has started",
+    'session_ended': "📝 Your session with @{username} has completed",
 }
 
 

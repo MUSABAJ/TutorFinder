@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from decimal import Decimal, InvalidOperation
+from django.db import transaction
 from django.db.models import Sum
 from notifications.models import Notification
 from .models import Payment
@@ -70,52 +71,53 @@ def withdraw_request(request):
     reference = f"withdraw_{user.id}_{int(time.time())}"
 
     chapa = ChapaPayment()
+    with transaction.atomic():
 
-    try:
-        
-        chapa_resp = chapa.transfer_to_bank(account_number=account_number, amount=amount, bank_code=bank_code)
-    except Exception as e:
-        chapa_resp = None
-        print(f"Chapa transfer exception: {e}")
+        try:
+            
+                chapa_resp = chapa.transfer_to_bank(account_number=account_number, amount=amount, bank_code=bank_code)
+        except Exception as e:
+            chapa_resp = None
+            print(f"Chapa transfer exception: {e}")
 
-    # basic success detection (Chapa responses vary; be defensive)
-    success = False
-    if chapa_resp and isinstance(chapa_resp, dict):
-        # common keys: 'status' or 'success' or 'data'
-        status_val = chapa_resp.get('status') or chapa_resp.get('status_code') or chapa_resp.get('success')
-        if isinstance(status_val, str) and status_val.lower() in ('success', 'ok', 'completed'):
-            success = True
-        elif isinstance(status_val, (int,)) and status_val == 200:
-            success = True
-        elif chapa_resp.get('data') and chapa_resp.get('data').get('status') == 'success':
-            success = True
+        # basic success detection (Chapa responses vary; be defensive)
+        success = False
+        if chapa_resp and isinstance(chapa_resp, dict):
+            # common keys: 'status' or 'success' or 'data'
+            status_val = chapa_resp.get('status') or chapa_resp.get('status_code') or chapa_resp.get('success')
+            if isinstance(status_val, str) and status_val.lower() in ('success', 'ok', 'completed'):
+                success = True
+            elif isinstance(status_val, (int,)) and status_val == 200:
+                success = True
+            elif chapa_resp.get('data') and chapa_resp.get('data').get('status') == 'success':
+                success = True
 
-    message = ''
-    if success:
-        released_total = Payment.objects.filter(tutor=user, status='released')
-        for released in released_total:
-            if released.amount <= amount:
-                released.amount -= released.amount
-                amount-= released.amount
-            if released.amount > amount:
-                released.amount -= amount
-            if amount==0:
-                break
+        message = ''
+        if success:
+            released_total = Payment.objects.filter(tutor=user, status='released')
+            for released in released_total:
+                if released.amount <= amount:
+                    released.amount -= released.amount
+                    amount-= released.amount
+                if released.amount > amount:
+                    released.amount -= amount
+                if amount==0:
+                    break
 
-            released.save()
-        message = f"Your withdrawal request of {amount} ETB has been submitted. Reference: {reference}."
-        n = Notification.objects.create(recipient=user, message=message)
-        send_telegram_message(getattr(user, 'telegram_id', None), message)
-        return render(request,'status/page.html',{
-            'success': True,
-            'message': message
-        })     
-    else:
-        # failure path
-        message = f"Withdrawal of {amount} ETB failed to initiate. Please try again later."
-        n = Notification.objects.create(recipient=user, message=message)
-        send_telegram_message(getattr(user, 'telegram_id', None), message)
-        return render(request,'status/page.html',{
-                    'success': False,
-                    'message': message
-        })  
+                released.save()
+            message = f"Your withdrawal request of {amount} ETB has been submitted. Reference: {reference}."
+            n = Notification.objects.create(recipient=user, message=message)
+            send_telegram_message(getattr(user, 'telegram_id', None), message)
+            return render(request,'status/page.html',{
+                'success': True,
+                'message': message
+            })     
+        else:
+            # failure path
+            message = f"Withdrawal of {amount} ETB failed to initiate. Please try again later."
+            n = Notification.objects.create(recipient=user, message=message)
+            send_telegram_message(getattr(user, 'telegram_id', None), message)
+            return render(request,'status/page.html',{
+                        'success': False,
+                        'message': message
+            })  

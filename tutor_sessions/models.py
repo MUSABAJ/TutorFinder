@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from availablity.models import TutorPackage as Package
 from django.utils import timezone
 
 class BaseSession(models.Model):
@@ -9,15 +10,18 @@ class BaseSession(models.Model):
         ('confirmed', 'Accepted'),
         ('ongoing', 'Ongoing'),
         ('decline', 'Request Not Accepted'),
-        ('canceld', 'Canceld'),
-        ('completed', 'Completed')]    
+        ('cancel', 'Canclled'),
+        ('completed', 'Completed')
+        ]    
     
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='student_sessions',
                                  limit_choices_to={'role': 'student'})
     tutor = models.ForeignKey(User, on_delete= models.CASCADE, related_name='tutor_sessions',
                                 limit_choices_to={'role': 'tutor'} )
+    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name='package')
     subject_name = models.CharField()
-    total_session = models.PositiveIntegerField(default=3) # in minutes
+
+    total_session = models.PositiveIntegerField(default=3)  
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_payed = models.BooleanField(default=False)
     session_duration = models.PositiveIntegerField(default=45)
@@ -92,3 +96,4 @@ class VirtualClass(models.Model):
     session = models.OneToOneField(BookedSession, on_delete=models.CASCADE, related_name='virtual_calss')
     room_name = models.CharField(max_length=100, unique=True)
     created_at = models.TimeField(auto_now_add=True)
+    

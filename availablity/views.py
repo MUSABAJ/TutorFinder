@@ -7,6 +7,7 @@ from .forms  import PackageForm
 from users.models import User
 from core.views import get_tutor_dashboard_context
 import json
+from django.db import transaction
 
 def create_package(request):
     tutor_profile = TutorProfile.objects.get(user=request.user)
@@ -68,12 +69,14 @@ def set_availablity(request):
     if request.method == 'POST':
         json_data = request.POST.get('availablity_json')
         try:
-            data = json.loads(json_data)
-            Availablity.objects.update_or_create(
-                tutor=request.user,
-                defaults={'availablity': data}
-            )
-            return redirect('set_availablity')
+            with transaction.atomic():
+
+                data = json.loads(json_data)
+                Availablity.objects.update_or_create(
+                    tutor=request.user,
+                    defaults={'availablity': data}
+                )
+                return redirect('set_availablity')
         except Exception as e:
             return redirect('set_availablity')
         
