@@ -15,6 +15,7 @@ urlpatterns = [
     # path('student/payments',views.my_sessions,name='payments'),
     # path('student/book_session',views.my_sessions,name='book_session'),
     path('student/view_tutor/<str:tutor_id>',views.view_tutor,name='view_tutor'),
+     path('student/payment_history',views.payment_history,name='payment_history'),
 
     path('search/', views.main_serach, name="main_search"),
     path('search/tutor/', views.tutor_serach, name="tutor_search"),

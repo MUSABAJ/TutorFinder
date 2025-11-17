@@ -158,15 +158,7 @@ def request_session(request, pkg_id):
                 'error': True,
                 'message': f'You Request submission has failed . '
             })
-@login_required
-def session_requests(request):
-    
-    if not request.user.role == 'tutor':
-        return HttpResponseForbidden(request.user,'You are not allowd hear')
-    requests = BaseSession.objects.filter(status='pending')
-    
-    return render(request, 'tutor/pages/requests.html', {'requests':requests})
-
+ 
 # @csrf_exempt   
 # def handle_request(request, req_id):    
 #     if not request.user.role == 'tutor':

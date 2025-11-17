@@ -6,7 +6,6 @@ urlpatterns = [
     path('purchased_packages/',views.list_BaseSession,name='base_session_list' ),
     path('details/<str:bs_id>',views.base_session_detail,name='base_session_detail'),
     path('session_packages',views.base_session_manager, name='base_session_manage'),
-    path('requests/', views.session_requests, name='session_requests'),   
     path('request/<int:pkg_id>/', views.request_session, name='request_session'),   
     # path('handle_request/<int:req_id>/', views.handle_request, name='handle_request'),   
     path('reschedule/<int:session_id>/', views.session_reschedule, name='session_reschedule'),   

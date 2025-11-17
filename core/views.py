@@ -209,7 +209,29 @@ def view_tutor(request, tutor_id):
                 ,'subjects':subjects}
      return render(request, 'student/pages/tutor_view.html',context)
 
+def payment_history(request):
+     
+     student = request.user
+     sessions = BaseSession.objects.filter(student=student)
+     payments = Payment.objects.filter(student=student)
+     
+     status_totals_qs = payments.values('status').annotate(total=Sum('amount'))
+     status_totals = {item['status']: item['total'] or 0 for item in status_totals_qs}
 
+     held_payment = status_totals.get('held', 0)
+     total_spent = payments.aggregate(total=Sum('amount'))['total'] or 0
+
+     transactions = payments.order_by('-created_at')
+
+     context = {
+          'held_payment': held_payment,
+           'total_spent': total_spent,
+          'transactions': transactions,
+          'sessions': sessions,
+           'student': student,
+     }
+     context.update(get_tutor_dashboard_context(request.user))
+     return render(request, 'student/pages/payment_history.html', context)
 #---------------------------------- Ssearch and filters-----------------------------------#
 
 
@@ -241,6 +263,7 @@ def tutor_serach(request):
      language = request.GET.get("rating","")
      hr_rate = request.GET.get("hr_rate","")
      expirience = request.GET.get("expirience","")
+     avail = request.GET.get("avail", "")
      tutors = tutors_profile
      if search_text:         
 
@@ -252,7 +275,9 @@ def tutor_serach(request):
 
      if subject:
           tutors = tutors_profile.filter(subjects__icontains=subject)
- 
+     if avail:
+          tutors = tutors_profile.filter(available=True)
+
      if gender:
           tutors = tutors_profile.filter(user__gender=gender)
      if expirience:

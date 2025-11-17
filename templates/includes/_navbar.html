@@ -1,4 +1,5 @@
 {% load static %}
+ 
 <script src="{% static 'js/script.js' %}"></script>
 
 <nav class="dashboard-nav">
@@ -12,6 +13,7 @@
       </div>
   
       <div class="nav-user">
+       {% if request.user.role == 'student' %}
         <div class="nav-search">
           <i class="fas fa-search"></i>
           <input type="search" placeholder="Search tutors..." name="search_text"
@@ -22,6 +24,7 @@
            >
           
         </div>
+        {% endif %}
   
         <div class="user-info">
           <img src="/static{{request.user.avatar.url}}" alt="Profile" id="user-avatar" class="user-avatar">

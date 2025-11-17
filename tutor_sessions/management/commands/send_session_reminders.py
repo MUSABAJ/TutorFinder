@@ -55,10 +55,6 @@ class Command(BaseCommand):
             session.notification_status = '3'
             session.save()
         
-print(444444444444444444444444444444444444444444444444)        
-print(444444444444444444444444444444444444444444444444)        
-print(444444444444444444444444444444444444444444444444)        
-print(444444444444444444444444444444444444444444444444)        
 '''
     the Abouve to work
     create windows basic schedule task

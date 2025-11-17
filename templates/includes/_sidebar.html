@@ -13,7 +13,12 @@
     </a>
     <a href="{% url 'session_list' %}" class="sidebar-link">
         <i class="fas fa-video-camera"></i>
-        <p>sessions</p>
+        <p>Booked sessions</p>
+
+    </a>
+    <a href="{% url 'base_session_manage' %}" class="sidebar-link">
+        <i class="fas fa-video-camera"></i>
+        <p>Base sessions</p>
 
     </a>
     <a href="{% url 'resources' %}" class="sidebar-link">
@@ -26,7 +31,7 @@
         <p>Messages</p>
 
     </a>
-    <a href="{% url 'chats' %}" class="sidebar-link">
+    <a href="{% url 'payment_history' %}" class="sidebar-link">
         <i class="fas fa-dollar"></i>
         <p>Payment</p>
 
@@ -54,7 +59,7 @@
         <p>Booked sessions</p>
 
     </a>
-    <a href="{% url 'session_list' %}"  class="sidebar-link">
+    <a href="{% url 'base_session_manage' %}"  class="sidebar-link">
         <i class="fas fa-video-camera"></i>
         <p>Requested Packages</p>
 
