@@ -1,5 +1,10 @@
 
 <div class="chat-messages" >
+    <style>
+        .main-view-top{
+            padding:0;
+        }
+    </style>
     <div class="message-date">Today</div>
     {% for message in chat.messages.all %}
     {% if message.sender == request.user %}

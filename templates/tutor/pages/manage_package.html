@@ -4,13 +4,13 @@
 
 {% block main %}
 <div class="main-view-top">
-    <button class="pkg-create btn  " onclick="openPackageModal()">Create Package</button>
+    <button class="pkg-create btn btn-primary  " onclick="openPackageModal()">Create Package</button>
     <!-- Quick Stats -->
     <div class="packages-grid">
         {% for pkg in packages %}
                 <div class="package-card">
             <div class="package-header">
-                <h3>{{pkg.name}}</h3>
+                <h3>{{pkg.name}} Package</h3>
                 {% if pkg.is_active %}
                 <span> Active</span>
                 {% else %}

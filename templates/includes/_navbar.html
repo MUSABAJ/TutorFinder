@@ -11,7 +11,7 @@
             <h3>Selam, {{request.user}}</h3>
         </div>
       </div>
-  
+   
       <div class="nav-user">
        {% if request.user.role == 'student' %}
         <div class="nav-search">
@@ -29,12 +29,21 @@
         <div class="user-info">
           <img src="/static{{request.user.avatar.url}}" alt="Profile" id="user-avatar" class="user-avatar">
           <div id="profile-dropdown" class="dropdown-container">
-            <a href="{% url 'my_profile' %}">My Account</a>
-             <a href="{% url 'logout' %}">Log Out</a>
-            <hr>
-        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode"><span>☀️</span><span>Light</span></button>
+            <div style="display: flex; gap: 10px;padding-left: 0.5rem;">
+            <img src="/static{{request.user.avatar.url}}" alt="Profile" id="user-avatar" class="dropdown-avatar">
+              <div  style="display: flex; color: var(--text-muted); font-size: small; flex-direction: column;">
+                <span><b>{{request.user}}</b></span>
+                <span>{{request.user.email}}</span>
+              </div>
           </div>
-          <span class="user-name">{{ request.user.first_name|default:"User" }}</span>
+            <a href="{% url 'my_profile' %}" style="display: flex; gap: 13px; align-items:center;"><i class="fas fa-gear" ></i> Account setting</a>
+             <a href="{% url 'logout' %}"style="display: flex; gap: 13px; align-items:center;"><i class="fas fa-sign-out" ></i>Log Out</a>
+            <hr>
+        <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode"><i class="fas fa-moon"></i><span>Light</span></button>
+          </div><p style="display:flex; flex-direction:column;">
+          <b class="user-name">{{ request.user.first_name|default:"User" }} {{ request.user.last_name }}</b>
+          
+          <small class="user-role">{{ request.user.role}}</small></p>
         </div>
       </div>
     </div>

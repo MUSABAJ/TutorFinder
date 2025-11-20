@@ -7,7 +7,7 @@
                 <form enctype="multipart/form-data" class="upload-form" method="post">
                     {% csrf_token %}
                     <div class="upload-area">
-                        <div class="upload-icon">📁</div>
+                        <i class="upload-icon fas fa-book-open"></i>
                         <h4>Drag and drop files here</h4>
                         <p>or click to browse</p>
                         {{form.file}}
@@ -32,7 +32,7 @@
                     </div>
                      
                     <div class="form-actions">
-                        <button type="button" class="btn btn-secondary"
+                        <button type="button" class="btn btn-outline"
                             onclick="closeUploadModal()">Cancel</button>
                         <button type="submit" class="btn btn-primary">Upload Resource</button>
                     </div>

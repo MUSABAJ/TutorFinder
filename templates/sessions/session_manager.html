@@ -66,7 +66,7 @@
                     
                         {% endif %}
 
-                        <button class="btn-sm btn-secondary">Message {{session.base_session.student.username}}</button>
+                        <button class="btn-sm btn-outline">Message {{session.base_session.student.username}}</button>
                          <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline"> Reschedule </button>
                         </a>
@@ -77,7 +77,7 @@
                         <a href="{% url 'join_virtual_class' session.id %}"><button  class="btn-sm btn-primary">Join Class</button> </a>
                          {% endif %}
 
-                        <button class="btn-sm btn-secondary">Message {{session.base_session.tutor.username}}</button>
+                        <button class="btn-sm btn-outline">Message {{session.base_session.tutor.username}}</button>
                         <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline "> Reschedule </button>
                         </a>
@@ -88,8 +88,8 @@
             <div class="sessions-list">
             <div class="empty-state">
                 <div class="empty-icon">📅</div>
-                <h3>No Cancelled Sessions</h3>
-                <p>You don't have any cancelled sessions.</p>
+                <h3>No Sessions</h3>
+                <p>You don't have any Scheduled sessions.</p>
             </div>
         </div>
             {% endfor %}
@@ -153,8 +153,8 @@
             <div class="sessions-list">
             <div class="empty-state">
                 <div class="empty-icon">📅</div>
-                <h3>No Cancelled Sessions</h3>
-                <p>You don't have any cancelled sessions.</p>
+                <h3>No Completed Sessions</h3>
+                <p>You don't have any completed sessions.</p>
             </div>
         </div>
             {% endfor %}

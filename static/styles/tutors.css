@@ -221,8 +221,7 @@ img{
 }
 
 .btn-secondary {
-  background: var(--surface-color);
-  color: var(--text-primary);
+   color: var(--text-primary);
   border: 1px solid var(--border-color);
 }
 
@@ -283,9 +282,19 @@ img{
 .my-card{
  height: 280px;
  margin-bottom: 1rem;
- width: 280px;
+ width: 300px;
+ 
  border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+  --transition: all 0.3s ease-in-out ;
+
+}
+.my-card:hover{
+     border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+    --transition: all 0.3s ease-in-out;
+
 }
 .stars {
   color: #ffd700;
@@ -365,6 +374,7 @@ img{
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1.5rem;
+  padding-top: 1rem;
 }
 
 .package-card {
@@ -373,24 +383,33 @@ img{
   border-radius: var(--radius-lg);
   padding: 1rem;
   box-shadow: var(--shadow-sm);
+  width: 300px;
 }
 
 .package-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .package-header h3 {
-  font-size: 1.rem;
+  color: var(--icon-primary);
+  font-size: 1.3rem;
   font-weight: 600;
 }
 
+.package-header span {
+  color: var(--text-secondary); 
+  padding: 0.1rem 0.3rem;
+  font-size: small;
+  font-style: italic;
+  background-color: var(--primary);
+  border-radius: 2rem;
+}
 .package-price {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--primary-color);
 }
 
 .package-details {
@@ -399,6 +418,9 @@ img{
 
 .detail-item {
   display: flex;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 0.2rem 0;
   justify-content: space-between;
 }
 
@@ -778,6 +800,10 @@ img{
   color: var(--text-secondary);
 }
 
+.session-status.up_comming {
+  background: var(--primary);
+  color: var(--text-secondary);
+}
 .session-status.completed {
   background: var(--success-color);
   color: var(--text-secondary);
@@ -799,7 +825,9 @@ img{
   margin-bottom: 1.5rem;
  }
 .session-details {
-  background: var(--);
+  background: var(--surface-color);
+  width: 500px;
+  height: 160px;
   padding: 2rem;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);

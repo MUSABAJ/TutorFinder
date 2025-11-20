@@ -1,14 +1,17 @@
 {% extends "dashboard.html" %}
+{%load static%}
 
 {% block main %}
 
 {% if request.user.is_authenticated %}
 {% if request.user.role == 'tutor' %}
 <div class="main-view-top">
-    <div class="dashboard-section ad ">
+    <div class="dashboard-section ad " >
         <small class="comming-badge">Comming Soon</small>
-        <h2>Premium version on your way. Enhanced features to Take your expirence to another level  </h2>
+        <h3>Premium version on your way. Enhanced features to Take your expirence to another level  </h3>
        <br>
+               <img class="dashboard-image" src="{% static '/img/illustration.png'%}"/>
+
     </div>
     <!-- INSERT_YOUR_CODE -->
     <div class="dashboard-overview" style="display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
@@ -18,7 +21,7 @@
                 <i class="fas fa-users" style="color: #6366f1; font-size: 1.5rem;"></i>
             </div>
             <div>
-                <div style="font-size: 1.25rem; font-weight: 600;">{{bookings.count|default:"0"}}</div>
+                <div style="font-size: 1.85rem; font-weight: 600; color: var(--text-primary);">{{bookings.count|default:"0"}}</div>
                 <div style="color: var(--text-muted); font-size: 0.95rem;">Active Students</div>
             </div>
         </div>
@@ -27,7 +30,7 @@
                 <i class="fas fa-calendar-check" style="color: #22c55e; font-size: 1.5rem;"></i>
             </div>
             <div>
-                <div style="font-size: 1.25rem; font-weight: 600;">{{upcoming_sessions.count}}</div>
+                <div style="font-size: 1.85rem; font-weight: 600; color: var(--text-primary);">{{upcoming_sessions.count}}</div>
                 <div style="color: var(--text-muted); font-size: 0.95rem;">Sessions Today</div>
             </div>
         </div>
@@ -36,7 +39,7 @@
                 <i class="fas fa-dollar-sign" style="color: #ef4444; font-size: 1.5rem;"></i>
             </div>
             <div>
-                <div style="font-size: 1.25rem; font-weight: 600;">{{total_earning}} <small>ETB</small> </div>
+                <div style="font-size: 1.85rem; font-weight: 600; color: var(--text-primary);">{{total_earning}} <small>ETB</small> </div>
                 <div style="color: var(--text-muted); font-size: 0.95rem;">Earnings This Week</div>
             </div>
         </div>
@@ -45,18 +48,18 @@
                 <i class="fas fa-star" style="color: #eab308; font-size: 1.5rem;"></i>
             </div>
             <div>
-                <div style="font-size: 1.25rem; font-weight: 600;">{{avg_rating}}</div>
+                <div style="font-size: 1.85rem; font-weight: 600 ; color: var(--text-primary);">{{avg_rating}}</div>
                 <div style="color: var(--text-muted); font-size: 0.95rem;">Avg. Rating</div>
             </div>
         </div>
     </div>
 
-    <div class="dashboard-main-content" style="display: flex; gap: 2rem; flex-wrap: wrap;">
+    <div class="dashboard-main-content " style="display: flex; gap: 2rem; flex-wrap: wrap;">
         <!-- Earnings Graph -->
         <div class="dashboard-graph"
             style="flex: 2; min-width: 320px; background: var(--surface-color); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="margin: 0; font-size: 1.1rem;">Earnings (Last 7 Days)</h3>
+                <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-primary);" >Earnings (Last 7 Days)</h3>
                 <a href="progress.html" class="btn btn-outline btn-vsm">Details</a>
             </div>
             <!-- Dynamic SVG Bar Graph: reads `earnings_last_7_days` from template context (fallback sample used if missing) -->
@@ -161,9 +164,9 @@
         </div>
 
         <!-- Quick Actions -->
-        <div class="dashboard-quick-actions"
+        <div class="dashboard-quick-actions stat-card"
             style="flex: 1; min-width: 220px; background: var(--surface-color); border-radius: 1rem; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 1rem;">
-            <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem;">Quick Actions</h3>
+            <h3 style="margin: 0 0 0.5rem 0; color: var(--text-primary); font-size: 1.1rem;">Quick Actions</h3>
             <a href="{% url 'base_session_manage' %}" class="btn btn-primary" style="width: 100%;"><i
                     class="fas fa-user-plus"></i> Session Requests</a>
             <a href="{% url 'resources' %}" class="btn btn-outline" style="width: 100%;"><i
@@ -182,7 +185,6 @@
 {% elif request.user.role == 'student' %}
 <div class="main-view-top">
     <div class="dashboard-section ad ">
-        <small>top suggestions</small>
         <h1>Rady to Sharpen your skills with our Professional Tutors</h1>
  
         

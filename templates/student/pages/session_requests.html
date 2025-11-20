@@ -2,22 +2,7 @@
 
 {% block main %}
 <style>
-    :root {
-        --primary: #1bb392;
-        --primary-light: #1bb392;
-        --primary-dark: #008165;
-        --accent: #027670;
-        --text-dark: #2C3E50;
-        --text-light: #7F8C8D;
-        --background: #F8F9FA;
-        --white: #FFFFFF;
-        --border: #E0E0E0;
-        --success: #28A745;
-        --warning: #FFC107;
-        --danger: #DC3545;
-        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    }
-
+     
     #session {
          width: 100%;
          padding: 1rem;
@@ -45,12 +30,12 @@
     .session-list {
         display: grid;
         flex-direction: column;
-        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-        gap: 25px; 
+        grid-template-columns: repeat(auto-fill, minmax(350px, 350px));
+        gap: 20px; 
     }
 
     .sessionR-card {
-        background: var(--white);
+        background: var(--background-color);
         border-radius: 16px;
         box-shadow: var(--card-shadow);
         overflow: hidden;
@@ -62,13 +47,13 @@
 
     .sessionR-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        box-shadow: var(--shadow-md)
     }
 
     .session-header {
         background: linear-gradient(135deg, var(--primary), var(--accent));
-        color: var(--white);
-        padding: 20px 25px;
+        color: var(--text-secondary);
+        padding: 15px 20px;
         position: relative;
     }
 
@@ -100,14 +85,15 @@
     }
 
     .session-body {
-        padding: 25px;
+        background: var(--surface-color);
+        padding: 0 25px;
     }
 
     .session-body li {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 12px 0;
+        padding: 7px 0;
         border-bottom: 1px solid var(--border);
         list-style: none;
     }
@@ -117,13 +103,13 @@
     }
 
     .session-body li span:first-child {
-        color: var(--text-light);
+        color: var(--text-muted);
         font-weight: 500;
-        font-size: 0.9rem;
+        font-size: 0.79rem;
     }
 
     .session-body li span:last-child {
-        color: var(--text-dark);
+        color: var(--icon-primary);
         font-weight: 600;
         text-align: right;
         font-size: 0.95rem;
@@ -189,11 +175,7 @@
         box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
     }
 
-    .btn-secondary {
-        background: var(--background);
-        color: var(--text-dark);
-        border: 1px solid var(--border);
-    }
+    
 
     .btn-secondary:hover {
         background: var(--border);

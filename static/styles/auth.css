@@ -35,7 +35,7 @@
   flex: .9;
   text-align: center;
   backdrop-filter:blur(10px);
-  background-color: #eff5f8;
+  background: var(--surface-color);
   min-width: fit-content;
   padding: 2rem;
   padding-right: 100px;
@@ -156,7 +156,7 @@
   margin-bottom: 0.5rem;
   font-weight: 500;
   font-size: 17px;
-  color: var(--text-primary);
+  color: #071020;
 }
 
 .form-group label i {
@@ -173,14 +173,15 @@
   border-radius: var(--radius-md);
   font-size: 1.15rem;
   transition: border-color 0.2s;
+  outline: none;
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(110, 226, 195, 0.1);
 }
 
 .form-group textarea {
@@ -272,8 +273,8 @@
 .btn-login{
      width: 100%;
     padding: 16px;
-    background: linear-gradient(135deg,var(--primary-dark), var(--secondary-dark));
-    color: white;
+    background-color: var(--primary);
+     color: white;
     border: none;
     border-radius: 12px;
     font-size: 1.1rem;
@@ -291,7 +292,7 @@
   gap: 0.5rem;
   margin-top: 1rem;
   padding: 0.75rem;
-  background: var(--surface-color);
+  background: var(--primary-color);
   border-radius: var(--radius-md);
   font-size: 0.75rem;
   color: var(--text-muted);
@@ -525,4 +526,8 @@ cursor: none
 .form-result.error {
   background: var(--error-color);
   color: var(--text-secondary);
+}
+.auth-footer{
+  font-style: none;
+  color: #727272;
 }

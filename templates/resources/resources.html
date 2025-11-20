@@ -7,18 +7,17 @@
 
     <!-- Quick Stats -->
     <div class="container">
-        <div class="resources-header">
-        {% if request.user.role == 'tutor' %}
-                 <h2>Resources Upload</h2>
-                <p>Share educational content with your students</p>
-                <button class="btn btn-primary" onclick="openUploadModal()">Upload Resource</button>
-        {% else %}
-                <h2>Resource Library</h2>
-        {% endif %}
-        
-        </div>
+       
 
         <div class="resources-filters">
+             <div class=" ">
+                {% if request.user.role == 'tutor' %} 
+                        <button class="btn btn-primary" onclick="openUploadModal()">Upload Resource</button>
+                {% else %}
+                        <h2>Resource Library</h2>
+                {% endif %}
+        
+        </div>
               <div class="search-group">
                 <input type="text" placeholder="Search resources..." hx-get="{% url 'resource_search' %}" name="query" value="{{query}}"
                     hx-target="#resources-grid" hx-trigger="keyup changed delay:500ms">

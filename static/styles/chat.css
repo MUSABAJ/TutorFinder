@@ -10,9 +10,7 @@
     overflow-y: hidden;
 }
 .chat-content-header {
- 
-  padding-left: 1rem;
-  padding-right: 1rem;
+ padding: .8rem 1rem;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
@@ -41,7 +39,7 @@
 }
 
 .current-chat-details p {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
@@ -62,12 +60,19 @@
   min-height: 100%;
 }
 .chat-messages {
-  flex: 1;
+  flex: 0.96;
   overflow-y: scroll;
   padding: 1rem;
-  background: var(--background);
+  background: var(--surface-color);
  }
+.chat-messages .message-content{
+  
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  max-width: 70%;
 
+}
 .message-date {
   text-align: center;
   color: var(--text-muted);
@@ -109,14 +114,16 @@
 }
 
 .message.sent .message-bubble {
-  background: var(--primary-color);
-  color: white;
+  background: var(--primary );
+  color: var(--text-secondary);
   
   padding-left: 1rem;
   padding-right: 1rem;
 }
 .message.received .message-bubble {
-  color: rgb(0, 0, 0);
+  color:var(--text-primary);
+  background: var(--surface-border );
+
   width: fit-content;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -130,13 +137,7 @@
   height: 32px;
   border-radius: 50%;
 }
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-  max-width: 70%;
-}
-
+ 
 .message-bubble {
   background: white;
   padding: 0.75rem 1rem;
@@ -173,9 +174,9 @@
   font-size: 0.875rem;
 }
 
-.message-time {
+.chat-messages .message-time {
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.70rem;
   padding: 0 0.5rem;
 }
 
@@ -231,7 +232,10 @@
   border-top: 1px solid var(--border-color); 
   border-radius: 2rem;
 }
-
+.fa-arrow-circle-up{
+  font-size: x-large;
+  font-weight: 500px;
+}
 .chat-input-form {
   display: flex;
   align-items: center;
@@ -239,6 +243,7 @@
   background: var(--background-color);
   border-radius: 10px;
   padding: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 ::-webkit-scrollbar{
     width: 5px;
@@ -272,7 +277,7 @@
 }
 
 .send-btn {
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   min-width: 30px;
   height: 30px;

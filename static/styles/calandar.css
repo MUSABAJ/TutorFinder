@@ -70,9 +70,9 @@
   }
 
   .fc-button {
-    background: var(--white) !important;
+    background: var(--primary) !important;
     border: 2px solid var(--border) !important;
-    color: var(--text-dark) !important;
+    color: var(--white) !important;
     font-weight: 500 !important;
     border-radius: 8px !important;
     padding: 8px 16px !important;
@@ -80,7 +80,7 @@
   }
 
   .fc-button:hover {
-    background: var(--primary-color) !important;
+    background: var(--primary-dark) !important;
     border-color: var(--primary-color) !important;
     color: var(--white) !important;
   }

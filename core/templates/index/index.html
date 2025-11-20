@@ -1,4 +1,5 @@
 {%load static%}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,6 +9,8 @@
     <meta name="description" content="PI – Find expert tutors anytime, anywhere. Modern, fast, and simple.">
     <title>PI- Connect with Expert Tutors</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css '%}"> 
+<link rel="stylesheet" href="{% static 'asset/css/all.css' %}">
+
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -15,7 +18,15 @@
       -->
     <link rel="stylesheet" href="asset/css/all.min.css">
     <style>
-        /* ---- Modern baseline + tokens ---- */
+        @font-face{
+            font-family: para;
+            src: url("{% static 'font/Alphacorsa Personal Use.ttf' %}");
+            }
+        @font-face{
+            font-family: head;
+            src: url("{% static 'font/SAIBA-45.ttf' %}");
+                }
+/* ---- Modern baseline + tokens ---- */
         :root {
             --bg: rgb(255, 255, 255);
             --surface: rgb(255, 255, 255);
@@ -208,7 +219,7 @@
         .btn:hover {
             background: linear-gradient(135deg, var(--brand-3), var(--brand-2));
             transform: translateY(-1px);
-            color: white;
+            color: rgb(230, 230, 230);
         }
 
         .btn-primary {
@@ -220,11 +231,11 @@
         .btn-outline {
             background: transparent;
             color: var(--text);
-            border-color: rgba(255, 255, 255, .18);
+            border-color:var(--primary);
         }
 
         .btn-white {
-            background: #fff;
+            background: var(--brand-2);
             color: #0b0d12;
         }
 
@@ -285,7 +296,7 @@
         }
 
         .gradient-text {
-            background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+            background: linear-gradient(220deg, var(--accent), var(--primary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -376,8 +387,9 @@
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 1.8rem;
+            font-family: para;
+            font-weight: 600;
             text-align: center;
             color: var(--text-primary);
             margin-bottom: 1rem;
@@ -386,8 +398,7 @@
         .section-header p {
             font-size: 1rem;
             text-align: center;
-
-            color: var(--secondary-dark);
+            color: var(--text-muted);
         }
 
 
@@ -422,21 +433,23 @@
         }
 
         .feature-card {
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, .06);
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
             border-radius: var(--radius);
-            padding: 18px;
-            transition: transform .2s ease, background .2s ease;
+            transition: all .2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
         }
-
-        .feature-card:hover {
-            transform: translateY(-3px);
-            background: var(--card-hover);
-        }
-
+ 
         .feature-icon {
-            font-size: 22px;
-            color: #dcd6ff;
+            font-size: 31px;
+            color: #111014;
         }
 
         .feature-highlight {
@@ -554,26 +567,21 @@
         }
 
         .testimonial-card {
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, .06);
+            background: var(--background-color);
+            border: 1px solid var(--surface-border);
             border-radius: var(--radius);
             padding: 18px;
         }
 
-        .cta {
-            padding: 36px 0 40px;
-
-            padding-top: 5rem;
-            padding-bottom: 5rem;
+        .cta { 
         }
 
-        .cta-content {
-            background: linear-gradient(180deg, rgba(124, 92, 255, .18), rgba(124, 92, 255, .06));
-            border: 1px solid rgba(255, 255, 255, .10);
-            border-radius: calc(var(--radius) + 6px);
+        .cta-content { 
+            background: linear-gradient(0deg,var(--primary-dark),rgb(3, 74, 129));
+             border-radius: calc(var(--radius) + 6px);
             padding: 28px;
             text-align: center;
-            box-shadow: var(--shadow);
+            box-shadow: var(--shadow-sm);
         }
 
         .cta-buttons {
@@ -629,14 +637,14 @@
         .how-steps {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 14px;
+            gap: 24px;
             counter-reset: step;
         }
 
         .how-card {
             position: relative;
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, .06);
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
             border-radius: var(--radius);
             padding: 18px 18px 18px 48px;
         }
@@ -748,11 +756,10 @@
                         <i class="fas fa-star"></i>
                         <span>Trusted by 10,000+ Students</span>
                     </div>
-                    <div class="hero-text reveal">
+                    <div class="hero-text reveal" >
 
-                        <h1>Your GPA Called ... <span class="gradient-text">It Wants a Tutor</span></h1>
-                        <p>Find the right Tutor in no time - anytime, anywhere. <br> Qualified tutors. Fair prices. Real
-                            results.</p>
+                        <h1 style='font-family: head;'>Your GPA Called ... <span class="gradient-text">It Wants a Tutor</span></h1>
+                        <p style='font-family: para;'>Let Us Fix you with our top Most Featured Tutors.</p>
 
                         <div class="hero-buttons">
                             <a href="{% url 'student_register' %}" class="btn btn-primary btn-mid">
@@ -776,7 +783,7 @@
         <div class="container">
             <div class="section-header">
                 <div class="section-badge">Why Choose Us</div>
-                <h2>Everything You Need for <span class="gradient-text">Successful Learning</span></h2>
+                <h2>Everything in <span class="gradient-text">one place</span></h2>
                 <p>Comprehensive tools and features designed
                     <br> to enhance your learning experience
                 </p>
@@ -857,7 +864,7 @@
                 <div class="testimonials-grid">
                     <div class="testimonial-card">
                         <div class="testimonial-author">
-                            <img src="img/makima.jpg?height=50&width=50" alt="Sarah">
+                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
                                 <h4>Sarah Al-Rashid</h4>
                                 <span>High School Student</span>
@@ -922,7 +929,7 @@
         <div class="container">
             <div class="cta-content reveal">
                 <div class="cta-icon">
-                    <i class="fas fa-rocket"></i>
+                    <i class="fas fa-rocket  gradient-text" ></i>
                 </div>
                 <h2>Ready to Start Your Learning Journey?</h2>
                 <p>Join thousands of students and tutors already using PIto achieve their educational goals</p>

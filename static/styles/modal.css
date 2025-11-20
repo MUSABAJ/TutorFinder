@@ -14,7 +14,7 @@
 }
 
 .modal-content {
-  background-color: rgb(243, 255, 250);
+  background-color: var(--surface-color);
   backdrop-filter: blur(59px);
   margin: 2% auto;
   padding: 0;
@@ -42,7 +42,9 @@
   backdrop-filter: blur(2px);
   margin-bottom: 2rem;
 }
-
+.modal-header h3{
+  color: var(--text-primary);
+}
 .msg-title{
   padding:0.2rem 0;
 }
@@ -58,7 +60,7 @@
   align-items: center;
   height: 30px;
   width: 100%;
-  color:  var(--text-muted);
+  color: var(--text-primary);
   justify-content: space-between;
   border-bottom: 1px solid rgb(230, 230, 230);
   background-color: var(--background);
