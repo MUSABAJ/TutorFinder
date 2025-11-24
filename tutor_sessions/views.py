@@ -130,7 +130,6 @@ def request_session(request, pkg_id):
     tutor = get_object_or_404(User, id=pkg.tutor.id, role= 'tutor')
     tutor_profile = TutorProfile.objects.get(user=tutor)
     subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
-    print(subjects)
     if request.method=='POST':
         pkg_request = BaseSession.objects.create(
             student = request.user,
@@ -159,31 +158,6 @@ def request_session(request, pkg_id):
                 'message': f'You Request submission has failed . '
             })
  
-# @csrf_exempt   
-# def handle_request(request, req_id):    
-#     if not request.user.role == 'tutor':
-#         return HttpResponseForbidden('You are not allowed here')
-#     requestd_session = get_object_or_404(BaseSession, id=req_id)
-
-#     action = request.POST.get("action")
-#     if action == "accept":
-#         requestd_session.status = 'confirmed' 
-#         requestd_session.save()
-    
-#         create_notification(
-#         recipient=requestd_session.student,
-#         user=request_session.student,
-#         type='session_confirmed',
-#         link= "{% url 'base_session_list' %}"
-#         )
-#         message = f"<div class='session-request'>✅ Request {req_id} accepted!</div>"
-#     elif action == "decline":
-#         requestd_session.status = 'decline' 
-#         requestd_session.save()
-#         message = f"<div class='session-request'>❌ Request {req_id} declined!</div>"
-    
-#     return HttpResponse(message)
-
 
 @login_required
 def book_sessions(request, base_id):
@@ -275,10 +249,6 @@ def book_sessions(request, base_id):
                     return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
                     
                 else:
-                    # Payment initialization failed
-                    # payment.status = "failed"
-                    # payment.save()
-                    
                     return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
 
         except Exception as e:
@@ -407,50 +377,3 @@ def payment_verification(request, tx_ref):
         payment.booking.save()
         
         return redirect("payment_failed", tx_ref=tx_ref)
-
- 
-# @csrf_exempt
-# @require_POST
-# def chapa_webhook(request):
-#     """Handle Chapa webhook for payment status updates"""
-#     try:
-#         data = json.loads(request.body)
-#         tx_ref = data.get('tx_ref')
-#         status = data.get('status')
-        
-#         if not tx_ref or not status:
-#             return JsonResponse({'status': 'error', 'message': 'Missing parameters'}, status=400)
-        
-#         # Get payment and virtual account records
-#         payment = get_object_or_404(Payment, tx_ref=tx_ref)
-         
-#         if status == 'successful':
-#             # Verify transaction with Chapa
-#             chapa = ChapaPayment()
-#             verification = chapa.verify_transaction(tx_ref)
-            
-#             if verification and verification.get('status') == 'success':
-#                 payment_data = verification['data']
-#                 payment.chapa_transaction_id = payment_data.get('id')
-#                 payment.status = 'held_in_escrow'  # Funds are held in virtual account
-#                 payment.save()
-                
-#                 # Update booking status
-#                 payment.booking.status = 'confirmed'
-#                 payment.booking.save()
-                
-#                 return JsonResponse({'status': 'success'})
-        
-#         # Handle failed transactions
-#         payment.status = 'failed'
-#         payment.save()
-#         payment.booking.status = 'cancelled'
-#         payment.booking.save()
-        
-#         return JsonResponse({'status': 'success'})
-    
-#     except Exception as e:
-#         print(f"Webhook error: {e}")
-#         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-# #start of sesion check_In and End of session check_Out View
-

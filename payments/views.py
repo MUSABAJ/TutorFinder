@@ -12,7 +12,7 @@ from notifications.utils import send_telegram_message, create_notification
 import time
 
 
-# @login_required
+@login_required
 def payment_success(request, tx_ref):
     payment = get_object_or_404(Payment, refrence_id=tx_ref)
     
@@ -22,7 +22,7 @@ def payment_success(request, tx_ref):
     }
     return render(request, "payment/success.html", context)
 
-# @login_required
+@login_required
 def payment_failed(request, tx_ref=None):
     payment = None
     if tx_ref:
@@ -80,10 +80,8 @@ def withdraw_request(request):
             chapa_resp = None
             print(f"Chapa transfer exception: {e}")
 
-        # basic success detection (Chapa responses vary; be defensive)
         success = False
         if chapa_resp and isinstance(chapa_resp, dict):
-            # common keys: 'status' or 'success' or 'data'
             status_val = chapa_resp.get('status') or chapa_resp.get('status_code') or chapa_resp.get('success')
             if isinstance(status_val, str) and status_val.lower() in ('success', 'ok', 'completed'):
                 success = True

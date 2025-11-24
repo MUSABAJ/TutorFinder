@@ -32,9 +32,9 @@ def send_telegram_message(chat_id, text):
 # --------------- NOTIFICATION LOGIC --------------- #
 
 NOTIFICATION_MESSAGES = {
-    'session_request': "📩 You have a new session request from @{username}.",
-    'session_cancel': "❌  @{username} canceld a Session .",
-    'session_declined': "Sorry Your request was denied, please  contact @{username} for more information",
+    'session_request': "📩 You have a new session request from @{username}. please respond to the request as soon as posiible ",
+    'session_cancel': "❌  @{username} has canceld a Session .",
+    'session_declined': "Sorry Your request was denied, please contact @{username} for more information",
     'session_confirmed': "✅ Your session request with @{username} has been confirmed.",
     'session_feedback': "💬 You have received feedback from @{username}.",
     'payment_confirmed': "💰 Payment confirmed for your session with @{username}.",
@@ -66,8 +66,6 @@ def create_notification(recipient, user=None, type=None, link=None):
     if not template:
         print(f"⚠️ Unknown notification type: {type}")
         return
-
-    # Personalize message
     username = user.username if user else recipient.username
     message = template.format(username=username, recipient=recipient.username)
 

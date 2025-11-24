@@ -64,13 +64,11 @@ class ChapaPayment:
             "amount": str(amount),
             "bank_code": bank_code
         }
-        print(payload)
         if account_name:
             payload["account_name"] = account_name
         
         try:
             response = requests.post(url, headers=self.get_headers(), data=json.dumps(payload))
-            print(response.text)
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Chapa Transfer Error: {e}")

@@ -5,9 +5,6 @@ from django.shortcuts import render
 from datetime import timedelta
 from users.models import User
 from payments.chapa import ChapaPayment
-#send  Broadcast view //all user, only student, only tutor
-# compose messagess
-# send it
 
 
 @staff_member_required
@@ -29,8 +26,6 @@ def admin_stats_view(request):
     chapa = ChapaPayment()
 
     transactions_response = chapa.balance()
-    print(transactions_response)
-    print(8888888888)
     context = {
         'chart_data': chart_data,
         'sessions_this_month': sessions_this_month,

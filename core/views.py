@@ -23,23 +23,14 @@ def get_tutor_dashboard_context(user):
     """Returns all common tutor dashboard context data."""
     today = timezone.now()
     tomorrow = timezone.now() + datetime.timedelta(days=1)
-#     tutor = TutorProfile.objects.filter(user=user).first()
-#     bookings = BaseSession.objects.filter(tutor=user)
-#     earning = Payment.objects.filter(tutor=user)
-#     feedback = FeedBack.objects.filter(tutor=user)
     sessions = BookedSession.objects.all()
     upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
     chats = Chat.objects.filter(participants=user).order_by('-created_at')
      
     return {
         'user': user,
-     #    'tutor': tutor,
         'sessions': sessions,
         'upcoming_sessions': upcoming_sessions,
-     #    'avg_rating': avg_rating,
-     #    'bookings': bookings,
-     #    'earning': earning,
-     #    'feedback': feedback,
         'chats': chats,
     }
 
@@ -59,11 +50,6 @@ def tutor_dashbord(request):
      context.update(ctx)
      return render(request, 'dashboard/dashboard.html',context)
 
- 
-# @login_required(login_url='/user/login/')
-# def manage_session(request):
-#      context = get_tutor_dashboard_context(request.user)
-#      return render(request,'sessions/session_manager.html',context)
 
 
 @login_required(login_url='/user/login/')
@@ -203,7 +189,6 @@ def view_tutor(request, tutor_id):
      packages = TutorPackage.objects.filter(tutor=tutor.user)
      tutor_profile = TutorProfile.objects.get(user=tutor.user)
      subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
-     print(subjects)
      context = {'tutor':tutor
                 ,'packages':packages
                 ,'subjects':subjects}
@@ -240,8 +225,7 @@ def main_serach(request):
 
      search_text = request.GET.get("search_text", "")
      search_text = urllib.parse.unquote(search_text).strip()
-     print(search_text)
-     print(request.GET.get)
+
 
      if search_text:         
 
@@ -298,9 +282,7 @@ def my_tutor_search(request):
      my_tutors = User.objects.filter(
      chats__participants=request.user,    
      role='tutor'                        
-     ).distinct() 
-     print('----------------------------------------------------')     
-     print(search_text)     
+     ).distinct()   
 
      if search_text:
           my_tutors = my_tutors.filter(
