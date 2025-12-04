@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-*1#u8gj5f(d()(44xkal2ac^@!c6c@jdhctzijc!059t%6)kqr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -166,10 +166,10 @@ CHAPA_BASE_URL="https://api.chapa.co/v1"
 JAZZMIN_SETTINGS = {
     "site_title": "TUTOR HUB",
     "site_header": "TUTOR HUB Admin",
-    "site_brand": " FLARE",
+    "site_brand": " TEMAR",
     "welcome_sign": "Tutor HUB",
 
-     "copyright": "FLARE 2024",
+     "copyright": "TEMAR 2024",
     
     "show_ui_builder": True,
     
