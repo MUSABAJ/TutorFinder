@@ -1,4 +1,3 @@
-from tkinter import Pack
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import JsonResponse , HttpResponse
 from .models import Availablity, TutorPackage

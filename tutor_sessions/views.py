@@ -1,4 +1,3 @@
-from django.db.transaction import commit
 from django.shortcuts import render,redirect,  get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from users.models import User, TutorProfile 
