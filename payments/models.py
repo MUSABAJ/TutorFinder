@@ -1,6 +1,4 @@
-from msilib.schema import Class
 from django.db import models
-from django.db.models import Sum
 from django.contrib.auth import get_user_model
 from tutor_sessions.models import BaseSession
 User = get_user_model()
