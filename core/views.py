@@ -3,6 +3,7 @@ from django.http import request, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from users.forms import TutorProfileEditForm,StudentProfileEditForm, UserProfileEditForm, AvatarForm
 from tutor_sessions.models import BaseSession, BookedSession
+from notifications.models import Notification
 from feedback.models import FeedBack
 from availablity.models import TutorPackage
 from availablity.forms import PackageForm
@@ -23,7 +24,10 @@ def get_tutor_dashboard_context(user):
     """Returns all common tutor dashboard context data."""
     today = timezone.now()
     tomorrow = timezone.now() + datetime.timedelta(days=1)
-    sessions = BookedSession.objects.all()
+    if user.role== 'studetn':
+       sessions = BookedSession.objects.filter(base_session__student=user)
+    else:
+       sessions = BookedSession.objects.filter(base_session__student=user)
     upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
     chats = Chat.objects.filter(participants=user).order_by('-created_at')
      
@@ -36,12 +40,13 @@ def get_tutor_dashboard_context(user):
 
 @login_required(login_url='/user/login/')
 def tutor_dashbord(request):
-     if not request.user.role == 'tutor':
-          return HttpResponseBadRequest('Please contact the Admin 9858')
-
-     sessions = BookedSession.objects.all()
-     earning = Payment.objects.filter(tutor=request.user)
-
+     if request.user.role == 'student':
+          return redirect('student_dashboard')
+     
+     if request.user.role == 'admin':
+          return redirect("/admin")
+     
+ 
      avg_rating = FeedBack.get_tutor_average(request.user)
      total_earnings = Payment.total_earnings(self=request.user)
      pending_balance = Payment.pending_balance(self=request.user)
@@ -55,6 +60,8 @@ def tutor_dashbord(request):
 @login_required(login_url='/user/login/')
 def my_students(request):
      
+     if request.user.role != 'tutor':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      context = get_tutor_dashboard_context(request.user)
      my_students = User.objects.filter(chats__participants=request.user, role='student').distinct()
      context.update( {'my_students':my_students})
@@ -62,6 +69,9 @@ def my_students(request):
 
 @login_required(login_url='/user/login/')
 def manage_package(request): 
+     
+     if request.user.role != 'tutor':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      tutor = request.user
      packages = TutorPackage.objects.filter(tutor=tutor)         
      if request.method == 'POST':
@@ -83,6 +93,8 @@ def manage_package(request):
  
 @login_required(login_url='/user/login/')
 def earning(request): 
+     if request.user.role != 'tutor':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      tutor = request.user
      packages = TutorPackage.objects.filter(tutor=tutor)
      payments = Payment.objects.filter(tutor=tutor)
@@ -110,7 +122,7 @@ def earning(request):
      return render(request, 'tutor/pages/earning.html', context)
 
 @login_required(login_url='/user/login/')
-def my_profile(request): 
+def my_profile(request):  
      user = request.user
      avatar_form = AvatarForm(request.POST,request.FILES,instance=request.user)
      user_form = UserProfileEditForm(request.POST or None, instance=user)
@@ -153,6 +165,9 @@ def my_profile(request):
 
 
 def view_student(request, student_id):
+     
+     if request.user.role != 'tutor':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      student = get_object_or_404(StudentProfile, id=student_id)
      context = {'student':student}
      return render(request, 'tutor/pages/student_view.html',context)
@@ -164,14 +179,31 @@ def view_student(request, student_id):
 
 @login_required(login_url='/user/login/')
 def student_dashbord(request):
-     if not request.user.role == 'student':
-          return HttpResponseBadRequest('Please contact the Admin 9858')
+     if request.user.role == 'tutor':
+          return redirect('tutor_dashbord')
+     if request.user.role == 'admin':
+          return redirect('/admin')
+     next_session = BookedSession.objects.filter(base_session__student=request.user).order_by('-start_time')[:1]
+     notif = Notification.objects.filter(recipient=request.user).count
+     accepted_sess = BaseSession.objects.filter(student=request.user).filter(status='confirmed')
+     declined_sess = BaseSession.objects.filter(student=request.user).filter(status='decline')
+     suggested_tutors = TutorProfile.objects.filter(rating__gte=3.0)[:10] if TutorProfile.objects.filter(rating__gte=3.0) else  TutorProfile.objects.all()[:10]
+
      context = get_tutor_dashboard_context(request.user)
+     ctx = {'suggested_tutors':suggested_tutors,
+            'next_session':next_session,
+            'accepted_sess':accepted_sess, 
+            'notif':notif, 
+            'declined_sess':declined_sess}
+     context.update(ctx)
      return render(request, 'dashboard/dashboard.html',context)
 
 from chat.models import Message
 @login_required(login_url='/user/login/')
 def my_tutors(request):
+     
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      exolore_tutor = TutorProfile.objects.all()
      my_tutors = User.objects.filter(
      chats__participants=request.user,    
@@ -185,10 +217,15 @@ def my_tutors(request):
 
 
 def view_tutor(request, tutor_id):
+     
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      tutor = get_object_or_404(TutorProfile, id=tutor_id)
      packages = TutorPackage.objects.filter(tutor=tutor.user)
      tutor_profile = TutorProfile.objects.get(user=tutor.user)
      subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
+     subjects = [s.strip() for s in subjects] 
+
      context = {'tutor':tutor
                 ,'packages':packages
                 ,'subjects':subjects}
@@ -196,6 +233,8 @@ def view_tutor(request, tutor_id):
 
 def payment_history(request):
      
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      student = request.user
      sessions = BaseSession.objects.filter(student=student)
      payments = Payment.objects.filter(student=student)
@@ -222,7 +261,9 @@ def payment_history(request):
 
 
 def main_serach(request):
-
+     
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      search_text = request.GET.get("search_text", "")
      search_text = urllib.parse.unquote(search_text).strip()
 
@@ -238,6 +279,9 @@ def main_serach(request):
           return render(request, 'search/_results.html',context)
 
 def tutor_serach(request):
+     
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      tutors_profile = TutorProfile.objects.all()
      search_text = request.GET.get("search_text", "")
      search_text = urllib.parse.unquote(search_text).strip()
@@ -259,8 +303,8 @@ def tutor_serach(request):
 
      if subject:
           tutors = tutors_profile.filter(subjects__icontains=subject)
-     if avail:
-          tutors = tutors_profile.filter(available=True)
+     # if avail:
+     #      tutors = tutors_profile.filter(available=True)
 
      if gender:
           tutors = tutors_profile.filter(user__gender=gender)
@@ -278,6 +322,9 @@ def tutor_serach(request):
  
           
 def my_tutor_search(request):
+     
+     if request.user.role != 'student':
+          return HttpResponseBadRequest('Very Bad Reqeuest')
      search_text = request.GET.get("search_text","")
      my_tutors = User.objects.filter(
      chats__participants=request.user,    

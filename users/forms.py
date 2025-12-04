@@ -60,7 +60,7 @@ class StudentRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name',
-                  'email','password1','password2']
+                  'username','password1','password2']
         
 
 class TutorRegisterForm(UserCreationForm):
@@ -73,7 +73,7 @@ class TutorRegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','email', 'password1','password2', 
+        fields = ['first_name', 'last_name','username', 'password1','password2', 
                  ]
 
         help_texts = {
@@ -87,7 +87,7 @@ class TutorRegisterForm(UserCreationForm):
 
 class UserProfileEditForm(forms.ModelForm):
    
-    date_of_birth = forms.DateField(required=False)
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
     gender = forms.ChoiceField(choices=GENDER_CHOICES)
     class Meta:
         model = User

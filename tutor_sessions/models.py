@@ -65,7 +65,7 @@ class BookedSession(models.Model):
         ('missed', 'Missed'),
         ('cancelled', 'Cancelled'),
         ('rescheduled', 'Reschedule'),
-        ('completed', 'completed'),
+        ('completed', 'Completed'),
         ('up_comming', 'Up Comming'),
         ]   
     TYPE_CHOICES = [
@@ -90,7 +90,9 @@ class BookedSession(models.Model):
     schedule_date = models.DateTimeField(auto_now_add=True)
     notification_status = models.CharField(max_length=15, choices=NOTIFICATION_CHOICES, default= '0')
     
- 
+    def mark_completed(self):
+        self.status = 'completed'
+        self.save()
 
 class VirtualClass(models.Model):
     session = models.OneToOneField(BookedSession, on_delete=models.CASCADE, related_name='virtual_calss')

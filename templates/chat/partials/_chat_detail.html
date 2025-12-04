@@ -28,10 +28,10 @@
 </div>
 </div>
 {% endblock main %}
-
+{% if chat.id  %}
  <span hx-get="{% url 'get_msgs' chat.id %}"
      hx-trigger="load, every 5s"
      hx-target=".chat-messages"
      hx-swap="outerHTML"></spaan> 
 
- 
+ {% endif %}

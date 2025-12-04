@@ -40,12 +40,13 @@
                     Duration : {{pkg.session_duration}} Min <br>
                     Type : {{pkg.session_type}}</div>
             </div>
-            {%endfor%}
+            {% empty %}
+            <br>
+            <emphasize>please, Create a Package first. </emphasize>
+                {%endfor%}
         </div>
 
-        <p>
-            <input type='checkbox' id='drop-remove' />
-            <label for='drop-remove'>remove after drop</label>
+        <p> 
         </p>
     </div>
 

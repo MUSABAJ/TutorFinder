@@ -8,8 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="PI – Find expert tutors anytime, anywhere. Modern, fast, and simple.">
     <title>PI- Connect with Expert Tutors</title>
-    <link rel="stylesheet" href="{% static 'styles/styles.css '%}"> 
-<link rel="stylesheet" href="{% static 'asset/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/styles.css '%}">
+    <link rel="stylesheet" href="{% static 'asset/css/all.css' %}">
 
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
@@ -18,15 +18,17 @@
       -->
     <link rel="stylesheet" href="asset/css/all.min.css">
     <style>
-        @font-face{
+        @font-face {
             font-family: para;
             src: url("{% static 'font/Alphacorsa Personal Use.ttf' %}");
-            }
-        @font-face{
+        }
+
+        @font-face {
             font-family: head;
             src: url("{% static 'font/SAIBA-45.ttf' %}");
-                }
-/* ---- Modern baseline + tokens ---- */
+        }
+
+        /* ---- Modern baseline + tokens ---- */
         :root {
             --bg: rgb(255, 255, 255);
             --surface: rgb(255, 255, 255);
@@ -46,9 +48,9 @@
 
         html,
         body {
-             color: var(--text);
+            color: var(--text);
             font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-            overflow:visible;
+            overflow: visible;
         }
 
         .container {
@@ -231,7 +233,7 @@
         .btn-outline {
             background: transparent;
             color: var(--text);
-            border-color:var(--primary);
+            border-color: var(--primary);
         }
 
         .btn-white {
@@ -353,12 +355,14 @@
             animation: orb 12s ease-in-out infinite alternate-reverse;
         }
 
-        .bkimg{
-             background-image: url(static/img/bgimage.png);
-              background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        height: 100vh; }
+        .bkimg {
+            background-image: url(static/img/bgimage.png);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+
         @keyframes orb {
             0% {
                 transform: translate(0, 0) scale(1);
@@ -436,7 +440,6 @@
             background: var(--surface-color);
             border: 1px solid var(--surface-border);
             border-radius: var(--radius);
-            transition: all .2s ease-in-out;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -446,7 +449,7 @@
             text-align: center;
             transition: all 0.3s ease-in-out;
         }
- 
+
         .feature-icon {
             font-size: 31px;
             color: #111014;
@@ -508,7 +511,7 @@
             width: 98%;
             position: relative;
             top: 1%;
-            height: 98%;
+            {% comment %} height: 98%; {% endcomment %}
             object-fit: cover;
         }
 
@@ -567,26 +570,33 @@
         }
 
         .testimonial-card {
+            display: none;
             background: var(--background-color);
             border: 1px solid var(--surface-border);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             padding: 18px;
+            padding-bottom: 0;
         }
 
-        .cta { 
+        .testimonial-card.active {
+            display: flex;
         }
 
-        .cta-content { 
-            background: linear-gradient(0deg,var(--primary-dark),rgb(3, 74, 129));
-             border-radius: calc(var(--radius) + 6px);
-            padding: 28px;
+        
+
+        .cta-content {
+            background: linear-gradient(0deg, var(--primary-dark), rgb(3, 74, 129));
+            border-radius: calc(var(--radius) + 6px);
+            padding: 3.3rem 0rem;
             text-align: center;
             box-shadow: var(--shadow-sm);
         }
-
+.cta-content h2{
+    margin: 0.5rem 0;
+}
         .cta-buttons {
             display: flex;
-            gap: 10px;
+            gap: 20px;
             justify-content: center;
             margin-top: 12px;
             flex-wrap: wrap;
@@ -642,11 +652,15 @@
         }
 
         .how-card {
+            align-content: flex-end;
+            text-align: center;
             position: relative;
             background: var(--surface-color);
             border: 1px solid var(--surface-border);
             border-radius: var(--radius);
             padding: 18px 18px 18px 48px;
+            height: 260px;
+
         }
 
         .how-card:before {
@@ -663,6 +677,32 @@
             font-weight: 700;
             color: #0b0d12;
             background: linear-gradient(135deg, var(--brand-2), var(--brand-1));
+
+        }
+
+        .two {
+
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-image: url(static/img/search.jpg);
+
+        }
+
+        .three {
+
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-image: url(static/img/login.jpg);
+
+        }
+
+        .one {
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-image: url(static/img/login.jpg);
         }
 
         @media (min-width: 760px) {
@@ -710,7 +750,7 @@
     </style>
 </head>
 
-<body >
+<body>
 
     <!-- Navigation -->
     <nav class="navbar reveal">
@@ -724,7 +764,7 @@
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#features" class="nav-link">Features</a>
                     <a href="#how" class="nav-link">How it works</a>
-                     <a href="#testimonials" class="nav-link">Reviews</a>
+                    <a href="#testimonials" class="nav-link">Reviews</a>
 
                 </div>
 
@@ -733,7 +773,7 @@
                 <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
                 <a href="{% url 'student_register' %}" class="btn btn-primary">Get Started</a>
             </div>
- 
+
             <div class="mobile-menu-toggle" role="button" aria-label="Toggle navigation" aria-expanded="false"
                 tabindex="0">
                 <span></span>
@@ -745,19 +785,20 @@
 
 
     <!-- Hero Section -->
-    <div class="background bkimg" >
-        <section class="hero" id="home">
+    <div class="background bkimg">
+        <section class="hero reveal" id="home">
 
             <div class="">
 
                 <div class="hero-content">
-                    <div class="hero-badge">
+                    <div class="hero-badge reveal">
                         <i class="fas fa-star"></i>
                         <span>Trusted by 10,000+ Students</span>
                     </div>
-                    <div class="hero-text reveal" >
+                    <div class="hero-text reveal">
 
-                        <h1 style='font-family: head;'>Your GPA Called ... <span class="gradient-text">It Wants a Tutor</span></h1>
+                        <h1 style='font-family: head;'>Your GPA Called ... <span class="gradient-text">It Wants a
+                                Tutor</span></h1>
                         <p style='font-family: para;'>Let Us Fix you with our top Most Featured Tutors.</p>
 
                         <div class="hero-buttons">
@@ -780,7 +821,7 @@
     <!-- Features Section -->
     <section class="features background" id="features">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <div class="section-badge">Why Choose Us</div>
                 <h2>Everything in <span class="gradient-text">one place</span></h2>
                 <p>Comprehensive tools and features designed
@@ -811,7 +852,7 @@
                     <h3>Flexible Scheduling</h3>
                     <p>Book sessions that fit your schedule with instant confirmation and easy rescheduling</p>
                     <div class="feature-highlight gradient-icon ">✓ 24/7 availability</div>
-                </div> 
+                </div>
                 <div class="feature-card reveal">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt gradient-icon"></i>
@@ -827,21 +868,21 @@
     <!-- How it works Section -->
     <section class="how " id="how">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <div class="section-badge">Get started</div>
                 <h2>How it <span class="gradient-text">Works</span></h2>
                 <p>Three simple steps to find your perfect tutor and start learning today.</p>
             </div>
             <div class="how-steps">
-                <div class="how-card reveal">
+                <div class="how-card one reveal">
                     <h3>Create your account</h3>
                     <p>Sign up as a student or tutor in seconds. It’s free to get started.</p>
                 </div>
-                <div class="how-card reveal">
+                <div class="how-card two reveal">
                     <h3>Match with tutors</h3>
                     <p>Search by subject, price, and availability. View ratings and profiles.</p>
                 </div>
-                <div class="how-card reveal">
+                <div class="how-card three reveal">
                     <h3>Book and learn</h3>
                     <p>Schedule sessions, join the virtual classroom, and track your progress.</p>
                 </div>
@@ -849,24 +890,31 @@
         </div>
     </section>
 
-   
+
 
     <!-- Testimonials Section -->
     <section class="testimonials " id="testimonials">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <div class="section-badge">Success Stories</div>
                 <h2>What Our <span class="gradient-text">Students Say</span></h2>
                 <p>Comments and Rating from our students</p>
             </div>
             <div class="testimonials-slider reveal">
                 <div class="testimonials-grid">
-                    <div class="testimonial-card">
+                    <div class="testimonial-card active">
+                      
                         <div class="testimonial-author">
                             <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
                                 <h4>Sarah Al-Rashid</h4>
-                                <span>High School Student</span>
+                                <span>High School Student</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
+                        </div>
                             </div>
                         </div>
                         <div class="testimonial-content">
@@ -876,48 +924,89 @@
                         </div>
 
                     </div>
-                    <!-- <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="testimonial-content">
-                            <p>"As a tutor, PIprovides all the tools I need to deliver quality education. The
-                                scheduling system and payment processing are seamless."</p>
-                        </div>
+                    <div class="testimonial-card active">
+                      
                         <div class="testimonial-author">
-                            <img src="img/makima.jpg?height=50&width=50" alt="Ahmed">
+                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
-                                <h4>Dr. Ahmed Hassan</h4>
-                                <span>Mathematics Tutor</span>
-                                <div class="testimonial-location">🇪🇬 Egypt</div>
+                                <h4>Sarah Al-Rashid</h4>
+                                <span>High School Student</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
+                        </div>
                             </div>
                         </div>
+                        <div class="testimonial-content">
+                            <p><span>"</span>PItransformed my understanding of mathematics. Dr. Ahmed's teaching style
+                                is
+                                exceptional, and the platform makes learning so convenient!"</p>
+                        </div>
+
                     </div>
-                    <div class="testimonial-card">
-                        <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="testimonial-content">
-                            <p>"The multilingual support is amazing! My daughter can learn in Arabic while I can
-                                communicate with tutors in English. Perfect for our family."</p>
-                        </div>
+                    <div class="testimonial-card active">
+                      
                         <div class="testimonial-author">
-                            <img src="img/makima.jpg?height=50&width=50" alt="Amira">
+                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
-                                <h4>Amira Khalil</h4>
-                                <span>Parent</span>
-                                <div class="testimonial-location">🇦🇪 UAE</div>
+                                <h4>Crstiano Ronaldo</h4>
+                                <span>High School Student</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4/5)</span>
+                        </div>
                             </div>
                         </div>
-                    </div> -->
+                        <div class="testimonial-content">
+                            <p><span>"</span>Good user interface. Easy to use, arif paymetn system, overall I recommend this for Messi"</p>
+                        </div>
+
+                    </div>
+                    <div class="testimonial-card active">
+                      
+                        <div class="testimonial-author">
+                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
+                            <div>
+                                <h4>Donald Duck</h4>
+                                <span>Disnip School Student</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
+                        </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p><span>"</span>I only Like to learn heare in Flare, I know I'm a cartoon character but stil, it awesome"</p>
+                        </div>
+
+                    </div>
+                    <div class="testimonial-card active">
+                      
+                        <div class="testimonial-author">
+                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
+                            <div>
+                                <h4>Tony Stark</h4>
+                                <span>CEO at Stark company</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
+                        </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p><span>"</span> A great Opportunity for the young generation to use their devices for  good "</p>
+                        </div>
+
+                    </div>
+                   
                 </div>
             </div>
         </div>
@@ -928,7 +1017,7 @@
         <div class="container">
             <div class="cta-content reveal">
                 <div class="cta-icon">
-                    <i class="fas fa-rocket  gradient-text" ></i>
+                    <i class="fas fa-rocket  gradient-text"></i>
                 </div>
                 <h2>Ready to Start Your Learning Journey?</h2>
                 <p>Join thousands of students and tutors already using PIto achieve their educational goals</p>
@@ -954,7 +1043,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
+                <div class="footer-section reveal">
                     <div class="footer-brand">
                         <i class="fas fa-graduation-cap"></i>
                         <h3>PI</h3>
@@ -968,7 +1057,7 @@
                         <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
-                <div class="footer-section">
+                <div class="footer-section reveal">
                     <h4>For Students</h4>
                     <ul>
                         <li><a href="#tutors">Find Tutors</a></li>
@@ -977,7 +1066,7 @@
                         <li><a href="#pricing">Pricing</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+                <div class="footer-section reveal">
                     <h4>For Tutors</h4>
                     <ul>
                         <li><a href="register.html?role=tutor">Become a Tutor</a></li>
@@ -995,7 +1084,7 @@
                         <li><a href="#safety">Safety</a></li>
                     </ul>
                 </div> -->
-                <div class="footer-section">
+                <div class="footer-section reveal">
                     <h4>Company</h4>
                     <ul>
                         <li><a href="#about">About Us</a></li>
@@ -1005,7 +1094,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
+            <div class="footer-bottom reveal">
                 <div class="footer-bottom-content">
                     <p>&copy; 2025 PI. Powerd By Electricity.</p>
                     <div class="footer-languages">
@@ -1035,6 +1124,25 @@
                 if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
             });
         });
+
+        
+let slideIndex = 0;
+showSlides();
+
+function showSlides() {
+  let i;
+  let slides = document.getElementsByClassName("testimonial-card");
+   for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";  
+  }
+  slideIndex++;
+  if (slideIndex > slides.length) {slideIndex = 1}    
+  
+  slides[slideIndex-1].style.display = "flex";  
+   setTimeout(showSlides, 3000); // Change image every 5 seconds
+}
+
+
     </script>
 </body>
 

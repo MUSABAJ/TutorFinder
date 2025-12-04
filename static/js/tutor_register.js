@@ -1,3 +1,4 @@
+
 const nextBtns = document.querySelectorAll(".next-btn");
 const prevBtns = document.querySelectorAll(".prev-btn");
 const formSteps = document.querySelectorAll(".form-step");

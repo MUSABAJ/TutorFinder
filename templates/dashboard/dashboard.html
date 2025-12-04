@@ -8,7 +8,7 @@
 <div class="main-view-top">
     <div class="dashboard-section ad " >
         <small class="comming-badge">Comming Soon</small>
-        <h3>Premium version on your way. Enhanced features to Take your expirence to another level  </h3>
+        <h3>✨Premium version on your way. Enhanced features to Take your expirence to another level  </h3>
        <br>
                <img class="dashboard-image" src="{% static '/img/illustration.png'%}"/>
 
@@ -173,7 +173,7 @@
                     class="fas fa-upload"></i> Upload Resource</a>
             <a href="{% url 'session_list' %}" class="btn btn-outline" style="width: 100%;"><i
                     class="fas fa-calendar"></i> Scheduled sessions</a>
-            <a href="" class="btn btn-outline" style="width: 100%;"><i class="fas fa-bell"></i> View
+            <a href="{% url 'notification' %}" class="btn btn-outline" style="width: 100%;"><i class="fas fa-bell"></i> View
                 Notifications</a>
         </div>
     </div>
@@ -185,26 +185,31 @@
 {% elif request.user.role == 'student' %}
 <div class="main-view-top">
     <div class="dashboard-section ad ">
-        <h1>Rady to Sharpen your skills with our Professional Tutors</h1>
- 
+        <h3>👋 Wellcome. Rady to Sharpen your skills with our Professional Tutors. </h3>
+
+       <br>
+               <img class="dashboard-image" src="{% static '/img/illustration.png'%}"/>
         
     </div>
-    <!-- INSERT_YOUR_CODE -->
-    <!-- Student Dashboard Overview Cards -->
+     <!-- Student Dashboard Overview Cards -->
 
     <div class="dashboard-overview">
             <div class="overview-card">
                 <div class="overview-icon bg-primary">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-step-forward"></i>
                 </div>
+                    {% if next_session%}
                 <div class="overview-details">
                     <h4>Next Session</h4>
-                    <p>Math with Dr. Michael Chen</p>
-                    <span class="overview-meta">Today, 4:00 PM</span>
+                    <p>{{next_session.topic}} with {{next_session.base_session.tutor}}</p>
+                    <span class="overview-meta">Today, {{next_session.start_time}} </span>
                 </div>
-                <a href="sessions.html" class="overview-action" title="View Details">
-                    <i class="fas fa-arrow-right"></i>
+                <a href="{%url 'session_list' %}" class="overview-action" title="View Details">
+                    <i class="fas fa-step-right"></i>
                 </a>
+                {% else %}
+                <h4>You have no Scheduled session!</h4>
+                {%endif%}
             </div>
 
             <div class="overview-card">
@@ -212,13 +217,10 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="overview-details">
-                    <h4>Session Status</h4>
-                    <p>5 Accepted Programs</p>
-                    <span class="overview-meta">3 declined</span>
-                </div>
-                <a href="progress.html" class="overview-action" title="View Progress">
-                    <i class="fas fa-arrow-right"></i>
-                </a>
+                    <h4>Session Status </h4>
+                    <p>{{accepted_sess|length}} Accepted Programs</p>
+                    <span class="overview-meta">{{declined_sess|length}} declined</span>
+                </div> 
             </div>
             <div class="overview-card">
                 <div class="overview-icon bg-info">
@@ -226,10 +228,10 @@
                 </div>
                 <div class="overview-details">
                     <h4>Notifications</h4>
-                    <p>3 New</p>
+                    <p>{{notif}} New</p>
                     <span class="overview-meta">Feedback, Reminders</span>
                 </div>
-                <a href="#notifications" class="overview-action" title="View Notifications">
+                <a href="{% url 'notification' %}" class="overview-action" title="View Notifications">
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -256,11 +258,29 @@
     <div class="suggestions-section">
         <div class="section-header">
             <h4>Tutor Suggestions</h4>
-            <button href="sessions.html" class="btn btn-outline btn-vsm">View All</button>
+            <button onclick="window.location.href='{% url 'my_tutors' %}'"class="btn btn-outline btn-vsm">View All</button>
         </div>
 
-        <div class="tutor">
-            <div class="suggest-card"></div>
+        <div class="tutors">
+        {% for st in suggested_tutors %}
+        <div class="suggest-card">
+                <div class="top-card">
+                    <div class="suggest-rating"> <i class="fas fa-star"></i>({{st.rating}}/5)</div>
+
+                    <img src="/static{{st.user.avatar.url}}" alt="">
+                </div>
+                <div class="body-card">
+                    <span class="name">{{st.user}}</span>
+                    <div class="card-actions">
+                        <a href="{% url 'view_tutor' st.id %}">
+                        <button class="btn btn-primary  ">View</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+        {% endfor %}
+
         </div>
 
     </div>

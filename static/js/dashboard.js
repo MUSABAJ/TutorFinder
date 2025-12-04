@@ -1,3 +1,52 @@
+checkDevice()
+
+function checkDevice(){ 
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+  const isPortrait = window.innerHeight > window.innerWidth
+
+  if (isMobile && isPortrait) {
+    const overlay = document.createElement('div')
+    overlay.innerHTML = `
+    <style>
+        #rotatePrompt {
+            position: fixed;
+            top:0; left:0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            color: whitesmoke;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            text-align: center;
+            padding: 1rem;
+        }
+            .rotateIcon{
+            color: white;
+            }
+        
+    </style>
+    <div class='rotateIcon'><i class="fa-solid fa-computer"></i></div>
+    <h1>Screen width too small</h1>
+    <h3>Plsease increase the window size or rotate to load.</h3>
+    <p>If you are on a mobile phone, please open on a desktop.</p>
+    
+    `
+    overlay.id='rotatePrompt';
+    document.body.appendChild(overlay);
+    function checkOrientation(){
+      if (window.innerHeight < innerWidth){
+        overlay.remove();
+        window.removeEventListener('resize', checkOrientation)
+      }
+    }
+        window.addEventListener('resize', checkOrientation)
+  
+  }
+}
+
 
 //Profile Dropdown 
 const avatar = document.getElementById("user-avatar")

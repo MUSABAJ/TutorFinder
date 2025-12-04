@@ -10,70 +10,19 @@ from django.http import HttpResponseForbidden, HttpResponse
 from django.contrib.auth.hashers import check_password
 
 #---------------------- USER CRUD VIEW  ------------------------------
-
-def user_registration(request):
-    if request.user.is_authenticated:
-        if request.user.role == 'tutor':
-            return redirect('tutor_dashbord')
-        else:
-            return redirect('student_dashbord')
-
-    if request.method == 'POST':
-        form = TutorRegisterForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.role = 'tutor'
-            user.username = user.first_name
-            user.save() 
-
-            TutorProfile.objects.create(
-                user = user, 
-                horuly_rate = form.cleaned_data['horuly_rate'],
-                language =  form.cleaned_data['language'],
-                qualification = form.cleaned_data['qualification'],
-                experience =  form.cleaned_data['experience'],
-                teaching_prefrence =  form.cleaned_data['teaching_prefrence'],
-                subjects =  form.cleaned_data['subjects'],                 
-            )
-            return redirect('tutor_dashbord')
-        else:
-            form = StudentRegisterForm(request.POST)
-            if form.is_valid():
-                user = form.save(commit=False)
-                user.role = 'student'
-                user.username = user.first_name
-                user.save()
-
-                StudentProfile.objects.create(
-                    user = user,
-                    favorite = 'something'
-                )
-                StudentProfile.save()
-
-                # login(request,user)
-                return redirect ('student_dashbord')
-    else:
-        tutor_form = TutorRegisterForm()
-        form = StudentRegisterForm()
-
-        context = {'form': form, 'tutor_form':tutor_form}
-
-    return render(request, 'auth/registration.html',context)
-
-            
+         
       
 def tutor_register(request):
     if request.user.is_authenticated:
         if request.user.role == 'tutor':
             return redirect('tutor_dashbord')
         else:
-            return redirect('student_dashbord')
+            return redirect('student_dashboard')
     if request.method=='POST':
         form = TutorRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = 'tutor'
-            user.username = user.first_name
             user.save() 
 
             TutorProfile.objects.create(
@@ -98,14 +47,13 @@ def student_register(request):
         if request.user.role == 'tutor':
             return redirect('tutor_dashbord')
         else:
-            return redirect('student_dashbord')
+            return redirect('student_dashboard')
     
     if request.method=='POST':
         form = StudentRegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.role = 'student'
-            user.username = user.first_name
             user.save()
 
             StudentProfile.objects.create(
@@ -114,7 +62,7 @@ def student_register(request):
             )
  
             # login(request,user)
-            return redirect ('student_dashbord')
+            return redirect ('student_dashboard')
     else:
         form = StudentRegisterForm()
     return render(request, 'auth/student_reg.html', {'form': form})
@@ -124,7 +72,7 @@ def login_view(request):
         if request.user.role == 'tutor':
             return redirect('tutor_dashbord')
         else:
-            return redirect('student_dashbord')
+            return redirect('student_dashboard')
     if request.method=='POST':
         form = loginForm(request.POST, data=request.POST)
         username = request.POST.get('username')
@@ -136,7 +84,7 @@ def login_view(request):
             if request.user.role == 'tutor':
                  return redirect('tutor_dashbord')
             else:
-                return redirect('student_dashbord')
+                return redirect('student_dashboard')
     else:
  
         form =loginForm()

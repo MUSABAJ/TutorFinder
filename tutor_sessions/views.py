@@ -26,18 +26,20 @@ def list_session(request):
     today = timezone.now()
     tomorrow = today + datetime.timedelta(days=1)
     if (request.user.role == 'tutor'):
-        sessions = BookedSession.objects.filter(base_session__tutor=request.user)
+        sessions = BookedSession.objects.filter(base_session__tutor=request.user) 
         canceld_sessions = BookedSession.objects.filter(base_session__tutor=request.user).filter(status='cancelled')
-        completed_sessions = BookedSession.objects.filter(base_session__tutor=request.user).filter(status='completed')
+        completed_sessions = BookedSession.objects.filter(base_session__tutor=request.user).filter(status='completed') 
     else:
-        sessions = BookedSession.objects.filter(base_session__student=request.user)
-    upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow)
-    canceld_sessions = sessions.filter(status='cancelled')
-    completed_sessions = sessions.filter(status='completed')
+        sessions = BookedSession.objects.filter(base_session__student=request.user).order_by('start_time')
+    upcoming_sessions = sessions.filter(start_time__gt=today).filter(start_time__lt=tomorrow).order_by('-start_time')
+    canceld_sessions = sessions.filter(status='cancelled').order_by('-start_time')
+    completed_sessions = sessions.filter(status='completed').order_by('-start_time')
 
-    up =upcoming_sessions.filter().first()
+    up = upcoming_sessions.order_by('-start_time').first()
     if up:
-        up.status='up_comming'
+        if up.status=='scheduled' or up.status=='rescheduled':
+            up.status='up_comming'      
+            up.save()
     return render(request,'sessions/session_manager.html', {"sessions":sessions,
                                                             'completed_sessions':completed_sessions,
                                                             'upcoming_sessions':upcoming_sessions,
@@ -132,6 +134,7 @@ def request_session(request, pkg_id):
     subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
     if request.method=='POST':
         pkg_request = BaseSession.objects.create(
+            package = pkg,
             student = request.user,
             tutor = tutor,
             subject_name =  request.POST.get('selected_subject',''),
@@ -153,10 +156,7 @@ def request_session(request, pkg_id):
             'success': True,
             'message': f"Your request has been sent. You will be notified with ${tutor}'s response ."
         })     
-    return render(request,'status/page.html',{
-                'error': True,
-                'message': f'You Request submission has failed . '
-            })
+     
  
 
 @login_required
@@ -199,37 +199,10 @@ def book_sessions(request, base_id):
                 return JsonResponse({'error': 'Invalid slot data.'}, status=400)
     
             with transaction.atomic():
-                # Create payment
-                tx_ref = f"tutor_escrow_{uuid.uuid4().hex[:16]}"
-                callback_url = request.build_absolute_uri(f'/sessions/payment/verify/{tx_ref}/')
-                obj, payment = Payment.objects.get_or_create(
-                    student=student,
-                    tutor=tutor,
-                    session=base_session,
-                    amount=base_session.price,
-                    status="pending",
-                    refrence_id=tx_ref
-                )
-
-                # Initialize Chapa payment
-                chapa = ChapaPayment()
-                response = chapa.initialize_transaction(
-                    email=request.user.email,
-                    amount=base_session.price,
-                    tx_ref=tx_ref,
-                    first_name=request.user.first_name,
-                    last_name=request.user.last_name,
-                    callback_url=callback_url
-                )
-
-                if response and response.get('status') == 'success':
-        # Create booked session
-                    obj, booked_session = BookedSession.objects.get_or_create(
-                        base_session=base_session,
-                        start_time=start,
-                        end_time=end,
-                        schedule_date=start
-                    )
+                if not base_session.is_payed:
+                    # Create payment
+                    tx_ref = f"tutor_escrow_{uuid.uuid4().hex[:16]}"
+                    callback_url = request.build_absolute_uri(f'/sessions/payment/verify/{tx_ref}/')
                     obj, payment = Payment.objects.get_or_create(
                         student=student,
                         tutor=tutor,
@@ -238,19 +211,61 @@ def book_sessions(request, base_id):
                         status="pending",
                         refrence_id=tx_ref
                     )
+                # Create booked session
+                    obj, booked_session = BookedSession.objects.get_or_create(
+                        base_session=base_session,
+                        start_time=start,
+                        end_time=end,
+                        schedule_date=start,
+                        topic = base_session.subject_name,
+                        session_type=base_session.package.session_type
+                    )
+                    # Initialize Chapa payment
+                    chapa = ChapaPayment()
+                    response = chapa.initialize_transaction(
+                        email=request.user.email,
+                        amount=base_session.price,
+                        tx_ref=tx_ref,
+                        first_name=request.user.first_name,
+                        last_name=request.user.last_name,
+                        callback_url=callback_url
+                    )
 
-                    checkout_url = response['data']['checkout_url']
+                    if response and response.get('status') == 'success':
+            
+                        obj, payment = Payment.objects.get_or_create(
+                            student=student,
+                            tutor=tutor,
+                            session=base_session,
+                            amount=base_session.price,
+                            status="pending",
+                            refrence_id=tx_ref
+                        )
+                        base_session.is_payed = True
+                        base_session.save()
+
+                        checkout_url = response['data']['checkout_url']
+                        
+                        create_notification(
+                        recipient=tutor,
+                        user=request.user,
+                        type='payment_confirmed',
+                        link= "{% url 'base_session_list' %}")
+                        payment.status =  'success'
+                        
+                        return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
                     
-                    create_notification(
-                    recipient=tutor,
-                    user=request.user,
-                    type='payment_confirmed',
-                    link= "{% url 'base_session_list' %}")
-                    return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
-                    
+                    else:
+                        return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
                 else:
-                    return HttpResponse("Failed to initialize payment. Please try again later.", status=500)
-
+                    # Create booked session
+                    obj, booked_session = BookedSession.objects.get_or_create(
+                        base_session=base_session,
+                        start_time=start,
+                        end_time=end,
+                        schedule_date=start,
+                        session_type=base_session.package.session_type
+                    )
         except Exception as e:
             return render(request,'status/page.html',{
                         'error': True,

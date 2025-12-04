@@ -15,7 +15,7 @@ def give_feedback(request, session_id):
 
 
     if session.student != request.user:
-        return HttpResponseForbidden("You're not allowed to submit feedback for this session.")
+        return redirect('tutor_dashbord')
 
 
     if FeedBack.objects.filter(session=session, student=request.user).exists():

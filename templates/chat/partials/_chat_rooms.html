@@ -3,7 +3,7 @@
   <!-- Recent Messages -->
   <div class="dashboard-section">
     <h3>Chats</h3>
-    <a href="chat.html" class="btn btn-outline btn-vsm">View All</a>
+    <a href="{% url 'chats' %}" class="btn btn-outline btn-vsm">View All</a>
   </div>
   <div class="messages-list">
     {% if chats %}
@@ -23,7 +23,7 @@
             {% endif %}</span>
           <span class="message-time">{{ message.timestamp|timesince }} ago</span>
         </div>
-        <p class="message-text"> {{ message.content|truncatechars:80 }}...</p>
+        <p class="message-text"> {{ message.content|truncatechars:40 }}...</p>
       </div>
       {% if not message.is_read %}
       <div class="message-unread unread"></div>

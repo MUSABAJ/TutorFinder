@@ -90,9 +90,8 @@ def create_virtual_class(request, session_id):
 @login_required
 def join_virtual_class(request, session_id):
     """Allow tutor or student to join the virtual classroom."""
-    session = get_object_or_404(BookedSession, id=session_id)
-
-
+    session = get_object_or_404(BookedSession, id=session_id) 
+ 
     if request.user not in [session.base_session.tutor, session.base_session.student]:
         messages.error(request, "You are not enrolled in this class.")
         return redirect("session_list")
@@ -123,3 +122,4 @@ def join_virtual_class(request, session_id):
             "username": request.user.username,
         },
     )
+

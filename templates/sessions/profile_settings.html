@@ -34,9 +34,10 @@
                             <button class="tab-btn" value="tutor" onclick="showProfileTab('tutor')">
                                 {% if request.user.role == 'tutor' %} Tutor {% else %}Student {% endif %}
                                 Details</button>
-                            <button class="tab-btn" value="settings"
+                            {% if request.user.role == 'tutor' %}<button class="tab-btn" value="settings"
                                 onclick="showProfileTab('settings')">Settings</button>
-                        </div>
+                       {% endif %}
+                            </div>
 
                         <div class="profile-main">
 
@@ -127,7 +128,7 @@
                                         <!-- </form> -->
                                 </div>
                             </div>
-
+                            
                             <div id="tutor" class="tab-content">
                                 <div class="card-container">
                                     {%if request.user.role == 'tutor' %}
@@ -211,7 +212,8 @@
                                     </form>
                                 </div>
                             </div>
-
+                            {% if request.user.role == 'tutor' %}
+                            
                             <div id="settings" class="tab-content">
                                 <div class="card">
                                     {#<div class="card-header"><h3>Account Settings</h3></div>#}
@@ -335,6 +337,7 @@
 
 
                             </div>
+                            {% endif %}
                         </div>
 
                     </div>

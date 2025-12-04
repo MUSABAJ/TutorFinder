@@ -476,8 +476,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Email</label>
-                        {{ tutor_form.email }}
+                        <label>Username</label> 
+                        {{ tutor_form.username }}
                     </div>
                     <div class="form-group">
                         <label>Password</label>
@@ -488,7 +488,10 @@
                         <label>Confirm Password</label>
                         {{ tutor_form.password2 }}
                     </div>
-
+                        {% if tutor_form.errors %}
+                    <p style='color:red'>
+                    Please Make sure your password is atleast 8 characters.</p>
+                    {% endif %}
                     <div class="btns-group">
                     <p>Already have an account?<a href="{% url 'login'%}"> Sign in here</a></p>
 

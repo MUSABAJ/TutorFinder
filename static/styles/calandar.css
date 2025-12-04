@@ -157,7 +157,7 @@
   }
 
   #book-btn {
-    background: var(--primary-color);
+    background: var(--primary-dark);
     color: var(--white);
     border: none;
     border-radius: 8px;
@@ -170,7 +170,7 @@
   }
 
   #book-btn:enabled {
-    background: var(--primary-color);
+    background: var(--primary-dark);
     box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
   }
 

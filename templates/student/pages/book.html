@@ -59,6 +59,10 @@
                     <input type="hidden" name="selected_slot" value="" id="selected-slot">
                     <button class="btn "  disabled id="book-btn"> Confirm Booking</button>
                 </form>
+                 {% if availablity_json %}
+                 <br>
+                 <div> No availablity spot? <br><a href="{% url 'room_user' tutor.id  %}">Contact</a> the Tutor to add Availability slot.</div>
+                 {% endif %}
                 </div>
             </div>
         </div>

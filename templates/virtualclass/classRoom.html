@@ -509,6 +509,7 @@
     <script src="https://meet.hosttech.de/external_api.js"></script>
 
     <script> 
+ 
         // Hide loading overlay when Jitsi is ready
         function hideLoading() {
             document.getElementById('loadingOverlay').style.opacity = '0';
@@ -550,9 +551,7 @@ const observer = new MutationObserver((mutationsList, observer) => {
     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
       console.log('New child element(s) added:', mutation.addedNodes);
             hideLoading();
-
-      // Iterate through mutation.addedNodes to access the newly added children
-    }
+     }
   }
 });
 
@@ -564,24 +563,22 @@ observer.observe(parentElement, config);
 
         const api = new JitsiMeetExternalAPI(domain, options, configOverwrite, interfaceConfigOverwrite);
 
-        // Hide loading when Jitsi is ready
-        api.addEventListener('videoConferenceJoined', () => {
+         api.addEventListener('videoConferenceJoined', () => {
             hideLoading();
         });
         
-        api.addEventListener('participantLeft', (event) => {
-            console.log('Participant left:', event);
-            // If instructor leaves, end class for students
-        });
+        api.addEventListener('participantJoined', (event) => {
+            {{session.mark_completed}}
+         });
         
         api.addEventListener('readyToClose', (event) => {
-            console.log('Participant left:', event);
-            let id = {{session.id}};
+   
+
+             let id = {{session.id}};
             window.location.href = "{% url 'give_feedback' session.base_session.id %}";
         });
 
-        // Helper functions for control buttons
-        function toggleFullscreen() {
+         function toggleFullscreen() {
             const elem = document.getElementById('meet');
             if (!document.fullscreenElement) {
                 if (elem.requestFullscreen) {

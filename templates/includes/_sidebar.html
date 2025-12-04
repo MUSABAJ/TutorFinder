@@ -3,7 +3,7 @@
 
 {% if request.user.role == 'student' %}
 <nav class="sidebar-nav">
-    <a href="{% url 'student_dashbord' %}" class="sidebar-link active">
+    <a href="{% url 'student_dashboard' %}" class="sidebar-link active">
         <i class="fas fa-home"></i>
         <p> Dashboard</p>
     </a>
@@ -12,12 +12,12 @@
         <p>My Tutors</p>
     </a>
     <a href="{% url 'session_list' %}" class="sidebar-link">
-        <i class="fas fa-video-camera"></i>
+        <i class="fas fa-person-chalkboard"></i>
         <p>Booked sessions</p>
 
     </a>
-    <a href="{% url 'base_session_manage' %}" class="sidebar-link">
-        <i class="fas fa-video-camera"></i>
+    <a href="{% url 'base_session_list' %}" class="sidebar-link">
+        <i class="fas fa-person-circle-question"></i>
         <p>Base sessions</p>
 
     </a>
@@ -55,13 +55,19 @@
     </a>
 
     <a href="{% url 'session_list' %}"  class="sidebar-link">
-        <i class="fas fa-video-camera"></i>
+        <i class="fas fa-chalkboard"></i>
         <p>Booked sessions</p>
 
     </a>
+
     <a href="{% url 'base_session_manage' %}"  class="sidebar-link">
-        <i class="fas fa-video-camera"></i>
+        <i class="fas fa-person-circle-question"></i>
         <p>Requested Packages</p>
+
+    </a>
+     <a href="{% url 'chats' %}" class="sidebar-link">
+        <i class="fas fa-message"></i>
+        <p>Messages</p>
 
     </a>
     <a href="{% url 'resources' %}" class="sidebar-link">

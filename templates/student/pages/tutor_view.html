@@ -15,14 +15,14 @@
     padding-bottom: 3rem;
   }
   .subject_drop{
-    width: 90px;
+    width: 130px;
     height: 38px;
     padding: 0.4rem;
     border-radius: 7px;
     margin-left: 2rem;
+    border: 1px solid var(--border-color);
     font-size: 14px;
-    border: none;
-    background-color: var(--primary-color);
+     background-color: var(--primary-color);
   } 
   .package-cards {
     background: white;
@@ -320,7 +320,7 @@
 
           <div id="about" class="profile-view-tab active">
             <div class="profile">
-              <div class="profile-top" style="background-image:url(/static{{tutor.user.avatar.url}})">
+              <div class="profile-top" style="background-image: url(/static/img/ppbkg.jpg); background-position: center;">
                 <div class="profile-img">
                   <img src="/static{{tutor.user.avatar.url}}" alt="makima san" />
                 </div>
@@ -328,10 +328,9 @@
               <div class="profile-info">
                 <div class="profile-name">
                   <h2 style="font-size : 42px; font-weight:600">
-                    {{tutor.user.first_name}} {{tutor.user.last_name}} <span>
-                      PhD in Mathimatics</span>
+                    {{tutor.user.first_name}} {{tutor.user.last_name}}  
                   </h2>
-                  <p>{{tutor.user.bio|truncatewords:"4"}}</p>
+                  <p>{{tutor.user.role}}</p>
 
                   <!-- <p class="profile-info-icons">
                     <span><i class="fas fa-location"></i>Addis-Ababa</span>
@@ -339,7 +338,7 @@
                  </p> -->
                 </div>
                 <div>
-                  <button class="btn btn-primary">Chat</button>
+                  <button style='margin-right:2rem' onclick=" {% url 'room_user' tutor.user.id %}" class="btn btn-primary">Chat</button>
                 </div>
               </div>
             </div>
@@ -347,25 +346,23 @@
               <div class="profile-about">
                 <h3>About Me</h3>
                 <strong>Bio</strong>
-                <i>Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Eum ex assumenda, fuga labore dolor consequatur dolores
-                  atque aspernatur eveniet et, iusto itaque quo.</i>
+                <i>{{tutor.user.bio}}</i>
                 <span><i class="fas fa-user"></i> <strong>User</strong> -
                   Tutor</span>
                 <span><i class="fas fa-star"></i> <strong>Rating</strong> -
-                  4.5/5</span>
+                  {{tutor.rating}}/5</span>
                 <span><i class="fas fa-female"></i> <strong>Gender</strong> -
-                  female</span>
+                  {{tutor.user.gender}}</span>
 
-                <span><i class="fas fa-location"></i><strong> Experience level</strong> - 5+ years
-                  teaching/tutoring</span>
+                <span><i class="fas fa-location"></i><strong> Experience level -</strong> {{tutor.experience}} Teaching/tutoring</span>
                 <span><i class="fas fa-language"></i>
-                  <strong>Languages</strong> - English, Amharic, Somali</span>
+                  <strong>Languages</strong> - {{tutor.language}}</span>
                 <span><i class="fas fa-calendar"></i> <strong></strong> - 21 feb
                   2025</span>
               </div>
               <div class="profile-edu">
                 <h3>Educational Background</h3>
+                {% comment %} create a table for storing tutors education info , cauze he may have multiple instances and they should be controlled {% endcomment %}
 
                 <div class="institutes">
                   <i class="fas fa-graduation-cap"></i>
@@ -387,10 +384,10 @@
               <div class="profile-courses">
                 <h3>Course and subjects</h3>
                 <ul>
-                  <li>Mathimatics</li>
-                  <li>Advanced Mathimatics</li>
-                  <li>English</li>
-                  <li>SAT</li>
+                {% for subject in subjects %}  
+                <li>{{subject}}<li>
+                {% endfor %}
+                    
                 </ul>
               </div>
               <div class="profile-contact">
@@ -399,10 +396,7 @@
                   <span>Location</span>
                   <p><i class="fa-location"> </i> Addis-Ababa, Ethiopia</p>
                   <span>Phone number</span>
-                  <p>+25-198-58-566</p>
-                  <span>Social media</span>
-                  <p><i class="fas fa-twitter"> </i> @lishaleman</p>
-                  <p><i class="fas fa-instagram"> </i> @lishaleman</p>
+                  <p>{{tutor.user.phone}}</p> 
                 </div>
               </div>
               <div class="profile-cta">
@@ -439,14 +433,14 @@
                 </div>
                 <div class="package-footer">
                   <span class="package-id" style="display: none;">2</span>
-                  <button class="btn-details" onclick="(openConfirmModal())">
+                  <button class="btn-details" onclick="(openConfirmModal({{pkg.id}}))">
                     <i class="fas fa-info-circle"></i> View Details
                   </button>
                 </div>
               </div>
-              <div id="confirmModal" class="modal">
+              <div id="confirmModal{{pkg.id}}" class="modal">
                 <div class="modal-content detail">
-                  <span class="close-modal" onclick="closeConfirmModal()">&times;</span>
+                  <span class="close-modal" onclick="closeConfirmModal({{pkg.id}})">&times;</span>
                   <div class="pkg-modal-header">
                     <h2 class="modal-title" id="modalPackageName">{{pkg.name}}</h2>
                     <p class="modal-description" id="modalPackageDescription">{{pkg.description}}</p>
@@ -461,7 +455,7 @@
                     <li><i class="fas fa-check"></i> Basic learning plan</li>
                     <form id="starting" action="{% url 'request_session'  pkg.id%}" method="post">
                         {%csrf_token%}
-                        <i class="fas fa-check"> </i><span style="color: var(--text-primary);">Choose Subject To Enroll</span>
+                        <i class="fas fa-check"> </i><span style=" padding: 0.2rem 1rem; background-color:var(--surface-color); font-weight:500; border: 1px solid var(--surface-border); color: var(--text-primary);">Choose Subject To Enroll > </span>
                         <select name="selected_subject" class="subject_drop" id="selected-subject">
                           {%for subject in subjects %}
                           <option name="subject" value="{{subject}}">
@@ -473,10 +467,10 @@
                         <div class="confirm-action">
                   <div class="modal-actions">
 
-                           <button class="btn-purchase">
+                           <button type="submit" class="btn-purchase">
                       <i class="fas fa-shopping-cart" style="color: white;"></i> Purchase Now
                     </button>
-                           <button class="btn-details" onclick="closeConfirmModal()">
+                           <button  type="button"  class="btn-details" onclick="closeConfirmModal({{pkg.id}})">
                       <i class="fas fa-times"  style="color: white;"></i> Close
                     </button>
                   </div>
@@ -612,32 +606,14 @@
       </div>
     </main>
   </div>
-
-  <div id="confirmModal" class="modal">
-    <div class="modal-content confermation">
-      <div class="confirm-header">
-        <small>Delete File</small>
-        <span class="close" onclick="closeConfirmModal()">&times;</span>
-      </div>
-      <div class="confirm-msg">
-        are you you want to do smth tosure this thing
-        <div class="confirm-obj">package name and blah blah!</div>
-      </div>
-
-      <div class="confirm-action">
-        <button class="btn btn-danger">Confirm</button>
-        <button class="btn btn-primary">cancel</button>
-      </div>
-    </div>
-  </div>
-
+ 
   <script>
-    function openConfirmModal() {
-      document.getElementById("confirmModal").style.display = "block";
+    function openConfirmModal(pkg) {
+      document.getElementById(`confirmModal${pkg}`).style.display = "block";
     }
 
-    function closeConfirmModal() {
-      document.getElementById("confirmModal").style.display = "none";
+    function closeConfirmModal(pkg) {
+      document.getElementById(`confirmModal${pkg}`).style.display = "none";
     }
   </script>
   {% include "includes/_scripts.html" %}

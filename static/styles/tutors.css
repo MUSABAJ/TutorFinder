@@ -474,15 +474,13 @@ img{
 
 .profile-top {
   height: 170px;
-   background-position: center;
+   background-position-y: -10rem;
   background-size: cover;
   border-radius: .3rem;
   display: flex;
   align-content: end;
   gap: 1rem;
-  background-color: rgba(255, 255, 255, 0.979);
-  backdrop-filter: blur(3px);
-
+ 
   border-bottom: 1px solid var(--border-colorf);
 }
 
@@ -796,7 +794,7 @@ img{
 }
 
 .session-status.rescheduled {
-  background: var(  --secondary-dark);
+  background: var(--text-muted);
   color: var(--text-secondary);
 }
 
@@ -805,7 +803,7 @@ img{
   color: var(--text-secondary);
 }
 .session-status.completed {
-  background: var(--success-color);
+  background: var(--accent);
   color: var(--text-secondary);
 }
 .session-status.scheduled {
