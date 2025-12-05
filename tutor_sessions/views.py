@@ -250,8 +250,8 @@ def book_sessions(request, base_id):
                         user=request.user,
                         type='payment_confirmed',
                         link= "{% url 'base_session_list' %}")
-                        payment.status =  'success'
-                        
+                        obj.status =  'success'
+
                         return render(request, 'payment/redirect.html' ,{'checkout_url':checkout_url,'booked_session':booked_session})
                     
                     else:
@@ -266,6 +266,8 @@ def book_sessions(request, base_id):
                         session_type=base_session.package.session_type
                     )
         except Exception as e:
+
+
             return render(request,'status/page.html',{
                         'error': True,
                         'message': f'Failed Booking Process, Please Start again'

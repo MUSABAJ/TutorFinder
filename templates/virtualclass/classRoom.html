@@ -561,7 +561,7 @@ const config = { childList: true };
 // Start observing the target parent element
 observer.observe(parentElement, config); 
 
-        const api = new JitsiMeetExternalAPI(domain, options, configOverwrite, interfaceConfigOverwrite);
+        const api = new JitsiMeetExternalATEMAR(domain, options, configOverwrite, interfaceConfigOverwrite);
 
          api.addEventListener('videoConferenceJoined', () => {
             hideLoading();
