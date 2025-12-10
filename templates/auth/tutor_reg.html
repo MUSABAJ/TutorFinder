@@ -14,6 +14,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+         @font-face {
+            font-family: para;
+            src: url("{% static 'font/Alphacorsa Personal Use.ttf' %}");
+        }
+
+        @font-face {
+            font-family: head;
+            src: url("{% static 'font/SAIBA-45.ttf' %}");
+        }
         * {
             margin: 0;
             padding: 0;
@@ -251,8 +260,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.9;
-        }
+         }
 
         .overlay {
             position: absolute;
@@ -260,9 +268,9 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #14a594 0%, #7d47db 100%);
             z-index: 1;
-            opacity: 0.5;
+            opacity: 0.42;
         }
 
         .text-block {
@@ -278,11 +286,11 @@
             z-index: 2;
             padding: 40px;
             width: 90%;
-            max-width: 500px;
-        }
+         }
 
         .text-block h1 {
-      font-size: 2.2rem;
+      font-size: 7.2rem;
+      font-family: para;
       font-weight: 600;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }   
@@ -293,7 +301,7 @@
     }
 
         .text-block p {
-            font-size: .91rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             font-weight: 400;
         }

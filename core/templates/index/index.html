@@ -2289,11 +2289,16 @@ button[disabled]{
             background: var(--surface-color);
             border: 1px solid var(--surface-border);
             border-radius: var(--radius);
-            padding: 18px 18px 18px 48px;
-            height: 260px;
+             height: 260px;
+          position: relative;
 
         }
-
+        .how-card div{
+          position: relative;
+          background-color: rgba(245, 245, 245, 0.728);
+         min-width: 100% mandatory!;
+         overflow: visible;
+        }
         .how-card:before {
             counter-increment: step;
             content: counter(step);
@@ -2334,6 +2339,7 @@ button[disabled]{
             background-size: cover;
             background-position: center;
             background-image: url(static/img/login.jpg);
+
         }
 
         @media (min-width: 760px) {
@@ -2450,7 +2456,7 @@ button[disabled]{
 
 
     <!-- Features Section -->
-    <section class="features background" id="features">
+    <section class="features  " id="features">
         <div class="container">
             <div class="section-header reveal">
                 <div class="section-badge">Why Choose Us</div>
@@ -2506,16 +2512,21 @@ button[disabled]{
             </div>
             <div class="how-steps">
                 <div class="how-card one reveal">
+                  <div>                    
                     <h3>Create your account</h3>
                     <p>Sign up as a student or tutor in seconds. It’s free to get started.</p>
+                  </div>
                 </div>
                 <div class="how-card two reveal">
+                  <div>
                     <h3>Match with tutors</h3>
-                    <p>Search by subject, price, and availability. View ratings and profiles.</p>
+                    <p>Search by subject, price, and availability. View ratings and profiles.</p></div>
                 </div>
                 <div class="how-card three reveal">
+                  <div>
                     <h3>Book and learn</h3>
                     <p>Schedule sessions, join the virtual classroom, and track your progress.</p>
+                  </div>
                 </div>
             </div>
         </div>
@@ -2536,31 +2547,9 @@ button[disabled]{
                     <div class="testimonial-card active">
                       
                         <div class="testimonial-author">
-                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
+                            <img src="{%static 'img/lego.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
-                                <h4>Sarah Al-Rashid</h4>
-                                <span>High School Student</span>  <div class="testimonial-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
-                        </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-content">
-                            <p><span>"</span>TEMARtransformed my understanding of mathematics. Dr. Ahmed's teaching style
-                                is
-                                exceptional, and the platform makes learning so convenient!"</p>
-                        </div>
-
-                    </div>
-                    <div class="testimonial-card active">
-                      
-                        <div class="testimonial-author">
-                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
-                            <div>
-                                <h4>Sarah Al-Rashid</h4>
+                                <h4>Kai Lego </h4>
                                 <span>High School Student</span>  <div class="testimonial-rating">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
@@ -2582,7 +2571,29 @@ button[disabled]{
                         <div class="testimonial-author">
                             <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
-                                <h4>Crstiano Ronaldo</h4>
+                                <h4>Makima San</h4>
+                                <span>High School Student</span>  <div class="testimonial-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i> <span> (4.5/5)</span>
+                        </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-content">
+                            <p><span>"</span>TEMAR transformed my understanding of mathematics. Dr. Ahmed's teaching style
+                                is
+                                exceptional, and the platform makes learning so convenient!"</p>
+                        </div>
+
+                    </div>
+                    <div class="testimonial-card active">
+                      
+                        <div class="testimonial-author">
+                            <img src="{%static 'img/bean.jpg' %}?height=50&width=50" alt="Sarah">
+                            <div>
+                                <h4>Mr Bean</h4>
                                 <span>High School Student</span>  <div class="testimonial-rating">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
@@ -2600,7 +2611,7 @@ button[disabled]{
                     <div class="testimonial-card active">
                       
                         <div class="testimonial-author">
-                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
+                            <img src="{%static 'img/donald.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
                                 <h4>Donald Duck</h4>
                                 <span>Disnip School Student</span>  <div class="testimonial-rating">
@@ -2620,9 +2631,9 @@ button[disabled]{
                     <div class="testimonial-card active">
                       
                         <div class="testimonial-author">
-                            <img src="{%static 'img/makima.jpg' %}?height=50&width=50" alt="Sarah">
+                            <img src="{%static 'img/big.jpg' %}?height=50&width=50" alt="Sarah">
                             <div>
-                                <h4>Tony Stark</h4>
+                                <h4>Hero 5</h4>
                                 <span>CEO at Stark company</span>  <div class="testimonial-rating">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>

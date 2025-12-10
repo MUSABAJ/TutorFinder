@@ -1,3 +1,12 @@
+ @font-face {
+            font-family: para;
+            src: url("{% static 'font/Alphacorsa Personal Use.ttf' %}");
+        }
+
+        @font-face {
+            font-family: head;
+            src: url("{% static 'font/SAIBA-45.ttf' %}");
+        }
 *{
   margin: 0;
   padding: 0;
