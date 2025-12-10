@@ -204,7 +204,7 @@ def my_tutors(request):
      
      if request.user.role != 'student':
           return HttpResponseBadRequest('Very Bad Reqeuest')
-     exolore_tutor = TutorProfile.objects.all()
+     exolore_tutor = TutorProfile.objects.filter(is_verified=True).order_by('-rating')
      my_tutors = User.objects.filter(
      chats__participants=request.user,    
      role='tutor'                        

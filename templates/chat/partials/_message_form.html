@@ -1,4 +1,4 @@
-    <form class="chat-input-form" 
+    <form id="send_form" class="chat-input-form" 
     {% if chat %}hx-post="{% url 'send_msg' chat.id %} "{% endif %}
     hx-swap="outerHTML"
     hx-target=".chat-messages"
@@ -8,4 +8,21 @@
 
         <input type="search" name="msg" placeholder="Type your message..." required>
         <button type="submit" value=" " class="send-btn fas fa-arrow-circle-up"> </button>
-    </form>
+    <script>
+        (function(){
+            var form = document.getElementById('send_form');
+            if (!form) return;
+
+            // Clear the input after HTMX finishes swapping/processing the response
+            form.addEventListener('htmx:afterOnLoad', function(){
+                var input = form.querySelector('input[name="msg"]');
+                if (input) input.value = '';
+            });
+
+            // Fallback: clear shortly after native submit if HTMX isn't present
+            form.addEventListener('submit', function(){
+                var input = form.querySelector('input[name="msg"]');
+                if (input) setTimeout(function(){ input.value = ''; }, 50);
+            });
+        })();
+    </script>

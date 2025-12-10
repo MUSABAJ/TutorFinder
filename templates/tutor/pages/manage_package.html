@@ -12,9 +12,9 @@
             <div class="package-header">
                 <h3>{{pkg.name}} Package</h3>
                 {% if pkg.is_active %}
-                <span> Active</span>
+                <span > Active</span>
                 {% else %}
-                <span> Not Active</span>
+                <span style="background: rgb(151, 63, 0) "> Not Active</span>
                 {% endif %}
              </div>
             <div class="package-details">
@@ -51,15 +51,15 @@
                 </div>
             </div>
             <div class="package-actions">
-                <button
+                <button onclick=window.location.href="{% url 'togle_pkg' pkg.id%}"
                 class="btn-primary btn">
                     {% if pkg.is_active %}
-                <span> Disable</span>
+                <span style="color: rgb(0, 0, 0); " > Disable</span>
                 {% else %}
-                <span> Enable</span>
+                <span > Enable</span>
                 {% endif %}
             </button>
-                <button class="btn-danger btn-sm">Delete</button>
+            <button onclick=window.location.href="{% url 'delete_pkg' pkg.id%}" class="btn-danger btn-sm">Delete</button>
             </div>
         </div> 
         

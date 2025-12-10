@@ -44,17 +44,15 @@ def delete_pkg(request, pkg_id):
     if request:
         pkg = get_object_or_404(TutorPackage, id=pkg_id)
         pkg.delete()
-        return JsonResponse('succes' ,safe=False)
-
-    return JsonResponse('error' ,safe=False)
+ 
+    return redirect('manage_package')
         
 def togle_pkg(request, pkg_id):
     if request:
         pkg = get_object_or_404(TutorPackage, id=pkg_id)
         pkg.is_active = True if not pkg.is_active else False
         pkg.save()
-        return JsonResponse('succes' ,safe=False)
-    return JsonResponse('error' ,safe=False)
+    return redirect('manage_package')
 
 def set_availablity(request):
     try:
