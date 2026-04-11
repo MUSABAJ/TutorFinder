@@ -54,16 +54,17 @@
                 </div> {% if request.user.role == 'tutor' %}
                             
                             <div class="session-actions">
-                                {% comment %} {% if session.status == 'up_comming' %}
+                                 {% comment %} {% if session.status == 'up_comming' %} {% endcomment %}
                                     {% if session.session_type == 'online' %}
                                         <a href="{% url 'create_virtual_class'  session.id %}"><button  class="btn-sm btn-primary">Create Room</button> </a>
                                     {% else %}
                                         <a href="{% url 'check_in_out'  session.id %}"><button  class="btn-sm btn-primary">Start Class</button> </a>
 
                                     {% endif %}
-                                {% else %} {% endcomment %}
+                                {% comment %} {% else %}  {% endcomment %}
+
                             {% comment %} <a  ><button disabled class="btn-sm btn-primary">Start Class</button> </a> {% endcomment %}
-                            <a  ><button   class="btn-sm btn-primary">Start Class</button> </a>
+                            {% comment %} <a  ><button   class="btn-sm btn-primary">Start Class</button> </a> {% endcomment %}
 
                             {% comment %} 
                             Here I commented out the condition that check weather the session is due or not and enable the buttone if true
@@ -72,8 +73,8 @@
                             {% endcomment %}
                             
                         {% comment %} {% endif %} {% endcomment %}
-
-                        <button class="btn-sm btn-outline">Message {{session.base_session.student.username}}</button>
+                        <a href="{% url 'room_user' session.base_session.student.id%} ">
+                        <button class="btn-sm btn-outline">Message {{session.base_session.student.username}}</button></a>
                          <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline"> Reschedule </button>
                         </a>
@@ -82,8 +83,9 @@
                     <div class="session-actions">
                          <a href="{% url 'join_virtual_class' session.id %}"><button  class="btn-sm btn-primary">Join Class</button> </a>
  
-                        <button class="btn-sm btn-outline">Message {{session.base_session.tutor.username}}</button>
-                        <a href="{% url 'session_reschedule' session.id %}">
+
+                        <a href="{% url 'room_user' session.base_session.student.id%} ">
+                        <button class="btn-sm btn-outline">Message {{session.base_session.tutor.username}}</button></a>                        <a href="{% url 'session_reschedule' session.id %}">
                             <button class="btn-sm btn-outline "> Reschedule </button>
                         </a>
                     </div>

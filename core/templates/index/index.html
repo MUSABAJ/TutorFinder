@@ -10,7 +10,10 @@
     <title>TEMAR- Connect with Expert Tutors</title>
     <link rel="stylesheet" href="{% static 'styles/styles.css '%}">
     <link rel="stylesheet" href="{% static 'asset/css/all.css' %}">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -472,8 +475,9 @@ button[disabled]{
 }
 
 .hero-text p {
-  font-size: 1rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-family: "Noto Sans Mono", monospace;
+  color: black;
   font-weight: 500;
   text-align: center;
   margin-bottom: 2rem;
@@ -1917,9 +1921,9 @@ button[disabled]{
             gap: 8px;
             padding: 6px 10px;
             border-radius: 999px;
-            background: rgba(124, 92, 255, .12);
-            color: #00461d;
-            border: 1px solid rgba(124, 92, 255, .35);
+            background: rgba(92, 236, 255, 0.12);
+            color: #01a998ff;
+            border: 1px solid rgba(120, 181, 198, 0.15);
         }
 
         .hero h1 {
@@ -2434,9 +2438,10 @@ button[disabled]{
                     </div>
                     <div class="hero-text reveal">
 
-                        <h1 style='font-family: head;'>Your GPA Called ... <span class="gradient-text">It Wants a
-                                Tutor</span></h1>
-                        <p style='font-family: para;'>Let Us Fix you with our top Most Featured Tutors.</p>
+                        <h1 style='font-family: "Barrio", sans-serif; font-size:57px;'>
+                          Master Any Subject with Confidence. <span class="gradient-text">
+                                </span></h1>
+                        <p>Professional 1-on-1 tutoring for all students, from elementary school to university and beyond.</p>
 
                         <div class="hero-buttons">
                             <a href="{% url 'student_register' %}" class="btn btn-primary btn-mid">

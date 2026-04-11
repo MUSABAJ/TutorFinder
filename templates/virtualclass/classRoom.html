@@ -506,7 +506,7 @@
     <!-- Your existing scripts -->
     {% load static %} 
     <script src='{% static "js/external_api.js" %}'></script>
-    <script src="https://meet.hosttech.de/external_api.js"></script>
+    {% comment %} <script src="https://meet.hosttech.de/external_api.js"></script> {% endcomment %}
 
     <script> 
  
@@ -561,7 +561,7 @@ const config = { childList: true };
 // Start observing the target parent element
 observer.observe(parentElement, config); 
 
-        const api = new JitsiMeetExternalATEMAR(domain, options, configOverwrite, interfaceConfigOverwrite);
+        const api = new JitsiMeetExternalAPI(domain, options, configOverwrite, interfaceConfigOverwrite);
 
          api.addEventListener('videoConferenceJoined', () => {
             hideLoading();

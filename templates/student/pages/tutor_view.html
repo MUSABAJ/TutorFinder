@@ -338,7 +338,8 @@
                  </p> -->
                 </div>
                 <div>
-                  <button style='margin-right:2rem' onclick=" {% url 'room_user' tutor.user.id %}" class="btn btn-primary">Chat</button>
+                        <a href="{% url 'room_user' tutor.user.id%} "> 
+                  <button style='margin-right:2rem'  class="btn btn-primary">Chat</button></a>
                 </div>
               </div>
             </div>
@@ -409,7 +410,14 @@
           <div id="packages" class="profile-view-tab">
             <div class="pkg-container">
               <div class="pkg-list">
-              {% for pkg in packages %}
+                {% if not packages %}
+<div style="   text-align: center;
+                position: absolute;
+                left: 35%;
+                top: 50%;
+                min-height: 90%;"
+                ><p style="text-align: center;background-color: rgb(235, 235, 235); padding: 0.31rem; border-radius: 0.51rem;"> No Packages Available</p></div>                {% endif %}        
+                {% for pkg in packages %}
               <div class="package-cards">
                 <div class="package-badge" style="background: #2c3e50;">Best Value</div>
                 <div class="package-header" style="background: linear-gradient(135deg, #2ecc71, #27ae60);">
@@ -488,116 +496,42 @@
             </div>
           </div>
 
-           <div id="feedback" class="profile-view-tab">
+          <div id="feedback" class="profile-view-tab">
             <h2>Rating and review</h2>
             <div class="feedback-list">
               <div class="feedback-body">
                 <div class="feedback-header">
-                  <h1>4.5 <i class="fas fa-star"></i></h1>
+                  <h1>{{ avg_rating }} <i class="fas fa-star"></i></h1>
 
                   <div class="feedback-bar">
-                    <p>5</p>
-                    <div class="rating-container">
-                      <div class="rate 5" style="width: 90%; background-color: #21a177">
-                        90%
-                      </div>
-                    </div>
-
-                    <p>4</p>
-                    <div class="rating-container">
-                      <div class="rate 4" style="width: 80%; background-color: #21a177">
-                        80%
-                      </div>
-                    </div>
-
-                    <p>3</p>
-                    <div class="rating-container">
-                      <div class="rate 3" style="width: 65%; background-color: #21a177">
-                        65%
-                      </div>
-                    </div>
-
-                    <p>2</p>
-                    <div class="rating-container">
-                      <div class="rate 2" style="width: 60%; background-color: #21a177">
-                        60%
-                      </div>
-                    </div>
-                    <p>1</p>
-                    <div class="rating-container">
-                      <div class="rate" style="width: 60%; background-color: #21a177">
-                        60%
-                      </div>
-                    </div>
+                    <!-- Optionally render rating distribution later -->
                   </div>
                 </div>
 
                 <hr />
                 <div class="feedbacks">
-                  <div class="feedback-card">
-                    <div class="feedbacker">
-                      <img src="img/makima.jpg" alt="" />
-                      <span> Harley Quien</span>
+                  {% if feedbacks and feedbacks.count > 0 %}
+                    {% for fb in feedbacks %}
+                      <div class="feedback-card">
+                        <div class="feedbacker">
+                          {% if fb.student.avatar %}
+                            <img src="/static{{ fb.student.avatar.url }}" alt="" />
+                          {% else %}
+                            <img src="/static/img/default-avatar.png" alt="" />
+                          {% endif %}
+                          <span> {{ fb.student.get_full_name|default:fb.student.username }}</span>
+                        </div>
+                        <span> {{ '*'|slice:':0' }} {% for i in "12345"|make_list %}{% if forloop.counter <= fb.rating %}*{% else %} {% endif %}{% endfor %} {{ fb.created_at|date:"M d, Y" }} </span>
+                        <p>
+                          {{ fb.feedback|default:"No comments" }}
+                        </p>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <div style="text-align:center; padding:1rem; background-color: #f5f5f5; border-radius:6px;">
+                      No feedback given yet
                     </div>
-                    <span> * * * * 7/27/25 </span>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
-                      nihil voluptatibus ip sa repellat distinctio corporis,
-                      modi amet odio beatae recusandae
-                    </p>
-                  </div>
-
-                  <div class="feedback-card">
-                    <div class="feedbacker">
-                      <img src="img/makima.jpg" alt="" />
-                      <span> Harley Quien</span>
-                    </div>
-                    <span> * * * * 7/27/25 </span>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
-                      nihil voluptatibus ip sa repellat distinctio corporis,
-                      modi amet odio beatae recusandae
-                    </p>
-                  </div>
-
-                  <div class="feedback-card">
-                    <div class="feedbacker">
-                      <img src="img/makima.jpg" alt="" />
-                      <span> Harley Quien</span>
-                    </div>
-                    <span> * * * * 7/27/25 </span>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
-                      nihil voluptatibus ip sa repellat distinctio corporis,
-                      modi amet odio beatae recusandae
-                    </p>
-                  </div>
-
-                  <div class="feedback-card">
-                    <div class="feedbacker">
-                      <img src="img/makima.jpg" alt="" />
-                      <span> Harley Quien</span>
-                    </div>
-                    <span> * * * * 7/27/25 </span>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
-                      nihil voluptatibus ip sa repellat distinctio corporis,
-                      modi amet odio beatae recusandae
-                    </p>
-                  </div>
-
-                  <div class="feedback-card">
-                    <div class="feedbacker">
-                      <img src="img/makima.jpg" alt="" />
-                      <span> Harley Quien</span>
-                    </div>
-                    <span> * * * * 7/27/25 </span>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur voluptas nostrum
-                      nihil voluptatibus ip sa repellat distinctio corporis,
-                      modi amet odio beatae recusandae
-                    </p>
-                  </div>
+                  {% endif %}
                 </div>
               </div>
             </div>

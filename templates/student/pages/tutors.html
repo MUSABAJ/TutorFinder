@@ -73,10 +73,10 @@
       </div>
 
       <div class="filter-group">
-        <label for="gender-filter">Type</label>
+        <label for="gender-filter">Gender</label>
         <select id="gender-filter" name="gender_filter" hx-get="{% url 'tutor_search' %}" hx-target=".exp_result"
           value="{{gender_filter}}" hx-trigger="change changed delay:500ms">
-          <option value="">All Types</option>
+          <option value="">All</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>

@@ -27,7 +27,8 @@
           </div>
         </div>
         <div class="tutor-stats">
-          <button class="btn btn-primary">Contact</button>
+                      <a href="{% url 'new_chat' tutor.user.id%} ">
+          <button class="btn btn-primary">Contact</button></a>
           <a href="{% url 'view_tutor' tutor.id%} ">
             <button class="btn btn-outline">More</button>
           </a>

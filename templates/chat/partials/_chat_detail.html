@@ -1,6 +1,18 @@
 {% block main %}
 {% if chat %}
-<div class="chat-content-header">
+    {%if receiver.profile %}
+    <div class="chat-content-header">
+    <div class="current-chat-info" onclick="window.location.href='{% url 'view_student' receiver.profile.id %}'" style="cursor:pointer">
+        <img src="/static{{receiver.avatar.url}}" alt="Dr. Sarah Ahmed">
+        <div class="current-chat-details">
+            <h3>{{receiver.username}}</h3>
+            <p>Mathematics Tutor • Online</p>
+        </div>
+    </div>
+
+</div>
+    {%else%}
+    <div class="chat-content-header">
     <div class="current-chat-info" onclick="window.location.href='{% url 'view_tutor' receiver.tutor.id %}'" style="cursor:pointer">
         <img src="/static{{receiver.avatar.url}}" alt="Dr. Sarah Ahmed">
         <div class="current-chat-details">
@@ -10,6 +22,7 @@
     </div>
 
 </div>
+    {%endif%}
 
     {% include "chat/partials/_messages.html" %}
     {% else %}

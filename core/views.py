@@ -223,12 +223,17 @@ def view_tutor(request, tutor_id):
      tutor = get_object_or_404(TutorProfile, id=tutor_id)
      packages = TutorPackage.objects.filter(tutor=tutor.user)
      tutor_profile = TutorProfile.objects.get(user=tutor.user)
-     subjects = tutor_profile.subjects.split(',') # assumig for now subjects are comma separated
+     subjects = tutor_profile.subjects.split(',') # assumig   subjects are comma separated
      subjects = [s.strip() for s in subjects] 
+     # fetch feedbacks for this tutor (FeedBack.tutor is a User FK)
+     feedbacks = FeedBack.objects.filter(tutor=tutor.user)
+     avg_rating = FeedBack.get_tutor_average(tutor.user)
 
-     context = {'tutor':tutor
-                ,'packages':packages
-                ,'subjects':subjects}
+     context = {'tutor':tutor,
+                  'packages':packages,
+                  'subjects':subjects,
+                  'feedbacks': feedbacks,
+                  'avg_rating': avg_rating}
      return render(request, 'student/pages/tutor_view.html',context)
 
 def payment_history(request):
