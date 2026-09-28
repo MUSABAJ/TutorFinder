@@ -11,25 +11,44 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from re import M
 import os
-from django.conf import STATICFILES_STORAGE_ALIAS
+
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def get_bool(value, default=False):
+    if value is None:
+        return default
+    return str(value).strip().lower() in {"1", "true", "t", "yes", "y", "on"}
+
+
+def get_list(value, default=None):
+    if value is None:
+        return default or []
+    return [item.strip() for item in str(value).split(",") if item.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*1#u8gj5f(d()(44xkal2ac^@!c6c@jdhctzijc!059t%6)kqr'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-dev-key-change-me")
+DEBUG = get_bool(os.environ.get("DEBUG"), default=False)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEFAULT_ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".vercel.app", ".now.sh"]
+ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS"), DEFAULT_ALLOWED_HOSTS)
 
-ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = get_list(
+    os.environ.get("CSRF_TRUSTED_ORIGINS"),
+    ["https://*.vercel.app", "https://*.now.sh", "http://localhost:8000", "http://127.0.0.1:8000"],
+)
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 # Application definition
 
@@ -92,12 +111,16 @@ WSGI_APPLICATION = '_main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 
 # Password validation
@@ -123,68 +146,51 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = 'os.path.join(base_DIR, "staticfiles")'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# STATIC_URL = 'static/'
- 
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'static'
-# ]
 
-MEDIA_URL = '/images/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'users.User'
 
+CHAPA_SECRET_KEY = os.environ.get('CHAPA_SECRET_KEY', '')
+CHAPA_PUBLIC_KEY = os.environ.get('CHAPA_PUBLIC_KEY', '')
+CHAPA_BASE_URL = os.environ.get('CHAPA_BASE_URL', 'https://api.chapa.co/v1')
 
-
-AUTH_USER_MODEL = 'users.User' 
-
-
-CHAPA_SECRET_KEY ="CHASECK_TEST-DPrtYLJQX75RsZwow4CHBkURqroZsENs".strip()
-CHAPA_BASE_URL="https://api.chapa.co/v1"
-
+TELEGRAM_API_TOKEN = os.environ.get('TELEGRAM_API_TOKEN', os.environ.get('TELEGRAM_BOT_TOKEN', ''))
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', TELEGRAM_API_TOKEN)
 
 JAZZMIN_SETTINGS = {
     "site_title": "TUTOR HUB",
     "site_header": "TUTOR HUB Admin",
     "site_brand": " TEMAR",
     "welcome_sign": "Tutor HUB",
-
-     "copyright": "TEMAR 2024",
-    
+    "copyright": "TEMAR 2024",
     "show_ui_builder": True,
-    
     "topmenu_links": [
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
     ],
-    
     "usermenu_links": [
         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
         {"model": "auth.user"}
     ],
-    
     "custom_links": {
         "auth": [
             {
@@ -195,8 +201,4 @@ JAZZMIN_SETTINGS = {
             }
         ]
     },
-    
-    
 }
-TELEGRAM_API_TOKEN="7564093391:AAGJYuuFGFnedl2k73XOfyPNI93VmjqASjs" 
-TELEGRAM_BOT_TOKEN="7564093391:AAGJYuuFGFnedl2k73XOfyPNI93VmjqASjs"
