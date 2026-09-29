@@ -1,0 +1,6 @@
+{
+  "$schema": "https://railpack.com/schema.json",
+  "deploy": {
+    "startCommand": "gunicorn _main.wsgi:application --bind 0.0.0.0:${PORT:-8000}"
+  }
+}
