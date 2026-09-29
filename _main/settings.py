@@ -30,6 +30,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Railway/HTTPS proxy settings so Django accepts the external domain
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        'CSRF_TRUSTED_ORIGINS',
+        'https://temar.up.railway.app,http://localhost:8000,http://127.0.0.1:8000'
+    ).split(',')
+    if origin.strip()
+]
+SECURE_PROXY_SSL = True
+USE_X_FORWARDED_HOST = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 # Application definition
 
