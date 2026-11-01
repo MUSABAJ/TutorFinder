@@ -34,7 +34,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Railway/HTTPS proxy settings so Django accepts the external domain
-CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://temar-smoky.vercel.app']
 
 SECURE_PROXY_SSL = True
 USE_X_FORWARDED_HOST = True

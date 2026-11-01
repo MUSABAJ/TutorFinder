@@ -102,6 +102,17 @@ python manage.py migrate
 python manage.py runserver
 
 ```
+
+### Portfolio demo data
+
+After applying migrations, create fictional portfolio data (tutors, students, course packages, availability, scheduled lessons, sample payments and reviews, resources, chats, and notifications) with:
+
+```bash
+python manage.py seed_portfolio_data
+```
+
+The command is safe to rerun and does not delete existing records. Demo profiles use `example.com` email addresses and do not send real payment or Telegram messages. Every seeded account uses the shared password `Password@!23`; usernames start with `portfolio_tutor_` or `portfolio_student_`. This is a demo-only credential: do not use it for real users or a production database. Run the command only against a database where you want demo records created.
+
 ## 📸 Project Preview
 | Tutor Dashboard | Session Page | Virtual Class |
 |---------------|----------------|----------------|
@@ -113,4 +124,3 @@ python manage.py runserver
 📧 Email: musabajebar@gmail.com
 💼 LinkedIn: [linkedin.com/in/yourname](https://www.linkedin.com/in/musab-aj-b18909394)  
 🐙 GitHub: [github.com/your-username](https://github.com/MUSABAJ)
-
