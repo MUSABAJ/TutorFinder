@@ -3,6 +3,7 @@ django-htmx==1.26.0
 django-jazzmin==3.0.1
 gunicorn==23.0.0
 pillow==11.3.0
+psycopg[binary]>=3.2,<4
 python-telegram-bot==22.5
 requests==2.32.4
 whitenoise==6.11.0

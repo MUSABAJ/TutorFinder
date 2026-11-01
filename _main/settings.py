@@ -13,7 +13,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from re import M
 import os
+from urllib.parse import parse_qs, unquote, urlsplit
+
 from django.conf import STATICFILES_STORAGE_ALIAS
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -100,12 +103,41 @@ WSGI_APPLICATION = '_main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    database_url = urlsplit(DATABASE_URL)
+    if database_url.scheme not in {'postgres', 'postgresql'}:
+        raise ImproperlyConfigured('DATABASE_URL must use the postgres or postgresql scheme.')
+    if not database_url.hostname or not database_url.path.strip('/'):
+        raise ImproperlyConfigured('DATABASE_URL must include a database name and host.')
+
+    database_options = parse_qs(database_url.query)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': unquote(database_url.path.lstrip('/')),
+            'USER': unquote(database_url.username or ''),
+            'PASSWORD': unquote(database_url.password or ''),
+            'HOST': database_url.hostname,
+            'PORT': database_url.port or '',
+            'CONN_MAX_AGE': 60,
+            'CONN_HEALTH_CHECKS': True,
+            'OPTIONS': {
+                'sslmode': database_options.get('sslmode', ['require'])[0],
+            },
+        }
     }
-}
+elif os.environ.get('VERCEL'):
+    raise ImproperlyConfigured(
+        'DATABASE_URL must be set in Vercel to use a persistent PostgreSQL database.'
+    )
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
