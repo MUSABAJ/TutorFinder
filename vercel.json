@@ -1,18 +1,8 @@
 {
-  "builds": [
-    {
-      "src": "_main/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
-    },
-    {
-      "src": "build.sh",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "staticfiles_build" }
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "_main/wsgi.py": {
+      "maxDuration": 60
     }
-  ],
-  "routes": [
-    { "src": "/static/(.*)", "dest": "/static/$1" },
-    { "src": "/(.*)", "dest": "_main/wsgi.py" }
-  ]
+  }
 }
