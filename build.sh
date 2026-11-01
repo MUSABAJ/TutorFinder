@@ -1,6 +1,5 @@
 #!/bin/bash
-# Use uv pip to install dependencies, avoiding PEP 668 restrictions
-uv pip install -r requirements.txt
+set -e
 
-# Then collect static files
+uv pip install --system -r requirements.txt
 python3 manage.py collectstatic --no-input
